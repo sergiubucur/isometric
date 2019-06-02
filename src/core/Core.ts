@@ -1,14 +1,17 @@
+import ILogger from "../logger/ILogger";
 import IAssetService from "../asset/IAssetService";
 import CoreState from "./CoreState";
 
 export default class Core {
-	private readonly _assetService : IAssetService;
+	private readonly _logger: ILogger;
+	private readonly _assetService: IAssetService;
 
-	private _assets : object | null;
-	private _state : CoreState;
-	private _nextState : CoreState | null;
+	private _assets: object | null;
+	private _state: CoreState;
+	private _nextState: CoreState | null;
 
-	constructor(assetService : IAssetService) {
+	constructor(logger: ILogger, assetService: IAssetService) {
+		this._logger = logger;
 		this._assetService = assetService;
 
 		this._assets = null;
@@ -30,11 +33,18 @@ export default class Core {
 
 	private update() {
 		this.handleStateChange();
+		this._logger.update();
 
 		switch (this._state) {
 			case CoreState.None:
+				break;
+
 			case CoreState.Load:
+				this._logger.log("Loading...");
+				break;
+
 			case CoreState.Init:
+				this._logger.log("Initializing...");
 				break;
 
 			case CoreState.Run:
@@ -87,11 +97,6 @@ export default class Core {
 	}
 
 	private beforeLoad() {
-		const div = document.createElement("div");
-		div.id = "load";
-		div.innerHTML = "Loading...";
-
-		document.body.appendChild(div);
 	}
 
 	private load() {
@@ -100,23 +105,12 @@ export default class Core {
 		});
 	}
 
-	private afterLoad(assets : object) {
+	private afterLoad(assets: object) {
 		this._assets = assets;
 		this._nextState = CoreState.Init;
 	}
 
 	private beforeInit() {
-		const loadDiv = document.getElementById("load");
-
-		if (loadDiv) {
-			document.body.removeChild(loadDiv);
-		}
-
-		const initDiv = document.createElement("div");
-		initDiv.id = "init";
-		initDiv.innerHTML = "Initializing...";
-
-		document.body.appendChild(initDiv);
 	}
 
 	private init() {
@@ -130,10 +124,5 @@ export default class Core {
 	}
 
 	private beforeRun() {
-		const div = document.getElementById("init");
-
-		if (div) {
-			document.body.removeChild(div);
-		}
 	}
 }
