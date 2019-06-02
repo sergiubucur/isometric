@@ -7,7 +7,7 @@ export default class Camera implements ICamera {
 	private distanceFromTarget: number;
 
 	constructor() {
-		this.distanceFromTarget = 10;
+		this.distanceFromTarget = 16;
 
 		const aspect = window.innerWidth / window.innerHeight;
 		const d = this.distanceFromTarget;
