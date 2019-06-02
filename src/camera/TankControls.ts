@@ -73,7 +73,7 @@ export default class TankControls implements ITankControls {
 	}
 
 	private initMesh() {
-		const geometry = new THREE.CylinderBufferGeometry(0.45, 0.75, 3, 16);
+		const geometry = new THREE.CylinderBufferGeometry(0.75, 0.75, 4, 16);
 		const material = new THREE.MeshPhongMaterial({ color: 0xbada55 });
 
 		this._mesh = new THREE.Mesh(geometry, material);
@@ -88,6 +88,6 @@ export default class TankControls implements ITankControls {
 
 	private updateMeshPosition() {
 		this._mesh.position.copy(this._position);
-		this._mesh.position.y += 1;
+		this._mesh.position.y += 1.5;
 	}
 }
