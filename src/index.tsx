@@ -1,6 +1,8 @@
-import React from "react";
-import ReactDOM from "react-dom";
+import Core from "./core/Core";
+import AssetService from "./asset/AssetService";
 import "./index.scss";
-import App from "./App";
 
-ReactDOM.render(<App />, document.getElementById("root"));
+const assetService = new AssetService();
+
+const core = new Core(assetService);
+core.start();
