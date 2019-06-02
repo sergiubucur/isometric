@@ -14,6 +14,7 @@ export default class MouseControls implements ICameraControls {
 
 	private _position: THREE.Vector3;
 	private _mesh: THREE.Mesh;
+	private _pointerMesh: THREE.Mesh;
 	private _pointLight: THREE.PointLight;
 	private _plane: THREE.Plane;
 
@@ -29,6 +30,7 @@ export default class MouseControls implements ICameraControls {
 		this._camera.setPosition(this._position);
 
 		this.initMesh();
+		this.initPointerMesh();
 	}
 
 	update() {
@@ -58,6 +60,7 @@ export default class MouseControls implements ICameraControls {
 			Math.round(position.z)
 		);
 
+		this._pointerMesh.position.set(gridPosition.x, 0.05, gridPosition.y);
 		this._logger.logVector2("gridPosition", gridPosition);
 
 		if (this._inputTracker.leftMouseDown) {
@@ -81,6 +84,16 @@ export default class MouseControls implements ICameraControls {
 		this.updateMeshPosition();
 
 		this._scene.scene.add(this._mesh);
+	}
+
+	private initPointerMesh() {
+		const geometry = new THREE.BoxBufferGeometry();
+		const material = new THREE.MeshPhongMaterial({ color: 0xbada55 });
+
+		this._pointerMesh = new THREE.Mesh(geometry, material);
+		this._pointerMesh.scale.set(1, 0.1, 1);
+
+		this._scene.scene.add(this._pointerMesh);
 	}
 
 	private updateMeshPosition() {
