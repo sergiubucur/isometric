@@ -18,6 +18,7 @@ export default class TankControls implements ITankControls {
 	private _position: THREE.Vector3;
 	private _velocity: THREE.Vector3;
 	private _mesh: THREE.Mesh;
+	private _pointLight: THREE.PointLight;
 
 	constructor(camera: ICamera, inputTracker: IInputTracker, scene: IScene, logger: ILogger) {
 		this._camera = camera;
@@ -73,9 +74,13 @@ export default class TankControls implements ITankControls {
 
 	private initMesh() {
 		const geometry = new THREE.CylinderBufferGeometry(0.45, 0.75, 3, 16);
-		const material = new THREE.MeshPhongMaterial({ color: new THREE.Color(0.3, 0.6, 0.9) });
+		const material = new THREE.MeshPhongMaterial({ color: 0xbada55 });
 
 		this._mesh = new THREE.Mesh(geometry, material);
+		this._pointLight = new THREE.PointLight(0xbada55, 3, 5);
+		this._pointLight.position.set(0, 1.5, 0);
+		this._mesh.add(this._pointLight);
+
 		this.updateMeshPosition();
 
 		this._scene.scene.add(this._mesh);
