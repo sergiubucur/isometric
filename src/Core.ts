@@ -8,8 +8,9 @@ import IScene from "./scene/IScene";
 import Scene from "./scene/Scene";
 import CoreState from "./CoreState";
 import IInputTracker from "./input-tracker/IInputTracker";
-import ITankControls from "./camera/ITankControls";
-import TankControls from "./camera/TankControls";
+import ICameraControls from "./camera/ICameraControls";
+// import KeyboardControls from "./camera/KeyboardControls";
+import MouseControls from "./camera/MouseControls";
 
 export default class Core {
 	private readonly _logger: ILogger;
@@ -22,7 +23,7 @@ export default class Core {
 	private _camera: ICamera | null;
 	private _scene: IScene | null;
 	private _renderer: IRenderer | null;
-	private _tankControls: ITankControls | null;
+	private _cameraControls: ICameraControls | null;
 
 	constructor(logger: ILogger, assetService: IAssetService, inputTracker: IInputTracker) {
 		this._logger = logger;
@@ -35,7 +36,7 @@ export default class Core {
 		this._camera = null;
 		this._scene = null;
 		this._renderer = null;
-		this._tankControls = null;
+		this._cameraControls = null;
 
 		this.run();
 		this._nextState = CoreState.Load;
@@ -65,7 +66,7 @@ export default class Core {
 
 			case CoreState.Run:
 				this._scene.update();
-				this._tankControls.update();
+				this._cameraControls.update();
 				break;
 		}
 
@@ -125,7 +126,7 @@ export default class Core {
 		this._camera = new Camera();
 		this._scene = new Scene();
 		this._renderer = new Renderer();
-		this._tankControls = new TankControls(this._camera, this._inputTracker, this._scene, this._logger);
+		this._cameraControls = new MouseControls(this._camera, this._inputTracker, this._scene, this._logger);
 
 		this._scene.init().then(() => {
 			this._nextState = CoreState.Run;

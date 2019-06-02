@@ -2,15 +2,14 @@ import * as THREE from "three";
 
 import ICamera from "./ICamera";
 
-const NearPlane = 1;
-const FarPlane = 4000;
-const MaxZoom = 16;
-const MinZoom = 4;
-
-// TODO: fix clipping issue near the bottom of the screen at lower zoom levels
+const NearPlane = 0.1;
+const FarPlane = 1000;
+const FieldOfView = 30;
+const MaxZoom = 32;
+const MinZoom = 12;
 
 export default class Camera implements ICamera {
-	private _camera: THREE.OrthographicCamera;
+	private _camera: THREE.PerspectiveCamera;
 	get camera(): THREE.Camera {
 		return this._camera;
 	}
@@ -43,11 +42,11 @@ export default class Camera implements ICamera {
 		this.setPosition(this._position);
 	}
 
-	private getCamera(): THREE.OrthographicCamera {
+	private getCamera(): THREE.PerspectiveCamera {
 		const aspect = window.innerWidth / window.innerHeight;
 		const d = this.zoom;
 
-		const camera = new THREE.OrthographicCamera(-d * aspect, d * aspect, d * 1.33, -d, NearPlane, FarPlane);
+		const camera = new THREE.PerspectiveCamera(FieldOfView, aspect, NearPlane, FarPlane);
 		camera.position.set(-d, d, d);
 		camera.lookAt(0, 0, 0);
 
