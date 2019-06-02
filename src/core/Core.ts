@@ -70,7 +70,6 @@ export default class Core {
 		}
 
 		if (this._nextState === CoreState.Load) {
-			this.beforeLoad();
 			this.load();
 
 			this._state = this._nextState;
@@ -79,7 +78,6 @@ export default class Core {
 		}
 
 		if (this._nextState === CoreState.Init) {
-			this.beforeInit();
 			this.init();
 
 			this._state = this._nextState;
@@ -88,41 +86,22 @@ export default class Core {
 		}
 
 		if (this._nextState === CoreState.Run) {
-			this.beforeRun();
-
 			this._state = this._nextState;
 			this._nextState = null;
 			return;
 		}
 	}
 
-	private beforeLoad() {
-	}
-
 	private load() {
 		this._assetService.loadAssets().then((assets) => {
-			this.afterLoad(assets);
+			this._assets = assets;
+			this._nextState = CoreState.Init;
 		});
-	}
-
-	private afterLoad(assets: object) {
-		this._assets = assets;
-		this._nextState = CoreState.Init;
-	}
-
-	private beforeInit() {
 	}
 
 	private init() {
 		setTimeout(() => {
-			this.afterInit();
-		}, 1000);
-	}
-
-	private afterInit() {
-		this._nextState = CoreState.Run;
-	}
-
-	private beforeRun() {
+			this._nextState = CoreState.Run;
+		});
 	}
 }

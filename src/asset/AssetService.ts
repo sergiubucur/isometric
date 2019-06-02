@@ -5,7 +5,7 @@ export default class AssetService implements IAssetService {
 		return new Promise((resolve) => {
 			setTimeout(() => {
 				resolve({});
-			}, 1000);
+			});
 		});
 	}
 }
