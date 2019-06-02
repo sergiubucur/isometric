@@ -1,8 +1,9 @@
 import * as THREE from "three";
 
 import ILogger from "./ILogger";
+import IDisposable from "../common/IDisposable";
 
-export default class Logger implements ILogger {
+export default class Logger implements ILogger, IDisposable {
 	private _domElement: HTMLElement;
 	private _logItems: string[];
 	private _bounds: { [key: string]: { min: number, max: number }};
@@ -11,11 +12,12 @@ export default class Logger implements ILogger {
 		this._logItems = [];
 		this._bounds = {};
 
-		this._domElement = document.createElement("div");
 		this.initDomElement();
 	}
 
 	private initDomElement() {
+		this._domElement = document.createElement("div");
+
 		this._domElement.style.color = "#fff";
 		this._domElement.style.fontFamily = "Arial, Helvetica, sans-serif";
 		this._domElement.style.fontSize = "22px";
