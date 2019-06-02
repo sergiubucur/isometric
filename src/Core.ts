@@ -1,11 +1,11 @@
-import ILogger from "../logger/ILogger";
-import IAssetService from "../asset/IAssetService";
-import ICamera from "../camera/ICamera";
-import Camera from "../camera/Camera";
-import IRenderer from "../renderer/IRenderer";
-import Renderer from "../renderer/Renderer";
-import IScene from "../scene/IScene";
-import Scene from "../scene/Scene";
+import ILogger from "./logger/ILogger";
+import IAssetService from "./asset/IAssetService";
+import ICamera from "./camera/ICamera";
+import Camera from "./camera/Camera";
+import IRenderer from "./renderer/IRenderer";
+import Renderer from "./renderer/Renderer";
+import IScene from "./scene/IScene";
+import Scene from "./scene/Scene";
 import CoreState from "./CoreState";
 
 export default class Core {
@@ -115,6 +115,8 @@ export default class Core {
 
 	private init() {
 		this._camera = new Camera();
+		this._camera.setPosition(0, 0, 0);
+
 		this._scene = new Scene();
 		this._renderer = new Renderer();
 

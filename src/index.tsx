@@ -1,6 +1,6 @@
 import Logger from "./logger/Logger";
 import AssetService from "./asset/AssetService";
-import Core from "./core/Core";
+import Core from "./Core";
 import "./index.scss";
 
 const logger = new Logger();
