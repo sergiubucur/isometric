@@ -7,6 +7,7 @@ import IScene from "../scene/IScene";
 import ILogger from "../logger/ILogger";
 
 const Speed = 0.25;
+const TeleportCooldown = 17;
 
 export default class MouseControls implements ICameraControls {
 	private readonly _camera: ICamera;
@@ -18,11 +19,11 @@ export default class MouseControls implements ICameraControls {
 	private _velocity: THREE.Vector3;
 	private _target: THREE.Vector3;
 	private _steps: number;
+	private _teleportCooldown: number;
 	private _mesh: THREE.Mesh;
 	private _pointerMesh: THREE.Mesh;
 	private _pointLight: THREE.PointLight;
 	private _plane: THREE.Plane;
-	private _rightMousePressed: boolean;
 
 	constructor(camera: ICamera, inputTracker: IInputTracker, scene: IScene, logger: ILogger) {
 		this._camera = camera;
@@ -34,8 +35,8 @@ export default class MouseControls implements ICameraControls {
 		this._velocity = new THREE.Vector3();
 		this._target = new THREE.Vector3();
 		this._steps = 0;
+		this._teleportCooldown = 0;
 		this._plane = new THREE.Plane(new THREE.Vector3(0, 1, 0));
-		this._rightMousePressed = false;
 
 		this._camera.setPosition(this._position);
 
@@ -44,10 +45,6 @@ export default class MouseControls implements ICameraControls {
 	}
 
 	update() {
-		if (!this._inputTracker.rightMouseDown) {
-			this._rightMousePressed = false;
-		}
-
 		this.updateMousePosition();
 		this.updateZoomLevel();
 		this.move();
@@ -67,6 +64,10 @@ export default class MouseControls implements ICameraControls {
 			if (this._steps === 0) {
 				this._position = this._target;
 			}
+		}
+
+		if (this._teleportCooldown > 0) {
+			this._teleportCooldown--;
 		}
 	}
 
@@ -88,9 +89,8 @@ export default class MouseControls implements ICameraControls {
 		if (this._inputTracker.leftMouseDown) {
 			this.handleLeftClick(mousePosition);
 		}
-		if (this._inputTracker.rightMouseDown && !this._rightMousePressed) {
+		if (this._inputTracker.rightMouseDown) {
 			this.handleRightClick(mousePosition);
-			this._rightMousePressed = true;
 		}
 
 		this._pointerMesh.position.set(mousePosition.x, 0.05, mousePosition.y);
@@ -104,11 +104,14 @@ export default class MouseControls implements ICameraControls {
 	}
 
 	private handleRightClick(mousePosition: THREE.Vector2) {
-		this._steps = 0;
+		if (this._teleportCooldown === 0) {
+			this._steps = 0;
+			this._teleportCooldown = TeleportCooldown;
 
-		this._position.set(mousePosition.x, 0, mousePosition.y);
-		this._camera.setPosition(this._position);
-		this.updateMeshPosition();
+			this._position.set(mousePosition.x, 0, mousePosition.y);
+			this._camera.setPosition(this._position);
+			this.updateMeshPosition();
+		}
 	}
 
 	private updateZoomLevel() {
