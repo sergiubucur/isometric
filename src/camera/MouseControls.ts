@@ -15,6 +15,7 @@ export default class MouseControls implements ICameraControls {
 	private _position: THREE.Vector3;
 	private _mesh: THREE.Mesh;
 	private _pointLight: THREE.PointLight;
+	private _plane: THREE.Plane;
 
 	constructor(camera: ICamera, inputTracker: IInputTracker, scene: IScene, logger: ILogger) {
 		this._camera = camera;
@@ -23,6 +24,7 @@ export default class MouseControls implements ICameraControls {
 		this._logger = logger;
 
 		this._position = new THREE.Vector3(16, 0, 16);
+		this._plane = new THREE.Plane(new THREE.Vector3(0, 1, 0));
 
 		this._camera.setPosition(this._position);
 
@@ -30,6 +32,8 @@ export default class MouseControls implements ICameraControls {
 	}
 
 	update() {
+		this.updateMousePosition();
+
 		let zoomVelocity = this._inputTracker.wheelEvents.reduce((a, x) => a + x, 0);
 		if (zoomVelocity !== 0) {
 			this._camera.setZoom(this._camera.zoom + (zoomVelocity * 2));
@@ -37,6 +41,32 @@ export default class MouseControls implements ICameraControls {
 
 		this._logger.logVector3("position", this._position);
 		this._logger.logNumber("zoom", this._camera.zoom);
+	}
+
+	private updateMousePosition() {
+		const mouseX = (this._inputTracker.mouseX / window.innerWidth) * 2 - 1;
+		const mouseY = -(this._inputTracker.mouseY / window.innerHeight) * 2 + 1;
+
+		const raycaster = new THREE.Raycaster();
+		raycaster.setFromCamera({ x: mouseX, y: mouseY }, this._camera.camera);
+
+		const position = new THREE.Vector3();
+		raycaster.ray.intersectPlane(this._plane, position);
+
+		const gridPosition = new THREE.Vector2(
+			Math.round(position.x),
+			Math.round(position.z)
+		);
+
+		this._logger.logVector2("gridPosition", gridPosition);
+
+		if (this._inputTracker.leftMouseDown) {
+			this._position.x = gridPosition.x;
+			this._position.z = gridPosition.y;
+
+			// this._camera.setPosition(this._position);
+			this.updateMeshPosition();
+		}
 	}
 
 	private initMesh() {
