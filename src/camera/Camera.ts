@@ -19,7 +19,7 @@ export default class Camera implements ICamera {
 	zoom: number;
 
 	constructor() {
-		this.zoom = 16;
+		this.zoom = MaxZoom;
 		this._position = new THREE.Vector3(0, 0, 0);
 
 		this._camera = this.getCamera();
@@ -47,7 +47,7 @@ export default class Camera implements ICamera {
 		const aspect = window.innerWidth / window.innerHeight;
 		const d = this.zoom;
 
-		const camera = new THREE.OrthographicCamera(-d * aspect, d * aspect, d, -d, NearPlane, FarPlane);
+		const camera = new THREE.OrthographicCamera(-d * aspect, d * aspect, d * 1.33, -d, NearPlane, FarPlane);
 		camera.position.set(-d, d, d);
 		camera.lookAt(0, 0, 0);
 
