@@ -47,6 +47,10 @@ export default class Logger implements ILogger, IDisposable {
 		this._logItems.push(`${name}: ${number.toFixed(digits)}`);
 	}
 
+	logVector2(name: string, vector2: THREE.Vector2, digits = 2) {
+		this._logItems.push(`${name}: ${vector2.x.toFixed(digits)} ${vector2.y.toFixed(digits)}`);
+	}
+
 	logVector3(name: string, vector3: THREE.Vector3, digits = 2) {
 		this._logItems.push(`${name}: ${vector3.x.toFixed(digits)} ${vector3.y.toFixed(digits)} ${vector3.z.toFixed(digits)}`);
 	}

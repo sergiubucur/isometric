@@ -21,7 +21,7 @@ export default class Scene implements IScene {
 			for (let y = 0; y <= n; y++) {
 				for (let x = 0; x <= n; x++) {
 					const mesh = new THREE.Mesh(geometry, material);
-					mesh.position.set(x, -1, y);
+					mesh.position.set(x, -0.5, y);
 					this.scene.add(mesh);
 				}
 			}

@@ -78,7 +78,7 @@ export default class TankControls implements ITankControls {
 
 		this._mesh = new THREE.Mesh(geometry, material);
 		this._pointLight = new THREE.PointLight(0xbada55, 3, 5);
-		this._pointLight.position.set(0, 1.5, 0);
+		this._pointLight.position.set(0, 0.5, 0);
 		this._mesh.add(this._pointLight);
 
 		this.updateMeshPosition();
@@ -88,6 +88,6 @@ export default class TankControls implements ITankControls {
 
 	private updateMeshPosition() {
 		this._mesh.position.copy(this._position);
-		this._mesh.position.y += 1.5;
+		this._mesh.position.y += 2;
 	}
 }
