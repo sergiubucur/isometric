@@ -22,6 +22,7 @@ export default class MouseControls implements ICameraControls {
 	private _pointerMesh: THREE.Mesh;
 	private _pointLight: THREE.PointLight;
 	private _plane: THREE.Plane;
+	private _rightMousePressed: boolean;
 
 	constructor(camera: ICamera, inputTracker: IInputTracker, scene: IScene, logger: ILogger) {
 		this._camera = camera;
@@ -34,6 +35,7 @@ export default class MouseControls implements ICameraControls {
 		this._target = new THREE.Vector3();
 		this._steps = 0;
 		this._plane = new THREE.Plane(new THREE.Vector3(0, 1, 0));
+		this._rightMousePressed = false;
 
 		this._camera.setPosition(this._position);
 
@@ -42,9 +44,20 @@ export default class MouseControls implements ICameraControls {
 	}
 
 	update() {
+		if (!this._inputTracker.rightMouseDown) {
+			this._rightMousePressed = false;
+		}
+
 		this.updateMousePosition();
 		this.updateZoomLevel();
+		this.move();
 
+		this._logger.logVector3("position", this._position);
+		this._logger.logNumber("zoom", this._camera.zoom);
+		this._logger.logNumber("steps", this._steps);
+	}
+
+	private move() {
 		if (this._steps > 0) {
 			this._position.add(this._velocity);
 			this._camera.setPosition(this._position);
@@ -55,10 +68,6 @@ export default class MouseControls implements ICameraControls {
 				this._position = this._target;
 			}
 		}
-
-		this._logger.logVector3("position", this._position);
-		this._logger.logNumber("zoom", this._camera.zoom);
-		this._logger.logNumber("steps", this._steps);
 	}
 
 	private updateMousePosition() {
@@ -72,18 +81,34 @@ export default class MouseControls implements ICameraControls {
 		raycaster.ray.intersectPlane(this._plane, position);
 
 		const mousePosition = new THREE.Vector2(
-			Math.round(position.x),
-			Math.round(position.z)
+			THREE.Math.clamp(Math.round(position.x), 0, 32),
+			THREE.Math.clamp(Math.round(position.z), 0, 32)
 		);
+
+		if (this._inputTracker.leftMouseDown) {
+			this.handleLeftClick(mousePosition);
+		}
+		if (this._inputTracker.rightMouseDown && !this._rightMousePressed) {
+			this.handleRightClick(mousePosition);
+			this._rightMousePressed = true;
+		}
 
 		this._pointerMesh.position.set(mousePosition.x, 0.05, mousePosition.y);
 		this._logger.logVector2("gridPosition", mousePosition);
+	}
 
-		if (this._inputTracker.leftMouseDown) {
-			this._target = new THREE.Vector3(mousePosition.x, 0, mousePosition.y);
-			this._velocity.copy(this._target).sub(this._position).normalize().multiplyScalar(Speed);
-			this._steps = Math.ceil(this._target.clone().sub(this._position).length() / Speed);
-		}
+	private handleLeftClick(mousePosition: THREE.Vector2) {
+		this._target = new THREE.Vector3(mousePosition.x, 0, mousePosition.y);
+		this._velocity.copy(this._target).sub(this._position).normalize().multiplyScalar(Speed);
+		this._steps = Math.ceil(this._target.clone().sub(this._position).length() / Speed);
+	}
+
+	private handleRightClick(mousePosition: THREE.Vector2) {
+		this._steps = 0;
+
+		this._position.set(mousePosition.x, 0, mousePosition.y);
+		this._camera.setPosition(this._position);
+		this.updateMeshPosition();
 	}
 
 	private updateZoomLevel() {
