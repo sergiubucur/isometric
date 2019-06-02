@@ -13,15 +13,17 @@ export default class Scene implements IScene {
 		return new Promise((resolve) => {
 			this.initLights();
 
-			const geometry = new THREE.BoxBufferGeometry(0.9, 0.9, 0.9);
-			const material = new THREE.MeshPhongMaterial({ color: new THREE.Color(0.13, 0.16, 0.19) });
+			const geometry = new THREE.PlaneBufferGeometry();
+			const material1 = new THREE.MeshPhongMaterial({ color: new THREE.Color(0.13, 0.16, 0.19) });
+			const material2 = new THREE.MeshPhongMaterial({ color: new THREE.Color(0.23, 0.26, 0.29) });
 
 			const n = 32;
 
 			for (let y = 0; y <= n; y++) {
 				for (let x = 0; x <= n; x++) {
-					const mesh = new THREE.Mesh(geometry, material);
-					mesh.position.set(x, -0.5, y);
+					const mesh = new THREE.Mesh(geometry, (x + y) % 2 === 0 ? material1 : material2);
+					mesh.position.set(x, 0, y);
+					mesh.rotation.x = -Math.PI / 2;
 					this.scene.add(mesh);
 				}
 			}
