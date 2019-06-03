@@ -4,35 +4,38 @@ import IScene from "./IScene";
 import TestMap from "./TestMap";
 import CellType from "./CellType";
 
+const WallHeight = 2;
+
 export default class Scene implements IScene {
 	readonly scene: THREE.Scene;
-
 	map: any;
 	mapSize: number;
 
+	private _geometries: { [key: string]: THREE.BufferGeometry };
+	private _materials: { [key: string]: THREE.Material };
+
 	constructor() {
 		this.scene = new THREE.Scene();
+		this._geometries = {};
+		this._materials = {};
 	}
 
 	init(): Promise<void> {
 		return new Promise((resolve) => {
 			this.loadMap();
 			this.initLights();
-
-			const geometry = new THREE.PlaneBufferGeometry();
-			const material1 = new THREE.MeshPhongMaterial({ color: new THREE.Color(0.13, 0.16, 0.19) });
-			const material2 = new THREE.MeshPhongMaterial({ color: new THREE.Color(0.23, 0.26, 0.29) });
+			this.initGeometriesAndMaterials();
 
 			for (let y = 0; y < this.mapSize; y++) {
 				for (let x = 0; x < this.mapSize; x++) {
 					const cell = this.map[y][x];
-					if (cell.type === CellType.Void) {
-						continue;
-					}
 
-					const mesh = new THREE.Mesh(geometry, (x + y) % 2 === 0 ? material1 : material2);
-					mesh.position.set(x, 0, y);
-					mesh.rotation.x = -Math.PI / 2;
+					let mesh;
+					if (cell.type === CellType.EmptyFloor) {
+						mesh = this.getEmptyFloorCellMesh(cell, x, y);
+					} else {
+						mesh = this.getVoidCellMesh(cell, x, y);
+					}
 
 					this.scene.add(mesh);
 				}
@@ -54,6 +57,18 @@ export default class Scene implements IScene {
 		const dirLight = new THREE.DirectionalLight(new THREE.Color(1, 0.85, 0.7));
 		dirLight.position.set(-0.25, 0.5, -0.75).normalize();
 		this.scene.add(dirLight);
+	}
+
+	private initGeometriesAndMaterials() {
+		this._geometries.concrete = new THREE.PlaneBufferGeometry();
+
+		this._materials.floorConcrete = new THREE.MeshPhongMaterial({ color: new THREE.Color(0.5, 0.5, 0.5) });
+		this._materials.ceilingConcrete = new THREE.MeshPhongMaterial({ color: new THREE.Color(0.25, 0.25, 0.25) });
+		this._materials.wallConcrete = new THREE.MeshPhongMaterial({ color: new THREE.Color(0.25, 0.25, 0.25) });
+
+		this._materials.translucentWallConcrete = new THREE.MeshPhongMaterial({ color: new THREE.Color(0.25, 0.25, 0.25) });
+		this._materials.translucentWallConcrete.opacity = 0.5;
+		this._materials.translucentWallConcrete.transparent = true;
 	}
 
 	private loadMap() {
@@ -101,5 +116,86 @@ export default class Scene implements IScene {
 		mapPosition.z = THREE.Math.clamp(Math[method](mapPosition.z), 0, this.mapSize - 1);
 
 		return mapPosition;
+	}
+
+	private getEmptyFloorCellMesh(cell: object, x: number, y: number): THREE.Object3D {
+		const cellMesh = new THREE.Object3D();
+		cellMesh.position.set(x, 0, y);
+
+		const floorMesh = new THREE.Mesh(this._geometries.concrete, this._materials.floorConcrete);
+		floorMesh.rotation.x = -Math.PI / 2;
+		cellMesh.add(floorMesh);
+
+		const topAdjacentCell = this.getCell(x, y - 1);
+
+		if (!topAdjacentCell || topAdjacentCell.type === CellType.Void) {
+			const topWallMesh = new THREE.Mesh(this._geometries.concrete, this._materials.wallConcrete);
+
+			topWallMesh.scale.set(1, WallHeight, 1);
+			topWallMesh.position.z -= 0.5;
+			topWallMesh.position.y = WallHeight / 2;
+
+			cellMesh.add(topWallMesh);
+		}
+
+		const rightAdjacentCell = this.getCell(x + 1, y);
+
+		if (!rightAdjacentCell || rightAdjacentCell.type === CellType.Void) {
+			const rightWallMesh = new THREE.Mesh(this._geometries.concrete, this._materials.wallConcrete);
+
+			rightWallMesh.scale.set(1, WallHeight, 1);
+			rightWallMesh.position.x += 0.5;
+			rightWallMesh.position.y = WallHeight / 2;
+			rightWallMesh.rotation.y = -Math.PI / 2;
+
+			cellMesh.add(rightWallMesh);
+		}
+
+		// const bottomAdjacentCell = this.getCell(x, y + 1);
+
+		// if (!bottomAdjacentCell || bottomAdjacentCell.type === CellType.Void) {
+		// 	const bottomWallMesh = new THREE.Mesh(this._geometries.concrete, this._materials.translucentWallConcrete);
+
+		// 	bottomWallMesh.scale.set(1, WallHeight, 1);
+		// 	bottomWallMesh.position.z += 0.5;
+		// 	bottomWallMesh.position.y = WallHeight / 2;
+
+		// 	cellMesh.add(bottomWallMesh);
+		// }
+
+		// const leftAdjacentCell = this.getCell(x - 1, y);
+
+		// if (!leftAdjacentCell || leftAdjacentCell.type === CellType.Void) {
+		// 	const leftWallMesh = new THREE.Mesh(this._geometries.concrete, this._materials.translucentWallConcrete);
+
+		// 	leftWallMesh.scale.set(1, WallHeight, 1);
+		// 	leftWallMesh.position.x -= 0.5;
+		// 	leftWallMesh.position.y = WallHeight / 2;
+		// 	leftWallMesh.rotation.y = -Math.PI / 2;
+
+		// 	cellMesh.add(leftWallMesh);
+		// }
+
+		return cellMesh;
+	}
+
+	private getVoidCellMesh(cell: object, x: number, y: number): THREE.Object3D {
+		const cellMesh = new THREE.Object3D();
+		cellMesh.position.set(x, 0, y);
+
+		const ceiling = new THREE.Mesh(this._geometries.concrete, this._materials.ceilingConcrete);
+		ceiling.position.y = WallHeight;
+		ceiling.rotation.x = -Math.PI / 2;
+		cellMesh.add(ceiling);
+
+		return cellMesh;
+	}
+
+	private getCell(x: number, y: number): any | null {
+		if (x >= 0 && x < this.mapSize && y >= 0 && y < this.mapSize) {
+			return this.map[y][x];
+		}
+
+		return null;
 	}
 }

@@ -160,6 +160,8 @@ export default class MouseControls implements ICameraControls {
 	private initPointerMesh() {
 		const geometry = new THREE.BoxBufferGeometry();
 		const material = new THREE.MeshPhongMaterial({ color: 0xbada55 });
+		material.opacity = 0.5;
+		material.transparent = true;
 
 		this._pointerMesh = new THREE.Mesh(geometry, material);
 		this._pointerMesh.scale.set(1, 0.1, 1);
