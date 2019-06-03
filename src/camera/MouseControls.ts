@@ -79,6 +79,8 @@ export default class MouseControls implements ICameraControls {
 		if (this._teleportCooldown > 0) {
 			this._teleportCooldown--;
 		}
+
+		this._logger.logNumber("teleportCooldown", this._teleportCooldown);
 	}
 
 	private updateMousePosition() {
