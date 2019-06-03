@@ -5,6 +5,8 @@ import TestMap from "./TestMap";
 import CellType from "./CellType";
 
 const WallHeight = 2;
+const FloorColor = new THREE.Color(0.5, 0.5, 0.5);
+const WallColor = new THREE.Color(0.35, 0.35, 0.35);
 
 export default class Scene implements IScene {
 	readonly scene: THREE.Scene;
@@ -62,11 +64,11 @@ export default class Scene implements IScene {
 	private initGeometriesAndMaterials() {
 		this._geometries.concrete = new THREE.PlaneBufferGeometry();
 
-		this._materials.floorConcrete = new THREE.MeshPhongMaterial({ color: new THREE.Color(0.5, 0.5, 0.5) });
-		this._materials.ceilingConcrete = new THREE.MeshPhongMaterial({ color: new THREE.Color(0.25, 0.25, 0.25) });
-		this._materials.wallConcrete = new THREE.MeshPhongMaterial({ color: new THREE.Color(0.25, 0.25, 0.25) });
+		this._materials.floorConcrete = new THREE.MeshPhongMaterial({ color: FloorColor });
+		this._materials.ceilingConcrete = new THREE.MeshPhongMaterial({ color: WallColor });
+		this._materials.wallConcrete = new THREE.MeshPhongMaterial({ color: WallColor });
 
-		this._materials.translucentWallConcrete = new THREE.MeshPhongMaterial({ color: new THREE.Color(0.25, 0.25, 0.25) });
+		this._materials.translucentWallConcrete = new THREE.MeshPhongMaterial({ color: WallColor });
 		this._materials.translucentWallConcrete.opacity = 0.5;
 		this._materials.translucentWallConcrete.transparent = true;
 	}
@@ -89,7 +91,7 @@ export default class Scene implements IScene {
 						cell.type = CellType.Void;
 						break;
 
-					case "[]":
+					case "AB":
 						cell.type = CellType.EmptyFloor;
 						break;
 
