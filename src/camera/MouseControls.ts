@@ -5,6 +5,7 @@ import ICamera from "./ICamera";
 import IInputTracker from "../input-tracker/IInputTracker";
 import IScene from "../scene/IScene";
 import ILogger from "../logger/ILogger";
+import CellType from "../scene/CellType";
 
 const Speed = 0.25;
 const TeleportCooldown = 17;
@@ -16,6 +17,7 @@ export default class MouseControls implements ICameraControls {
 	private readonly _logger: ILogger;
 
 	private _position: THREE.Vector3;
+	private _mapPosition: THREE.Vector3;
 	private _velocity: THREE.Vector3;
 	private _target: THREE.Vector3;
 	private _steps: number;
@@ -31,7 +33,8 @@ export default class MouseControls implements ICameraControls {
 		this._scene = scene;
 		this._logger = logger;
 
-		this._position = new THREE.Vector3(16, 0, 16);
+		this._position = new THREE.Vector3(Math.floor(this._scene.mapSize / 2), 0, Math.floor(this._scene.mapSize / 2));
+		this._mapPosition = this._position.clone();
 		this._velocity = new THREE.Vector3();
 		this._target = new THREE.Vector3();
 		this._steps = 0;
@@ -56,13 +59,20 @@ export default class MouseControls implements ICameraControls {
 
 	private move() {
 		if (this._steps > 0) {
-			this._position.add(this._velocity);
-			this._camera.setPosition(this._position);
-			this.updateMeshPosition();
+			const nextMapPosition = this._scene.convertToMapPosition(this._position.clone().add(this._velocity));
+			const nextCell = this._scene.map[nextMapPosition.z][nextMapPosition.x];
 
-			this._steps--;
-			if (this._steps === 0) {
-				this._position = this._target;
+			if (nextCell.type === CellType.EmptyFloor) {
+				this._position.add(this._velocity);
+				this.updatePosition();
+
+				this._steps--;
+				if (this._steps === 0) {
+					this.updatePosition(this._target);
+				}
+			} else {
+				this._steps = 0;
+				this.updatePosition(this._mapPosition);
 			}
 		}
 
@@ -78,13 +88,10 @@ export default class MouseControls implements ICameraControls {
 		const raycaster = new THREE.Raycaster();
 		raycaster.setFromCamera({ x: mouseX, y: mouseY }, this._camera.camera);
 
-		const position = new THREE.Vector3();
-		raycaster.ray.intersectPlane(this._plane, position);
+		let mousePosition = new THREE.Vector3();
+		raycaster.ray.intersectPlane(this._plane, mousePosition);
 
-		const mousePosition = new THREE.Vector2(
-			THREE.Math.clamp(Math.round(position.x), 0, 32),
-			THREE.Math.clamp(Math.round(position.z), 0, 32)
-		);
+		mousePosition = this._scene.convertToMapPosition(mousePosition, true);
 
 		if (this._inputTracker.leftMouseDown) {
 			this.handleLeftClick(mousePosition);
@@ -93,25 +100,40 @@ export default class MouseControls implements ICameraControls {
 			this.handleRightClick(mousePosition);
 		}
 
-		this._pointerMesh.position.set(mousePosition.x, 0.05, mousePosition.y);
-		this._logger.logVector2("gridPosition", mousePosition);
+		this._pointerMesh.position.set(mousePosition.x, 0.05, mousePosition.z);
+		this._logger.logVector3("mousePosition", mousePosition);
 	}
 
-	private handleLeftClick(mousePosition: THREE.Vector2) {
-		this._target = new THREE.Vector3(mousePosition.x, 0, mousePosition.y);
+	private handleLeftClick(mousePosition: THREE.Vector3) {
+		this._target.copy(mousePosition);
 		this._velocity.copy(this._target).sub(this._position).normalize().multiplyScalar(Speed);
 		this._steps = Math.ceil(this._target.clone().sub(this._position).length() / Speed);
 	}
 
-	private handleRightClick(mousePosition: THREE.Vector2) {
+	private handleRightClick(mousePosition: THREE.Vector3) {
 		if (this._teleportCooldown === 0) {
 			this._steps = 0;
 			this._teleportCooldown = TeleportCooldown;
 
-			this._position.set(mousePosition.x, 0, mousePosition.y);
-			this._camera.setPosition(this._position);
-			this.updateMeshPosition();
+			const nextCell = this._scene.map[mousePosition.z][mousePosition.x];
+			if (nextCell.type === CellType.EmptyFloor) {
+				this.updatePosition(mousePosition);
+			}
 		}
+	}
+
+	private updatePosition(v?: THREE.Vector3 | number, y?: number, z?: number) {
+		if (v !== undefined) {
+			if (v instanceof THREE.Vector3) {
+				this._position.copy(v);
+			} else {
+				this._position.set(v, y, z);
+			}
+		}
+
+		this._mapPosition = this._scene.convertToMapPosition(this._position);
+		this._camera.setPosition(this._position);
+		this.updateMeshPosition();
 	}
 
 	private updateZoomLevel() {

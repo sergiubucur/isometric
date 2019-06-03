@@ -126,9 +126,10 @@ export default class Core {
 		this._camera = new Camera();
 		this._scene = new Scene();
 		this._renderer = new Renderer();
-		this._cameraControls = new MouseControls(this._camera, this._inputTracker, this._scene, this._logger);
 
 		this._scene.init().then(() => {
+			this._cameraControls = new MouseControls(this._camera, this._inputTracker, this._scene, this._logger);
+
 			this._nextState = CoreState.Run;
 		});
 	}
