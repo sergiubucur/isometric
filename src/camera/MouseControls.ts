@@ -93,7 +93,7 @@ export default class MouseControls implements ICameraControls {
 		let mousePosition = new THREE.Vector3();
 		raycaster.ray.intersectPlane(this._plane, mousePosition);
 
-		mousePosition = this._scene.convertToMapPosition(mousePosition, true);
+		mousePosition = this._scene.convertToMapPosition(mousePosition);
 
 		if (this._inputTracker.leftMouseDown) {
 			this.handleLeftClick(mousePosition);

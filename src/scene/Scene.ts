@@ -109,7 +109,7 @@ export default class Scene implements IScene {
 		this.mapSize = mapSize;
 	}
 
-	convertToMapPosition(position: THREE.Vector3, round = false): THREE.Vector3 {
+	convertToMapPosition(position: THREE.Vector3, round = true): THREE.Vector3 {
 		const mapPosition = position.clone();
 
 		const method = round ? "round" : "floor";
