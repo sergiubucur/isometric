@@ -1,15 +1,15 @@
 import ILogger from "./logger/ILogger";
 import IAssetService from "./asset/IAssetService";
+import IComponent from "./common/IComponent";
 import ICamera from "./camera/ICamera";
 import Camera from "./camera/Camera";
 import IRenderer from "./renderer/IRenderer";
 import Renderer from "./renderer/Renderer";
-import IScene from "./scene/IScene";
-import Scene from "./scene/Scene";
+import IWorldComponent from "./world/IWorldComponent";
+import IWorld from "./world/IWorld";
+import World from "./world/World";
 import CoreState from "./CoreState";
 import IInputTracker from "./input-tracker/IInputTracker";
-import ICameraControls from "./camera/ICameraControls";
-// import KeyboardControls from "./camera/KeyboardControls";
 import MouseControls from "./camera/MouseControls";
 
 export default class Core {
@@ -21,9 +21,9 @@ export default class Core {
 	private _state: CoreState;
 	private _nextState: CoreState | null;
 	private _camera: ICamera | null;
-	private _scene: IScene | null;
+	private _world: IWorldComponent | null;
 	private _renderer: IRenderer | null;
-	private _cameraControls: ICameraControls | null;
+	private _cameraControls: IComponent | null;
 
 	constructor(logger: ILogger, assetService: IAssetService, inputTracker: IInputTracker) {
 		this._logger = logger;
@@ -34,7 +34,7 @@ export default class Core {
 		this._state = CoreState.None;
 		this._nextState = null;
 		this._camera = null;
-		this._scene = null;
+		this._world = null;
 		this._renderer = null;
 		this._cameraControls = null;
 
@@ -65,7 +65,7 @@ export default class Core {
 				break;
 
 			case CoreState.Run:
-				this._scene.update();
+				this._world.update();
 				this._cameraControls.update();
 				break;
 		}
@@ -82,7 +82,7 @@ export default class Core {
 				break;
 
 			case CoreState.Run:
-				this._renderer.render(this._scene.scene, this._camera.camera);
+				this._renderer.render(this._world.scene, this._camera.camera);
 				break;
 		}
 	}
@@ -124,12 +124,11 @@ export default class Core {
 
 	private init() {
 		this._camera = new Camera();
-		this._scene = new Scene();
+		this._world = new World();
 		this._renderer = new Renderer();
 
-		this._scene.init().then(() => {
-			this._cameraControls = new MouseControls(this._camera, this._inputTracker, this._scene, this._logger);
-
+		this._world.init().then(() => {
+			this._cameraControls = new MouseControls(this._camera, this._inputTracker, this._world as unknown as IWorld, this._logger);
 			this._nextState = CoreState.Run;
 		});
 	}

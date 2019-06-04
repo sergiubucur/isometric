@@ -1,19 +1,20 @@
 import * as THREE from "three";
 
-import ICameraControls from "./ICameraControls";
+import IComponent from "../common/IComponent";
 import ICamera from "./ICamera";
 import IInputTracker from "../input-tracker/IInputTracker";
-import IScene from "../scene/IScene";
+import IWorldComponent from "../world/IWorldComponent";
+import IWorld from "../world/IWorld";
 import ILogger from "../logger/ILogger";
-import CellType from "../scene/CellType";
+import CellType from "../world/map/CellType";
 
 const Speed = 0.25;
 const TeleportCooldown = 17;
 
-export default class MouseControls implements ICameraControls {
+export default class MouseControls implements IComponent {
 	private readonly _camera: ICamera;
 	private readonly _inputTracker: IInputTracker;
-	private readonly _scene: IScene;
+	private readonly _world: IWorld;
 	private readonly _logger: ILogger;
 
 	private _position: THREE.Vector3;
@@ -27,13 +28,13 @@ export default class MouseControls implements ICameraControls {
 	private _pointLight: THREE.PointLight;
 	private _plane: THREE.Plane;
 
-	constructor(camera: ICamera, inputTracker: IInputTracker, scene: IScene, logger: ILogger) {
+	constructor(camera: ICamera, inputTracker: IInputTracker, world: IWorld, logger: ILogger) {
 		this._camera = camera;
 		this._inputTracker = inputTracker;
-		this._scene = scene;
+		this._world = world;
 		this._logger = logger;
 
-		this._position = new THREE.Vector3(Math.floor(this._scene.mapSize / 2), 0, Math.floor(this._scene.mapSize / 2));
+		this._position = new THREE.Vector3(Math.floor(this._world.map.size / 2), 0, Math.floor(this._world.map.size / 2));
 		this._mapPosition = this._position.clone();
 		this._velocity = new THREE.Vector3();
 		this._target = new THREE.Vector3();
@@ -59,8 +60,12 @@ export default class MouseControls implements ICameraControls {
 
 	private move() {
 		if (this._steps > 0) {
-			const nextMapPosition = this._scene.convertToMapPosition(this._position.clone().add(this._velocity));
-			const nextCell = this._scene.map[nextMapPosition.z][nextMapPosition.x];
+			const nextMapPosition = this._world.map.convertToMapPosition(this._position.clone().add(this._velocity));
+			const nextCell = this._world.map.getCell(nextMapPosition.x, nextMapPosition.z);
+
+			if (!nextCell) {
+				throw new Error("nextCell is null");
+			}
 
 			if (nextCell.type === CellType.EmptyFloor) {
 				this._position.add(this._velocity);
@@ -93,7 +98,7 @@ export default class MouseControls implements ICameraControls {
 		let mousePosition = new THREE.Vector3();
 		raycaster.ray.intersectPlane(this._plane, mousePosition);
 
-		mousePosition = this._scene.convertToMapPosition(mousePosition);
+		mousePosition = this._world.map.convertToMapPosition(mousePosition);
 
 		if (this._inputTracker.leftMouseDown) {
 			this.handleLeftClick(mousePosition);
@@ -117,7 +122,12 @@ export default class MouseControls implements ICameraControls {
 			this._steps = 0;
 			this._teleportCooldown = TeleportCooldown;
 
-			const nextCell = this._scene.map[mousePosition.z][mousePosition.x];
+			const nextCell = this._world.map.getCell(mousePosition.x, mousePosition.z);
+
+			if (!nextCell) {
+				throw new Error("nextCell is null");
+			}
+
 			if (nextCell.type === CellType.EmptyFloor) {
 				this.updatePosition(mousePosition);
 			}
@@ -133,7 +143,7 @@ export default class MouseControls implements ICameraControls {
 			}
 		}
 
-		this._mapPosition = this._scene.convertToMapPosition(this._position);
+		this._mapPosition = this._world.map.convertToMapPosition(this._position);
 		this._camera.setPosition(this._position);
 		this.updateMeshPosition();
 	}
@@ -156,7 +166,7 @@ export default class MouseControls implements ICameraControls {
 
 		this.updateMeshPosition();
 
-		this._scene.scene.add(this._mesh);
+		(this._world as unknown as IWorldComponent).scene.add(this._mesh);
 	}
 
 	private initPointerMesh() {
@@ -168,7 +178,7 @@ export default class MouseControls implements ICameraControls {
 		this._pointerMesh = new THREE.Mesh(geometry, material);
 		this._pointerMesh.scale.set(1, 0.1, 1);
 
-		this._scene.scene.add(this._pointerMesh);
+		(this._world as unknown as IWorldComponent).scene.add(this._pointerMesh);
 	}
 
 	private updateMeshPosition() {
