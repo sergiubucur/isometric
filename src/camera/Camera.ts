@@ -21,35 +21,23 @@ export default class Camera implements ICamera {
 		this.zoom = MaxZoom;
 		this._position = new THREE.Vector3(0, 0, 0);
 
-		this._camera = this.getCamera();
+		this._camera = new THREE.PerspectiveCamera(FieldOfView, window.innerWidth / window.innerHeight, NearPlane, FarPlane);
+		this._camera.position.set(-this.zoom, this.zoom, this.zoom);
+		this._camera.lookAt(0, 0, 0);
 	}
 
 	setPosition(v: THREE.Vector3 | number, y?: number, z?: number) {
-		const d = this.zoom;
-
 		if (v instanceof THREE.Vector3) {
-			this._camera.position.set(-d + v.x, d + v.y, d + v.z);
+			this._camera.position.set(-this.zoom + v.x, this.zoom + v.y, this.zoom + v.z);
 			this._position.copy(v);
 		} else {
-			this._camera.position.set(-d + v, d + y, d + z);
+			this._camera.position.set(-this.zoom + v, this.zoom + y, this.zoom + z);
 			this._position.set(v, y, z);
 		}
 	}
 
 	setZoom(value: number) {
 		this.zoom = THREE.Math.clamp(value, MinZoom, MaxZoom);
-		this._camera = this.getCamera();
 		this.setPosition(this._position);
-	}
-
-	private getCamera() {
-		const aspect = window.innerWidth / window.innerHeight;
-		const d = this.zoom;
-
-		const camera = new THREE.PerspectiveCamera(FieldOfView, aspect, NearPlane, FarPlane);
-		camera.position.set(-d, d, d);
-		camera.lookAt(0, 0, 0);
-
-		return camera;
 	}
 }
