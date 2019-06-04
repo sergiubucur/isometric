@@ -42,7 +42,7 @@ export default class Camera implements ICamera {
 		this.setPosition(this._position);
 	}
 
-	private getCamera(): THREE.PerspectiveCamera {
+	private getCamera() {
 		const aspect = window.innerWidth / window.innerHeight;
 		const d = this.zoom;
 
