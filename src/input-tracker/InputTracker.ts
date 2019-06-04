@@ -1,5 +1,11 @@
 import IInputTracker from "./IInputTracker";
 
+const ButtonMapping: { [key: number]: string } = {
+	0: "left",
+	1: "middle",
+	2: "right"
+};
+
 export default class InputTracker implements IInputTracker {
 	keysPressed: { [key: number]: boolean };
 	ctrlKey: boolean;
@@ -54,35 +60,15 @@ export default class InputTracker implements IInputTracker {
 		});
 
 		document.addEventListener("mousedown", (e) => {
-			switch (e.button) {
-				case 0:
-					this.leftMouseDown = true;
-					break;
+			const that: any = this;
 
-				case 1:
-					this.middleMouseDown = true;
-					break;
-
-				case 2:
-					this.rightMouseDown = true;
-					break;
-			}
+			that[ButtonMapping[e.button] + "MouseDown"] = true;
 		});
 
 		document.addEventListener("mouseup", (e) => {
-			switch (e.button) {
-				case 0:
-					this.leftMouseDown = false;
-					break;
+			const that: any = this;
 
-				case 1:
-					this.middleMouseDown = false;
-					break;
-
-				case 2:
-					this.rightMouseDown = false;
-					break;
-			}
+			that[ButtonMapping[e.button] + "MouseDown"] = false;
 		});
 
 		document.addEventListener("wheel", (e) => {
