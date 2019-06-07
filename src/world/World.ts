@@ -11,13 +11,7 @@ export default class World implements IWorld, IWorldComponent {
 	readonly scene: THREE.Scene;
 	map: Map;
 
-	private readonly _mapLoader: IMapLoader;
-	private readonly _worldMeshBuilder: IWorldMeshBuilder;
-
-	constructor(mapLoader: IMapLoader, worldMeshBuilder: IWorldMeshBuilder) {
-		this._mapLoader = mapLoader;
-		this._worldMeshBuilder = worldMeshBuilder;
-
+	constructor(private _mapLoader: IMapLoader, private _worldMeshBuilder: IWorldMeshBuilder) {
 		this.scene = new THREE.Scene();
 	}
 

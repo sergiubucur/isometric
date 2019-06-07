@@ -7,23 +7,13 @@ import ILogger from "../../logger/ILogger";
 import IMouseControls from "./IMouseControls";
 
 export default class MouseControls implements IMouseControls {
-	private readonly _camera: ICamera;
-	private readonly _inputTracker: IInputTracker;
-	private readonly _world: IWorld;
-	private readonly _logger: ILogger;
-
 	private _pointerMesh: THREE.Mesh;
 	private _plane: THREE.Plane;
 
 	onLeftClick: (mousePosition: THREE.Vector3) => void;
 	onRightClick: (mousePosition: THREE.Vector3) => void;
 
-	constructor(camera: ICamera, inputTracker: IInputTracker, world: IWorld, logger: ILogger) {
-		this._camera = camera;
-		this._inputTracker = inputTracker;
-		this._world = world;
-		this._logger = logger;
-
+	constructor(private _camera: ICamera, private _inputTracker: IInputTracker, private _world: IWorld, private _logger: ILogger) {
 		this.onLeftClick = () => {};
 		this.onRightClick = () => {};
 

@@ -9,14 +9,6 @@ import IInputTracker from "./input-tracker/IInputTracker";
 import IPlayer from "./player/IPlayer";
 
 export default class Core {
-	private readonly _logger: ILogger;
-	private readonly _assetService: IAssetService;
-	private readonly _inputTracker: IInputTracker;
-	private readonly _cameraFactory: () => ICamera;
-	private readonly _rendererFactory: () => IRenderer;
-	private readonly _worldFactory: () => IWorld & IWorldComponent;
-	private readonly _playerFactory: () => IPlayer;
-
 	private _assets: object | null;
 	private _state: CoreState;
 	private _nextState: CoreState | null;
@@ -25,17 +17,9 @@ export default class Core {
 	private _renderer: IRenderer | null;
 	private _player: IPlayer | null;
 
-	constructor(logger: ILogger, assetService: IAssetService, inputTracker: IInputTracker,
-		cameraFactory: () => ICamera, rendererFactory: () => IRenderer, worldFactory: () => IWorld & IWorldComponent,
-		playerFactory: () => IPlayer) {
-
-		this._logger = logger;
-		this._assetService = assetService;
-		this._inputTracker = inputTracker;
-		this._cameraFactory = cameraFactory;
-		this._rendererFactory = rendererFactory;
-		this._worldFactory = worldFactory;
-		this._playerFactory = playerFactory;
+	constructor(private _logger: ILogger, private _assetService: IAssetService, private _inputTracker: IInputTracker,
+		private _cameraFactory: () => ICamera, private _rendererFactory: () => IRenderer, private _worldFactory: () => IWorld & IWorldComponent,
+		private _playerFactory: () => IPlayer) {
 
 		this._assets = null;
 		this._state = CoreState.None;

@@ -12,12 +12,6 @@ const Speed = 0.25;
 const TeleportCooldown = 17;
 
 export default class Player implements IComponent {
-	private readonly _mouseControls: IMouseControls;
-	private readonly _camera: ICamera;
-	private readonly _inputTracker: IInputTracker;
-	private readonly _world: IWorld;
-	private readonly _logger: ILogger;
-
 	private _position: THREE.Vector3;
 	private _mapPosition: THREE.Vector3;
 	private _velocity: THREE.Vector3;
@@ -27,12 +21,8 @@ export default class Player implements IComponent {
 	private _mesh: THREE.Mesh;
 	private _pointLight: THREE.PointLight;
 
-	constructor(mouseControls: IMouseControls, camera: ICamera, inputTracker: IInputTracker, world: IWorld, logger: ILogger) {
-		this._mouseControls = mouseControls;
-		this._camera = camera;
-		this._inputTracker = inputTracker;
-		this._world = world;
-		this._logger = logger;
+	constructor(private _mouseControls: IMouseControls, private _camera: ICamera, private _inputTracker: IInputTracker,
+		private _world: IWorld, private _logger: ILogger) {
 
 		this._mouseControls.onLeftClick = (mousePosition) => this.handleLeftClick(mousePosition);
 		this._mouseControls.onRightClick = (mousePosition) => this.handleRightClick(mousePosition);
