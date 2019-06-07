@@ -1,9 +1,8 @@
 import * as THREE from "three";
 
 import ILogger from "./ILogger";
-import IDisposable from "../common/IDisposable";
 
-export default class Logger implements ILogger, IDisposable {
+export default class Logger implements ILogger {
 	private _domElement: HTMLElement;
 	private _logItems: string[];
 	private _bounds: { [key: string]: { min: number, max: number }};

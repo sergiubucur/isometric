@@ -1,12 +1,11 @@
 import * as THREE from "three";
 
 import IRenderer from "./IRenderer";
-import IDisposable from "../common/IDisposable";
 
 const HalfSizeRendering = false;
 const AntiAliasing = true;
 
-export default class Renderer implements IRenderer, IDisposable {
+export default class Renderer implements IRenderer {
 	private _renderer: THREE.WebGLRenderer;
 
 	constructor() {
