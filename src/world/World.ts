@@ -5,7 +5,7 @@ import TestMap from "./map/TestMap";
 import IWorldMeshBuilder from "./mesh-builder/IWorldMeshBuilder";
 import IWorld from "./IWorld";
 import IWorldComponent from "./IWorldComponent";
-import IMapLoader from "./map/IMapLoader";
+import IMapLoader from "./map/loader/IMapLoader";
 
 export default class World implements IWorld, IWorldComponent {
 	readonly scene: THREE.Scene;

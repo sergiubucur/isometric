@@ -12,7 +12,7 @@ import IInputTracker from "./input-tracker/IInputTracker";
 import IPlayer from "./player/IPlayer";
 import Player from "./player/Player";
 import MouseControls from "./player/mouse-controls/MouseControls";
-import MapLoader from "./world/map/MapLoader";
+import MapLoader from "./world/map/loader/MapLoader";
 import WorldMeshBuilder from "./world/mesh-builder/WorldMeshBuilder";
 
 export default class Core {

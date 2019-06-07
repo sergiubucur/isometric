@@ -1,6 +1,6 @@
-import Map from "./Map";
-import Cell from "./Cell";
-import CellType from "./CellType";
+import Map from "../Map";
+import Cell from "../Cell";
+import CellType from "../CellType";
 import IMapLoader from "./IMapLoader";
 
 export default class MapLoader implements IMapLoader {
