@@ -1,9 +1,9 @@
 import * as THREE from "three";
 
 import IComponent from "../common/IComponent";
-import ICamera from "./ICamera";
+import IMouseControls from "./mouse-controls/IMouseControls";
+import ICamera from "../camera/ICamera";
 import IInputTracker from "../input-tracker/IInputTracker";
-import IWorldComponent from "../world/IWorldComponent";
 import IWorld from "../world/IWorld";
 import ILogger from "../logger/ILogger";
 import CellType from "../world/map/CellType";
@@ -11,7 +11,8 @@ import CellType from "../world/map/CellType";
 const Speed = 0.25;
 const TeleportCooldown = 17;
 
-export default class MouseControls implements IComponent {
+export default class Player implements IComponent {
+	private readonly _mouseControls: IMouseControls;
 	private readonly _camera: ICamera;
 	private readonly _inputTracker: IInputTracker;
 	private readonly _world: IWorld;
@@ -24,15 +25,17 @@ export default class MouseControls implements IComponent {
 	private _steps: number;
 	private _teleportCooldown: number;
 	private _mesh: THREE.Mesh;
-	private _pointerMesh: THREE.Mesh;
 	private _pointLight: THREE.PointLight;
-	private _plane: THREE.Plane;
 
-	constructor(camera: ICamera, inputTracker: IInputTracker, world: IWorld, logger: ILogger) {
+	constructor(mouseControls: IMouseControls, camera: ICamera, inputTracker: IInputTracker, world: IWorld, logger: ILogger) {
+		this._mouseControls = mouseControls;
 		this._camera = camera;
 		this._inputTracker = inputTracker;
 		this._world = world;
 		this._logger = logger;
+
+		this._mouseControls.onLeftClick = (mousePosition) => this.handleLeftClick(mousePosition);
+		this._mouseControls.onRightClick = (mousePosition) => this.handleRightClick(mousePosition);
 
 		this._position = new THREE.Vector3(Math.floor(this._world.map.size / 2), 0, Math.floor(this._world.map.size / 2));
 		this._mapPosition = this._position.clone();
@@ -40,21 +43,17 @@ export default class MouseControls implements IComponent {
 		this._target = new THREE.Vector3();
 		this._steps = 0;
 		this._teleportCooldown = 0;
-		this._plane = new THREE.Plane(new THREE.Vector3(0, 1, 0));
 
 		this._camera.setPosition(this._position);
 
 		this.initMesh();
-		this.initPointerMesh();
 	}
 
 	update() {
-		this.updateMousePosition();
-		this.updateZoomLevel();
+		this._mouseControls.update();
 		this.move();
 
 		this._logger.logVector3("position", this._position);
-		this._logger.logNumber("zoom", this._camera.zoom);
 		this._logger.logNumber("steps", this._steps);
 	}
 
@@ -86,29 +85,6 @@ export default class MouseControls implements IComponent {
 		}
 
 		this._logger.logNumber("teleportCooldown", this._teleportCooldown);
-	}
-
-	private updateMousePosition() {
-		const mouseX = (this._inputTracker.mouseX / window.innerWidth) * 2 - 1;
-		const mouseY = -(this._inputTracker.mouseY / window.innerHeight) * 2 + 1;
-
-		const raycaster = new THREE.Raycaster();
-		raycaster.setFromCamera({ x: mouseX, y: mouseY }, this._camera.camera);
-
-		let mousePosition = new THREE.Vector3();
-		raycaster.ray.intersectPlane(this._plane, mousePosition);
-
-		mousePosition = this._world.map.convertToMapPosition(mousePosition);
-
-		if (this._inputTracker.leftMouseDown) {
-			this.handleLeftClick(mousePosition);
-		}
-		if (this._inputTracker.rightMouseDown) {
-			this.handleRightClick(mousePosition);
-		}
-
-		this._pointerMesh.position.set(mousePosition.x, 0.05, mousePosition.z);
-		this._logger.logVector3("mousePosition", mousePosition);
 	}
 
 	private handleLeftClick(mousePosition: THREE.Vector3) {
@@ -148,13 +124,6 @@ export default class MouseControls implements IComponent {
 		this.updateMeshPosition();
 	}
 
-	private updateZoomLevel() {
-		let zoomVelocity = this._inputTracker.wheelEvents.reduce((a, x) => a + x, 0);
-		if (zoomVelocity !== 0) {
-			this._camera.setZoom(this._camera.zoom + (zoomVelocity * 2));
-		}
-	}
-
 	private initMesh() {
 		const geometry = new THREE.CylinderBufferGeometry(0.75, 0.75, 4, 16);
 		const material = new THREE.MeshPhongMaterial({ color: 0xbada55 });
@@ -166,19 +135,7 @@ export default class MouseControls implements IComponent {
 
 		this.updateMeshPosition();
 
-		(this._world as unknown as IWorldComponent).scene.add(this._mesh);
-	}
-
-	private initPointerMesh() {
-		const geometry = new THREE.BoxBufferGeometry();
-		const material = new THREE.MeshPhongMaterial({ color: 0xbada55 });
-		material.opacity = 0.5;
-		material.transparent = true;
-
-		this._pointerMesh = new THREE.Mesh(geometry, material);
-		this._pointerMesh.scale.set(1, 0.1, 1);
-
-		(this._world as unknown as IWorldComponent).scene.add(this._pointerMesh);
+		this._world.addMesh(this._mesh);
 	}
 
 	private updateMeshPosition() {

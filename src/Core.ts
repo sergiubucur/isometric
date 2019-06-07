@@ -1,6 +1,5 @@
 import ILogger from "./logger/ILogger";
 import IAssetService from "./asset/IAssetService";
-import IComponent from "./common/IComponent";
 import ICamera from "./camera/ICamera";
 import Camera from "./camera/Camera";
 import IRenderer from "./renderer/IRenderer";
@@ -10,7 +9,11 @@ import IWorld from "./world/IWorld";
 import World from "./world/World";
 import CoreState from "./CoreState";
 import IInputTracker from "./input-tracker/IInputTracker";
-import MouseControls from "./camera/MouseControls";
+import IPlayer from "./player/IPlayer";
+import Player from "./player/Player";
+import MouseControls from "./player/mouse-controls/MouseControls";
+import MapLoader from "./world/map/MapLoader";
+import WorldMeshBuilder from "./world/mesh-builder/WorldMeshBuilder";
 
 export default class Core {
 	private readonly _logger: ILogger;
@@ -23,7 +26,7 @@ export default class Core {
 	private _camera: ICamera | null;
 	private _world: IWorldComponent | null;
 	private _renderer: IRenderer | null;
-	private _cameraControls: IComponent | null;
+	private _player: IPlayer | null;
 
 	constructor(logger: ILogger, assetService: IAssetService, inputTracker: IInputTracker) {
 		this._logger = logger;
@@ -36,7 +39,7 @@ export default class Core {
 		this._camera = null;
 		this._world = null;
 		this._renderer = null;
-		this._cameraControls = null;
+		this._player = null;
 
 		this.run();
 		this._nextState = CoreState.Load;
@@ -66,7 +69,7 @@ export default class Core {
 
 			case CoreState.Run:
 				this._world.update();
-				this._cameraControls.update();
+				this._player.update();
 				break;
 		}
 
@@ -124,11 +127,16 @@ export default class Core {
 
 	private init() {
 		this._camera = new Camera();
-		this._world = new World();
 		this._renderer = new Renderer();
 
+		const mapLoader = new MapLoader();
+		const worldMeshBuilder = new WorldMeshBuilder();
+		this._world = new World(mapLoader, worldMeshBuilder);
+
 		this._world.init().then(() => {
-			this._cameraControls = new MouseControls(this._camera, this._inputTracker, this._world as unknown as IWorld, this._logger);
+			const mouseControls = new MouseControls(this._camera, this._inputTracker, this._world as unknown as IWorld, this._logger);
+			this._player = new Player(mouseControls, this._camera, this._inputTracker, this._world as unknown as IWorld, this._logger);
+
 			this._nextState = CoreState.Run;
 		});
 	}

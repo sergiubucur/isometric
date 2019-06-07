@@ -8,22 +8,20 @@ const FloorColor = new THREE.Color(0.5, 0.5, 0.5);
 const WallColor = new THREE.Color(0.35, 0.35, 0.35);
 
 export default class WorldMeshBuilder {
-	private readonly _map: Map;
-
+	private _map: Map;
 	private _rootMesh: THREE.Object3D;
 	private _geometries: { [key: string]: THREE.BufferGeometry };
 	private _materials: { [key: string]: THREE.Material };
 
-	constructor(map: Map) {
-		this._map = map;
-
+	constructor() {
 		this._geometries = {};
 		this._materials = {};
 
 		this.initGeometriesAndMaterials();
 	}
 
-	buildWorldMesh(): THREE.Object3D {
+	buildWorldMesh(map: Map): THREE.Object3D {
+		this._map = map;
 		this._rootMesh = new THREE.Object3D();
 
 		for (let y = 0; y < this._map.size; y++) {

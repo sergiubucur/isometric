@@ -1,17 +1,23 @@
 import * as THREE from "three";
 
 import Map from "./map/Map";
-import MapLoader from "./map/MapLoader";
 import TestMap from "./map/TestMap";
-import WorldMeshBuilder from "./mesh-builder/WorldMeshBuilder";
+import IWorldMeshBuilder from "./mesh-builder/IWorldMeshBuilder";
 import IWorld from "./IWorld";
 import IWorldComponent from "./IWorldComponent";
+import IMapLoader from "./map/IMapLoader";
 
 export default class World implements IWorld, IWorldComponent {
 	readonly scene: THREE.Scene;
 	map: Map;
 
-	constructor() {
+	private readonly _mapLoader: IMapLoader;
+	private readonly _worldMeshBuilder: IWorldMeshBuilder;
+
+	constructor(mapLoader: IMapLoader, worldMeshBuilder: IWorldMeshBuilder) {
+		this._mapLoader = mapLoader;
+		this._worldMeshBuilder = worldMeshBuilder;
+
 		this.scene = new THREE.Scene();
 	}
 
@@ -30,14 +36,16 @@ export default class World implements IWorld, IWorldComponent {
 	update() {
 	}
 
+	addMesh(mesh: THREE.Mesh): void {
+		this.scene.add(mesh);
+	}
+
 	private initMap() {
-		const mapLoader = new MapLoader();
-		this.map = mapLoader.loadMap(TestMap);
+		this.map = this._mapLoader.loadMap(TestMap);
 	}
 
 	private initWorldMesh() {
-		const worldMeshBuilder = new WorldMeshBuilder(this.map);
-		const worldMesh = worldMeshBuilder.buildWorldMesh();
+		const worldMesh = this._worldMeshBuilder.buildWorldMesh(this.map);
 
 		this.scene.add(worldMesh);
 	}
