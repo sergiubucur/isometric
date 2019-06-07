@@ -1,24 +1,21 @@
 import ILogger from "./logger/ILogger";
 import IAssetService from "./asset/IAssetService";
 import ICamera from "./camera/ICamera";
-import Camera from "./camera/Camera";
 import IRenderer from "./renderer/IRenderer";
-import Renderer from "./renderer/Renderer";
 import IWorldComponent from "./world/IWorldComponent";
 import IWorld from "./world/IWorld";
-import World from "./world/World";
 import CoreState from "./CoreState";
 import IInputTracker from "./input-tracker/IInputTracker";
 import IPlayer from "./player/IPlayer";
-import Player from "./player/Player";
-import MouseControls from "./player/mouse-controls/MouseControls";
-import MapLoader from "./world/map/loader/MapLoader";
-import WorldMeshBuilder from "./world/mesh-builder/WorldMeshBuilder";
 
 export default class Core {
 	private readonly _logger: ILogger;
 	private readonly _assetService: IAssetService;
 	private readonly _inputTracker: IInputTracker;
+	private readonly _cameraFactory: () => ICamera;
+	private readonly _rendererFactory: () => IRenderer;
+	private readonly _worldFactory: () => IWorld & IWorldComponent;
+	private readonly _playerFactory: () => IPlayer;
 
 	private _assets: object | null;
 	private _state: CoreState;
@@ -28,10 +25,17 @@ export default class Core {
 	private _renderer: IRenderer | null;
 	private _player: IPlayer | null;
 
-	constructor(logger: ILogger, assetService: IAssetService, inputTracker: IInputTracker) {
+	constructor(logger: ILogger, assetService: IAssetService, inputTracker: IInputTracker,
+		cameraFactory: () => ICamera, rendererFactory: () => IRenderer, worldFactory: () => IWorld & IWorldComponent,
+		playerFactory: () => IPlayer) {
+
 		this._logger = logger;
 		this._assetService = assetService;
 		this._inputTracker = inputTracker;
+		this._cameraFactory = cameraFactory;
+		this._rendererFactory = rendererFactory;
+		this._worldFactory = worldFactory;
+		this._playerFactory = playerFactory;
 
 		this._assets = null;
 		this._state = CoreState.None;
@@ -126,16 +130,12 @@ export default class Core {
 	}
 
 	private init() {
-		this._camera = new Camera();
-		this._renderer = new Renderer();
-
-		const mapLoader = new MapLoader();
-		const worldMeshBuilder = new WorldMeshBuilder();
-		this._world = new World(mapLoader, worldMeshBuilder);
+		this._camera = this._cameraFactory();
+		this._renderer = this._rendererFactory();
+		this._world = this._worldFactory();
 
 		this._world.init().then(() => {
-			const mouseControls = new MouseControls(this._camera, this._inputTracker, this._world, this._logger);
-			this._player = new Player(mouseControls, this._camera, this._inputTracker, this._world, this._logger);
+			this._player = this._playerFactory();
 
 			this._nextState = CoreState.Run;
 		});
