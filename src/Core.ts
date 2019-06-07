@@ -24,7 +24,7 @@ export default class Core {
 	private _state: CoreState;
 	private _nextState: CoreState | null;
 	private _camera: ICamera | null;
-	private _world: IWorldComponent | null;
+	private _world: IWorld & IWorldComponent | null;
 	private _renderer: IRenderer | null;
 	private _player: IPlayer | null;
 
@@ -134,8 +134,8 @@ export default class Core {
 		this._world = new World(mapLoader, worldMeshBuilder);
 
 		this._world.init().then(() => {
-			const mouseControls = new MouseControls(this._camera, this._inputTracker, this._world as unknown as IWorld, this._logger);
-			this._player = new Player(mouseControls, this._camera, this._inputTracker, this._world as unknown as IWorld, this._logger);
+			const mouseControls = new MouseControls(this._camera, this._inputTracker, this._world, this._logger);
+			this._player = new Player(mouseControls, this._camera, this._inputTracker, this._world, this._logger);
 
 			this._nextState = CoreState.Run;
 		});
