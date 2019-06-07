@@ -21,20 +21,19 @@ export default class Container {
 	}
 
 	register(name: string, type: object, ...dependencies: string[]) {
-		this._types[name] = {
-			name,
-			type,
-			dependencies,
-			singleton: false
-		};
+		this.registerType(name, type, dependencies);
 	}
 
 	registerSingleton(name: string, type: object, ...dependencies: string[]) {
+		this.registerType(name, type, dependencies, true);
+	}
+
+	private registerType(name: string, type: object, dependencies: string[], singleton = false) {
 		this._types[name] = {
 			name,
 			type,
 			dependencies,
-			singleton: true
+			singleton
 		};
 	}
 
