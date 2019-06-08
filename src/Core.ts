@@ -1,3 +1,5 @@
+import * as THREE from "three";
+
 import ILogger from "./common/logger/ILogger";
 import IAssetService from "./asset/IAssetService";
 import ICamera from "./camera/ICamera";
@@ -8,6 +10,7 @@ import CoreState from "./CoreState";
 import IInputTracker from "./input-tracker/IInputTracker";
 import IPlayer from "./player/IPlayer";
 import ICore from "./ICore";
+import IMonster from "./monster/IMonster";
 
 export default class Core implements ICore {
 	private _assets: object | null;
@@ -17,10 +20,16 @@ export default class Core implements ICore {
 	private _world: IWorld & IWorldComponent | null;
 	private _renderer: IRenderer | null;
 	private _player: IPlayer | null;
+	private _monsters: IMonster[] | null;
 
-	constructor(private _logger: ILogger, private _assetService: IAssetService, private _inputTracker: IInputTracker,
-		private _cameraFactory: () => ICamera, private _rendererFactory: () => IRenderer, private _worldFactory: () => IWorld & IWorldComponent,
-		private _playerFactory: () => IPlayer) {
+	constructor(private _logger: ILogger,
+		private _assetService: IAssetService,
+		private _inputTracker: IInputTracker,
+		private _cameraFactory: () => ICamera,
+		private _rendererFactory: () => IRenderer,
+		private _worldFactory: () => IWorld & IWorldComponent,
+		private _playerFactory: () => IPlayer,
+		private _monsterFactory: () => IMonster) {
 
 		this._assets = null;
 		this._state = CoreState.None;
@@ -29,6 +38,7 @@ export default class Core implements ICore {
 		this._world = null;
 		this._renderer = null;
 		this._player = null;
+		this._monsters = null;
 
 		this.run();
 		this._nextState = CoreState.Load;
@@ -59,6 +69,7 @@ export default class Core implements ICore {
 			case CoreState.Run:
 				this._world.update();
 				this._player.update();
+				this._monsters.forEach(x => x.update());
 				break;
 		}
 
@@ -121,6 +132,24 @@ export default class Core implements ICore {
 
 		this._world.init().then(() => {
 			this._player = this._playerFactory();
+
+			this._monsters = [];
+
+			const m0 = this._monsterFactory();
+			m0.init(new THREE.Vector3(0, 0, 0));
+			this._monsters.push(m0);
+
+			const m1 = this._monsterFactory();
+			m1.init(new THREE.Vector3(this._world.map.size - 1, 0, 0));
+			this._monsters.push(m1);
+
+			const m2 = this._monsterFactory();
+			m2.init(new THREE.Vector3(this._world.map.size - 1, 0, this._world.map.size - 1));
+			this._monsters.push(m2);
+
+			const m3 = this._monsterFactory();
+			m3.init(new THREE.Vector3(0, 0, this._world.map.size - 1));
+			this._monsters.push(m3);
 
 			this._nextState = CoreState.Run;
 		});

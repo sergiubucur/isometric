@@ -1,55 +1,39 @@
 import * as THREE from "three";
 
-import IPlayer from "./IPlayer";
-import IMouseControls from "./mouse-controls/IMouseControls";
-import ICamera from "../camera/ICamera";
-import IInputTracker from "../input-tracker/IInputTracker";
+import IMonster from "./IMonster";
 import IWorld from "../world/IWorld";
-import ILogger from "../common/logger/ILogger";
+import IPlayer from "../player/IPlayer";
 import IEntityId from "../common/entity-id/IEntityId";
 
-const Speed = 0.25;
-const TeleportCooldown = 17;
+const Speed = 0.1;
 
 // TODO: extract common parts from Monster and Player into separate classes
-export default class Player implements IPlayer {
-	get position() {
-		return this._position;
-	}
-
+export default class Monster implements IMonster {
 	id: number;
 
 	private _position: THREE.Vector3;
 	private _velocity: THREE.Vector3;
 	private _steps: number;
-	private _teleportCooldown: number;
 	private _mesh: THREE.Mesh;
 	private _pointLight: THREE.PointLight;
 
-	constructor(private _mouseControls: IMouseControls, private _camera: ICamera, private _inputTracker: IInputTracker,
-		private _world: IWorld, private _logger: ILogger, private _entityId: IEntityId) {
-
-		this._mouseControls.onLeftClick = (mousePosition) => this.handleLeftClick(mousePosition);
-		this._mouseControls.onRightClick = (mousePosition) => this.handleRightClick(mousePosition);
-
-		this.id = _entityId.getNewId();
-		this._position = new THREE.Vector3(Math.floor(this._world.map.size / 2), 0, Math.floor(this._world.map.size / 2));
+	constructor(private _world: IWorld, private _player: IPlayer, private _entityId: IEntityId) {
+		this.id = this._entityId.getNewId();
+		this._position = new THREE.Vector3();
 		this._velocity = new THREE.Vector3();
 		this._steps = 0;
-		this._teleportCooldown = 0;
+	}
 
-		this._camera.setPosition(this._position);
+	init(position: THREE.Vector3) {
+		this._position.copy(position);
 		this.modifyCells(true);
 
 		this.initMesh();
 	}
 
 	update() {
-		this._mouseControls.update();
+		this.chase();
 		this.move();
-
-		this._logger.logVector3("position", this._position);
-		this._logger.logNumber("steps", this._steps);
 	}
 
 	private move() {
@@ -79,22 +63,15 @@ export default class Player implements IPlayer {
 
 			if (position) {
 				this.updatePosition(position);
-
 				this._steps--;
 			} else {
 				this._steps = 0;
 			}
 		}
-
-		if (this._teleportCooldown > 0) {
-			this._teleportCooldown--;
-		}
-
-		this._logger.logNumber("teleportCooldown", this._teleportCooldown);
 	}
 
 	private canMove(position: THREE.Vector3) {
-		const size = 2;
+		const size = 1;
 		const radius = size / 2;
 
 		const p0 = position.clone();
@@ -120,20 +97,9 @@ export default class Player implements IPlayer {
 		return true;
 	}
 
-	private handleLeftClick(mousePosition: THREE.Vector3) {
-		this._velocity.copy(mousePosition).sub(this._position).normalize().multiplyScalar(Speed);
-		this._steps = Math.ceil(mousePosition.clone().sub(this._position).length() / Speed);
-	}
-
-	private handleRightClick(mousePosition: THREE.Vector3) {
-		if (this._teleportCooldown === 0) {
-			this._steps = 0;
-			this._teleportCooldown = TeleportCooldown;
-
-			if (this.canMove(mousePosition)) {
-				this.updatePosition(mousePosition);
-			}
-		}
+	private chase() {
+		this._velocity.copy(this._player.position).sub(this._position).normalize().multiplyScalar(Speed);
+		this._steps = Math.ceil(this._player.position.clone().sub(this._position).length() / Speed);
 	}
 
 	private updatePosition(v: THREE.Vector3 | number, y?: number, z?: number) {
@@ -146,12 +112,11 @@ export default class Player implements IPlayer {
 		}
 
 		this.modifyCells(true);
-		this._camera.setPosition(this._position);
 		this.updateMeshPosition();
 	}
 
 	private modifyCells(occupy?: boolean) {
-		const size = 2;
+		const size = 1;
 		const radius = size / 2;
 
 		const p0 = this._position.clone();
@@ -186,11 +151,11 @@ export default class Player implements IPlayer {
 	}
 
 	private initMesh() {
-		const geometry = new THREE.CylinderBufferGeometry(0.75, 0.75, 4, 16);
-		const material = new THREE.MeshPhongMaterial({ color: 0xbada55 });
+		const geometry = new THREE.CylinderBufferGeometry(0.5, 0.5, 2, 16);
+		const material = new THREE.MeshPhongMaterial({ color: 0xff0000 });
 
 		this._mesh = new THREE.Mesh(geometry, material);
-		this._pointLight = new THREE.PointLight(0xbada55, 3, 5);
+		this._pointLight = new THREE.PointLight(0xff0000, 2, 3);
 		this._pointLight.position.set(0, 0.5, 0);
 		this._mesh.add(this._pointLight);
 
@@ -201,6 +166,6 @@ export default class Player implements IPlayer {
 
 	private updateMeshPosition() {
 		this._mesh.position.copy(this._position);
-		this._mesh.position.y += 2;
+		this._mesh.position.y += 1;
 	}
 }
