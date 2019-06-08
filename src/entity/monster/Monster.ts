@@ -12,9 +12,6 @@ const MeshRadius = 0.5;
 const MeshHeight = 2;
 const MeshRadialSegments = 16;
 const Color = 0xff0000;
-const PointLightIntensity = 2;
-const PointLightDistance = 3;
-const PointLightYOffset = 0.5;
 
 export default class Monster implements IMonster {
 	id: number;
@@ -51,9 +48,6 @@ export default class Monster implements IMonster {
 		const material = new THREE.MeshPhongMaterial({ color: Color });
 
 		this._mesh = new THREE.Mesh(geometry, material);
-		this._pointLight = new THREE.PointLight(Color, PointLightIntensity, PointLightDistance);
-		this._pointLight.position.set(0, PointLightYOffset, 0);
-		this._mesh.add(this._pointLight);
 
 		this.updateMeshPosition();
 

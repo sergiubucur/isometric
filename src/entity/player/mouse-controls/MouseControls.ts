@@ -25,8 +25,6 @@ export default class MouseControls implements IMouseControls {
 	update() {
 		this.updateMousePosition();
 		this.updateZoomLevel();
-
-		this._logger.logNumber("zoom", this._camera.zoom);
 	}
 
 	private updateMousePosition() {
@@ -49,7 +47,6 @@ export default class MouseControls implements IMouseControls {
 		}
 
 		this._pointerMesh.position.set(mousePosition.x, 0.05, mousePosition.z);
-		this._logger.logVector3("mousePosition", mousePosition);
 	}
 
 	private updateZoomLevel() {

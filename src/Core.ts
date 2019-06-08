@@ -67,9 +67,13 @@ export default class Core implements ICore {
 				break;
 
 			case CoreState.Run:
+				const time = performance.now();
+
 				this._world.update();
 				this._player.update();
 				this._monsters.forEach(x => x.update());
+
+				this._logger.logBounds("update time", performance.now() - time);
 				break;
 		}
 
@@ -85,7 +89,11 @@ export default class Core implements ICore {
 				break;
 
 			case CoreState.Run:
+				const time = performance.now();
+
 				this._renderer.render(this._world.scene, this._camera.camera);
+
+				this._logger.logBounds("draw time", performance.now() - time);
 				break;
 		}
 	}
@@ -125,6 +133,13 @@ export default class Core implements ICore {
 		});
 	}
 
+	private addMonster(position: THREE.Vector3) {
+		const monster = this._monsterFactory();
+		monster.init(position);
+
+		this._monsters.push(monster);
+	}
+
 	private init() {
 		this._camera = this._cameraFactory();
 		this._renderer = this._rendererFactory();
@@ -134,22 +149,17 @@ export default class Core implements ICore {
 			this._player = this._playerFactory();
 
 			this._monsters = [];
+			const rarity = 16;
 
-			const m0 = this._monsterFactory();
-			m0.init(new THREE.Vector3(0, 0, 0));
-			this._monsters.push(m0);
-
-			const m1 = this._monsterFactory();
-			m1.init(new THREE.Vector3(this._world.map.size - 1, 0, 0));
-			this._monsters.push(m1);
-
-			const m2 = this._monsterFactory();
-			m2.init(new THREE.Vector3(this._world.map.size - 1, 0, this._world.map.size - 1));
-			this._monsters.push(m2);
-
-			const m3 = this._monsterFactory();
-			m3.init(new THREE.Vector3(0, 0, this._world.map.size - 1));
-			this._monsters.push(m3);
+			for (let z = 0; z < this._world.map.size; z++) {
+				for (let x = 0; x < this._world.map.size; x++) {
+					if (x === 0 || x === this._world.map.size - 1 || z === 0 || z === this._world.map.size - 1) {
+						if (x % rarity === 0 && z % rarity === 0) {
+							this.addMonster(new THREE.Vector3(x, 0, z));
+						}
+					}
+				}
+			}
 
 			this._nextState = CoreState.Run;
 		});

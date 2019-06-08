@@ -64,8 +64,6 @@ export default class Player implements IPlayer {
 		if (this._teleportCooldown > 0) {
 			this._teleportCooldown--;
 		}
-
-		this._logger.logNumber("teleportCooldown", this._teleportCooldown);
 	}
 
 	private handleLeftClick(mousePosition: THREE.Vector3) {
