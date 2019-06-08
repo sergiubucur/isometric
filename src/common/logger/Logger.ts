@@ -2,10 +2,17 @@ import * as THREE from "three";
 
 import ILogger from "./ILogger";
 
+type BoundsInfo = {
+	value: number,
+	min: number,
+	max: number,
+	digits: number
+};
+
 export default class Logger implements ILogger {
 	private _domElement: HTMLElement;
 	private _logItems: string[];
-	private _bounds: { [key: string]: { min: number, max: number }};
+	private _bounds: { [key: string]: BoundsInfo };
 
 	constructor() {
 		this._logItems = [];
@@ -30,8 +37,13 @@ export default class Logger implements ILogger {
 
 	update() {
 		this._domElement.innerHTML = this._logItems.join("<br/>");
-
 		this._logItems.length = 0;
+
+		Object.keys(this._bounds).forEach(x => {
+			const { value, min, max, digits } = this._bounds[x];
+
+			this._logItems.push(`${x}: ${value.toFixed(digits)} (min: ${min.toFixed(digits)}, max: ${max.toFixed(digits)})`);
+		});
 	}
 
 	dispose() {
@@ -42,8 +54,8 @@ export default class Logger implements ILogger {
 		this._logItems.push(message);
 	}
 
-	logNumber(name: string, number: number, digits = 2) {
-		this._logItems.push(`${name}: ${number.toFixed(digits)}`);
+	logNumber(name: string, value: number, digits = 2) {
+		this._logItems.push(`${name}: ${value.toFixed(digits)}`);
 	}
 
 	logVector2(name: string, vector2: THREE.Vector2, digits = 2) {
@@ -54,15 +66,16 @@ export default class Logger implements ILogger {
 		this._logItems.push(`${name}: ${vector3.x.toFixed(digits)} ${vector3.y.toFixed(digits)} ${vector3.z.toFixed(digits)}`);
 	}
 
-	logBounds(name: string, number: number, digits = 2) {
+	logBounds(name: string, value: number, digits = 2) {
 		if (!this._bounds[name]) {
-			this._bounds[name] = { min: Infinity, max: -Infinity };
+			this._bounds[name] = { value: value, min: Infinity, max: -Infinity, digits };
+		} else {
+			this._bounds[name].value = value;
+			this._bounds[name].digits = digits;
 		}
 
 		const bounds = this._bounds[name];
-		bounds.min = Math.min(number, bounds.min);
-		bounds.max = Math.max(number, bounds.max);
-
-		this._logItems.push(`${name}: ${number.toFixed(digits)} (min: ${bounds.min.toFixed(digits)}, max: ${bounds.max.toFixed(digits)})`);
+		bounds.min = Math.min(value, bounds.min);
+		bounds.max = Math.max(value, bounds.max);
 	}
 }
