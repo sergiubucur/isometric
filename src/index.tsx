@@ -26,7 +26,7 @@ container.registerSingleton("IRenderer", Renderer);
 container.register("IWorldMeshBuilder", WorldMeshBuilder);
 container.register("IMapLoader", MapLoader);
 container.registerSingleton("IWorld", World, "IMapLoader", "IWorldMeshBuilder");
-container.registerSingleton("IMouseControls", MouseControls, "ICamera", "IInputTracker", "IWorld", "ILogger");
+container.register("IMouseControls", MouseControls, "ICamera", "IInputTracker", "IWorld", "ILogger");
 container.registerSingleton("IPlayer", Player, "IMouseControls", "ICamera", "IInputTracker", "IWorld", "ILogger", "IEntityId");
 container.register("IMonster", Monster, "IWorld", "IPlayer", "IEntityId");
 container.registerSingleton("IEntityId", EntityId);

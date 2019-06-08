@@ -45,24 +45,26 @@ export default class Container {
 		}
 
 		if (type.dependencies.length > 0) {
-			const dependencies = type.dependencies.map(x => {
-				if (x.indexOf(FactoryPrefix) === 0) {
-					x = x.substr(FactoryPrefix.length);
-					return () => this.resolve(x);
-				}
+			return this.singleton(type, () => {
+				const dependencies = type.dependencies.map(x => {
+					if (x.indexOf(FactoryPrefix) === 0) {
+						x = x.substr(FactoryPrefix.length);
+						return () => this.resolve(x);
+					}
 
-				return this.resolve(x);
+					return this.resolve(x);
+				});
+
+				// @ts-ignore
+				return new (Function.prototype.bind.apply(type.type, [null, ...dependencies])); // eslint-disable-line
 			});
-
-			// @ts-ignore
-			return this._singleton(type, () => new (Function.prototype.bind.apply(type.type, [null, ...dependencies]))); // eslint-disable-line
 		}
 
 		// @ts-ignore
-		return this._singleton(type, () => new type.type());
+		return this.singleton(type, () => new type.type());
 	}
 
-	_singleton(type: TypeInfo, callback: () => object) {
+	private singleton(type: TypeInfo, callback: () => object) {
 		if (type.singleton) {
 			if (!this._singletons[type.name]) {
 				this._singletons[type.name] = callback();
