@@ -11,11 +11,13 @@ interface Props {
 
 type CellInfo = {
 	id: number,
-	type: CellType,
-	player: boolean,
-	monster: boolean
+	exists: boolean,
+	type?: CellType,
+	player?: boolean,
+	monster?: boolean
 };
 
+const Size = 32;
 const CellSize = 8;
 const RefreshRateMs = Math.floor(1 / 30 * 1000);
 
@@ -35,14 +37,18 @@ export default class Minimap extends Component<Props> {
 	private renderCell(cell: CellInfo) {
 		let background = "#404040";
 
-		if (cell.type === CellType.Void) {
-			background = "#fff";
+		if (!cell.exists) {
+			background = "#000";
 		} else {
-			if (cell.player) {
-				background = "#bada55";
+			if (cell.type === CellType.Void) {
+				background = "#fff";
 			} else {
-				if (cell.monster) {
-					background = "#ff0000";
+				if (cell.player) {
+					background = "#bada55";
+				} else {
+					if (cell.monster) {
+						background = "#ff0000";
+					}
 				}
 			}
 		}
@@ -54,27 +60,43 @@ export default class Minimap extends Component<Props> {
 
 	render() {
 		const { world, player } = this.props;
-		const size = world.map.size;
 
 		const styles: any = {
 			position: "absolute",
 			right: 0,
 			top: 0,
-			width: CellSize * size,
-			height: CellSize * size,
+			width: CellSize * Size,
+			height: CellSize * Size,
 			display: "flex",
 			flexWrap: "wrap",
-			opacity: 0.75
+			opacity: 0.75,
+			borderLeft: "1px solid #808080",
+			borderBottom: "1px solid #808080"
 		};
 
+		const playerPosition = world.map.convertToMapPosition(player.position);
+
 		const cells = [];
-		for (let y = 0; y < size; y++) {
-			for (let x = 0; x < size; x++) {
-				const id = world.map.occupiedCells[y][x];
+		for (let z = 0; z < Size; z++) {
+			for (let x = 0; x < Size; x++) {
+				let x0 = playerPosition.x - Size / 2 + x;
+				let z0 = playerPosition.z - Size / 2 + z;
+
+				const cell = world.map.getCell(x0, z0);
+				if (!cell) {
+					cells.push({
+						id: z * Size + x,
+						exists: false
+					});
+					continue;
+				}
+
+				const id = world.map.occupiedCells[z0][x0];
 
 				cells.push({
-					id: y * size + x,
-					type: world.map.cells[y][x].type,
+					id: z * Size + x,
+					exists: true,
+					type: cell.type,
 					player: id === player.id,
 					monster: id !== player.id && id !== 0
 				});
