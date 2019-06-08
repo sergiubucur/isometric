@@ -118,17 +118,6 @@ export default class Player implements IPlayer {
 		return true;
 	}
 
-	private getNextCell(position: THREE.Vector3, offsetX: number, offsetZ: number) {
-		const newPosition = position.clone();
-		newPosition.x += offsetX;
-		newPosition.z += offsetZ;
-
-		const nextMapPosition = this._world.map.convertToMapPosition(newPosition);
-		const nextCell = this._world.map.getCell(nextMapPosition.x, nextMapPosition.z);
-
-		return nextCell;
-	}
-
 	private handleLeftClick(mousePosition: THREE.Vector3) {
 		this._target.copy(mousePosition);
 		this._velocity.copy(this._target).sub(this._position).normalize().multiplyScalar(Speed);
