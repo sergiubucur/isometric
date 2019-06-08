@@ -2,11 +2,11 @@ import * as THREE from "three";
 
 import Cell from "./Cell";
 import CellType from "./CellType";
+import IMap from "./IMap";
 
-// TODO: add interface
-export default class Map {
-	readonly size: number;
-	readonly cells: Cell[][];
+export default class Map implements IMap {
+	size: number;
+	cells: Cell[][];
 
 	private _occupiedCells: number[][];
 

@@ -1,9 +1,9 @@
 import * as THREE from "three";
 
-import Map from "./map/Map";
+import IMap from "./map/IMap";
 
 export default interface IWorld {
-	readonly map: Map;
+	readonly map: IMap;
 
 	addMesh(mesh: THREE.Mesh): void;
 }
