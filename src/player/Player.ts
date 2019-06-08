@@ -72,18 +72,13 @@ export default class Player implements IPlayer {
 				}
 			}
 
-
 			if (position) {
 				this._position.copy(position);
 				this.updatePosition();
 
 				this._steps--;
-				// if (this._steps === 0) {
-				// 	this.updatePosition(this._target);
-				// }
 			} else {
 				this._steps = 0;
-				// this.updatePosition(this._mapPosition);
 			}
 		}
 
