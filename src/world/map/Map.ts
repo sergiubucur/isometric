@@ -44,7 +44,7 @@ export default class Map implements IMap {
 		return null;
 	}
 
-	isCellPassable(x: number, y: number, id: number) {
+	isCellPassable(x: number, y: number, id = -1) {
 		const cell = this.getCell(x, y);
 
 		if (!cell) {

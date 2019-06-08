@@ -14,15 +14,16 @@ import Core from "./Core";
 import Monster from "./entity/monster/Monster";
 import EntityId from "./entity/entity-id/EntityId";
 import EntityMovementEngine from "./entity/movement/EntityMovementEngine";
+import UIRoot from "./ui/UIRoot";
 
 const container = new Container();
 
 container.registerSingleton("ILogger", Logger);
 container.registerSingleton("IAssetService", AssetService);
 container.registerSingleton("IInputTracker", InputTracker);
-container.registerSingleton("ICore", Core,
+container.registerSingleton("Core", Core,
 	"ILogger", "IAssetService", "IInputTracker", Factory("ICamera"), Factory("IRenderer"), Factory("IWorld"), Factory("IPlayer"),
-	Factory("IMonster"));
+	Factory("IMonster"), Factory("UIRoot"));
 container.registerSingleton("ICamera", Camera);
 container.registerSingleton("IRenderer", Renderer);
 container.register("IWorldMeshBuilder", WorldMeshBuilder);
@@ -34,5 +35,6 @@ container.registerSingleton("IPlayer", Player,
 container.register("IMonster", Monster, "IWorld", "IPlayer", "IEntityId", "IEntityMovementEngine");
 container.registerSingleton("IEntityId", EntityId);
 container.register("IEntityMovementEngine", EntityMovementEngine, "IWorld");
+container.registerSingleton("UIRoot", UIRoot, "IWorld", "IPlayer");
 
-container.resolve("ICore");
+container.resolve("Core");

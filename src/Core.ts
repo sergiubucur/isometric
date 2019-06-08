@@ -9,10 +9,10 @@ import IWorld from "./world/IWorld";
 import CoreState from "./CoreState";
 import IInputTracker from "./input-tracker/IInputTracker";
 import IPlayer from "./entity/player/IPlayer";
-import ICore from "./ICore";
 import IMonster from "./entity/monster/IMonster";
+import UIRoot from "./ui/UIRoot";
 
-export default class Core implements ICore {
+export default class Core {
 	private _assets: object | null;
 	private _state: CoreState;
 	private _nextState: CoreState | null;
@@ -21,6 +21,7 @@ export default class Core implements ICore {
 	private _renderer: IRenderer | null;
 	private _player: IPlayer | null;
 	private _monsters: IMonster[] | null;
+	private _uiRoot: UIRoot | null;
 
 	constructor(private _logger: ILogger,
 		private _assetService: IAssetService,
@@ -29,7 +30,8 @@ export default class Core implements ICore {
 		private _rendererFactory: () => IRenderer,
 		private _worldFactory: () => IWorld & IWorldComponent,
 		private _playerFactory: () => IPlayer,
-		private _monsterFactory: () => IMonster) {
+		private _monsterFactory: () => IMonster,
+		private _uiRootFactory: () => UIRoot) {
 
 		this._assets = null;
 		this._state = CoreState.None;
@@ -39,6 +41,7 @@ export default class Core implements ICore {
 		this._renderer = null;
 		this._player = null;
 		this._monsters = null;
+		this._uiRoot = null;
 
 		this.run();
 		this._nextState = CoreState.Load;
@@ -161,6 +164,7 @@ export default class Core implements ICore {
 				}
 			}
 
+			this._uiRoot = this._uiRootFactory();
 			this._nextState = CoreState.Run;
 		});
 	}
