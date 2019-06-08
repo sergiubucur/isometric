@@ -49,24 +49,41 @@ export default class Player implements IPlayer {
 
 	private move() {
 		if (this._steps > 0) {
-			const nextMapPosition = this._world.map.convertToMapPosition(this._position.clone().add(this._velocity));
-			const nextCell = this._world.map.getCell(nextMapPosition.x, nextMapPosition.z);
+			let position = null;
 
-			if (!nextCell) {
-				throw new Error("nextCell is null");
+			const positionXZ = this._position.clone().add(new THREE.Vector3(this._velocity.x, 0, this._velocity.z));
+			const canMoveXZ = this.canMove(positionXZ);
+
+			if (canMoveXZ) {
+				position = positionXZ;
+			} else {
+				const positionX = this._position.clone().add(new THREE.Vector3(this._velocity.x, 0, 0));
+				const canMoveX = this.canMove(positionX);
+
+				if (canMoveX) {
+					position = positionX;
+				} else {
+					const positionZ = this._position.clone().add(new THREE.Vector3(0, 0, this._velocity.z));
+					const canMoveZ = this.canMove(positionZ);
+
+					if (canMoveZ) {
+						position = positionZ;
+					}
+				}
 			}
 
-			if (nextCell.type === CellType.EmptyFloor) {
-				this._position.add(this._velocity);
+
+			if (position) {
+				this._position.copy(position);
 				this.updatePosition();
 
 				this._steps--;
-				if (this._steps === 0) {
-					this.updatePosition(this._target);
-				}
+				// if (this._steps === 0) {
+				// 	this.updatePosition(this._target);
+				// }
 			} else {
 				this._steps = 0;
-				this.updatePosition(this._mapPosition);
+				// this.updatePosition(this._mapPosition);
 			}
 		}
 
@@ -75,6 +92,44 @@ export default class Player implements IPlayer {
 		}
 
 		this._logger.logNumber("teleportCooldown", this._teleportCooldown);
+	}
+
+	private canMove(position: THREE.Vector3) {
+		const offsets = [
+			{ x: -1, z: -1 },
+			{ x: 0, z: -1 },
+			{ x: 1, z: -1 },
+			{ x: -1, z: 0 },
+			{ x: 0, z: 0 },
+			{ x: 1, z: 0 },
+			{ x: -1, z: 1 },
+			{ x: 0, z: 1 },
+			{ x: 1, z: 1 },
+		];
+
+		const size = 1.5;
+		const radius = size / 2;
+
+		for (let i = 0; i < offsets.length; i++) {
+			const nextCell = this.getNextCell(position, offsets[i].x * radius, offsets[i].z * radius);
+
+			if (!nextCell || nextCell.type !== CellType.EmptyFloor) {
+				return false;
+			}
+		}
+
+		return true;
+	}
+
+	private getNextCell(position: THREE.Vector3, offsetX: number, offsetZ: number) {
+		const newPosition = position.clone();
+		newPosition.x += offsetX;
+		newPosition.z += offsetZ;
+
+		const nextMapPosition = this._world.map.convertToMapPosition(newPosition);
+		const nextCell = this._world.map.getCell(nextMapPosition.x, nextMapPosition.z);
+
+		return nextCell;
 	}
 
 	private handleLeftClick(mousePosition: THREE.Vector3) {
@@ -88,13 +143,7 @@ export default class Player implements IPlayer {
 			this._steps = 0;
 			this._teleportCooldown = TeleportCooldown;
 
-			const nextCell = this._world.map.getCell(mousePosition.x, mousePosition.z);
-
-			if (!nextCell) {
-				throw new Error("nextCell is null");
-			}
-
-			if (nextCell.type === CellType.EmptyFloor) {
+			if (this.canMove(mousePosition)) {
 				this.updatePosition(mousePosition);
 			}
 		}

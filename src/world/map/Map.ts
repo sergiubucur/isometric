@@ -11,12 +11,11 @@ export default class Map {
 		this.cells = cells;
 	}
 
-	convertToMapPosition(position: THREE.Vector3, round = true): THREE.Vector3 {
+	convertToMapPosition(position: THREE.Vector3): THREE.Vector3 {
 		const mapPosition = position.clone();
-		const method = round ? "round" : "floor";
 
-		mapPosition.x = THREE.Math.clamp(Math[method](mapPosition.x), 0, this.size - 1);
-		mapPosition.z = THREE.Math.clamp(Math[method](mapPosition.z), 0, this.size - 1);
+		mapPosition.x = Math.round(mapPosition.x);
+		mapPosition.z = Math.round(mapPosition.z);
 
 		return mapPosition;
 	}
