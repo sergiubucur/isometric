@@ -1,6 +1,6 @@
 import * as THREE from "three";
 
-import IComponent from "../common/IComponent";
+import IPlayer from "./IPlayer";
 import IMouseControls from "./mouse-controls/IMouseControls";
 import ICamera from "../camera/ICamera";
 import IInputTracker from "../input-tracker/IInputTracker";
@@ -11,7 +11,7 @@ import CellType from "../world/map/CellType";
 const Speed = 0.25;
 const TeleportCooldown = 17;
 
-export default class Player implements IComponent {
+export default class Player implements IPlayer {
 	private _position: THREE.Vector3;
 	private _mapPosition: THREE.Vector3;
 	private _velocity: THREE.Vector3;

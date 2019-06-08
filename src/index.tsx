@@ -1,3 +1,4 @@
+import "./index.scss";
 import Container, { Factory } from "./ioc-container/Container";
 import Logger from "./logger/Logger";
 import AssetService from "./asset/AssetService";
@@ -10,14 +11,13 @@ import World from "./world/World";
 import MouseControls from "./player/mouse-controls/MouseControls";
 import Player from "./player/Player";
 import Core from "./Core";
-import "./index.scss";
 
 const container = new Container();
 
 container.registerSingleton("ILogger", Logger);
 container.registerSingleton("IAssetService", AssetService);
 container.registerSingleton("IInputTracker", InputTracker);
-container.registerSingleton("Core", Core, "ILogger", "IAssetService", "IInputTracker",
+container.registerSingleton("ICore", Core, "ILogger", "IAssetService", "IInputTracker",
 	Factory("ICamera"), Factory("IRenderer"), Factory("IWorld"), Factory("IPlayer"));
 container.registerSingleton("ICamera", Camera);
 container.registerSingleton("IRenderer", Renderer);
@@ -27,4 +27,4 @@ container.registerSingleton("IWorld", World, "IMapLoader", "IWorldMeshBuilder");
 container.register("IMouseControls", MouseControls, "ICamera", "IInputTracker", "IWorld", "ILogger");
 container.register("IPlayer", Player, "IMouseControls", "ICamera", "IInputTracker", "IWorld", "ILogger");
 
-container.resolve("Core");
+container.resolve("ICore");

@@ -7,8 +7,9 @@ import IWorld from "./world/IWorld";
 import CoreState from "./CoreState";
 import IInputTracker from "./input-tracker/IInputTracker";
 import IPlayer from "./player/IPlayer";
+import ICore from "./ICore";
 
-export default class Core {
+export default class Core implements ICore {
 	private _assets: object | null;
 	private _state: CoreState;
 	private _nextState: CoreState | null;
