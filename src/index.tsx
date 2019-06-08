@@ -1,6 +1,6 @@
 import "./index.scss";
-import Container, { Factory } from "./ioc-container/Container";
-import Logger from "./logger/Logger";
+import Container, { Factory } from "./common/ioc-container/Container";
+import Logger from "./common/logger/Logger";
 import AssetService from "./asset/AssetService";
 import InputTracker from "./input-tracker/InputTracker";
 import Camera from "./camera/Camera";

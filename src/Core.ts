@@ -1,4 +1,4 @@
-import ILogger from "./logger/ILogger";
+import ILogger from "./common/logger/ILogger";
 import IAssetService from "./asset/IAssetService";
 import ICamera from "./camera/ICamera";
 import IRenderer from "./renderer/IRenderer";

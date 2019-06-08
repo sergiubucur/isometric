@@ -3,7 +3,7 @@ import * as THREE from "three";
 import ICamera from "../../camera/ICamera";
 import IInputTracker from "../../input-tracker/IInputTracker";
 import IWorld from "../../world/IWorld";
-import ILogger from "../../logger/ILogger";
+import ILogger from "../../common/logger/ILogger";
 import IMouseControls from "./IMouseControls";
 
 export default class MouseControls implements IMouseControls {

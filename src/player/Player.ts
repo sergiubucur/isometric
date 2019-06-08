@@ -5,7 +5,7 @@ import IMouseControls from "./mouse-controls/IMouseControls";
 import ICamera from "../camera/ICamera";
 import IInputTracker from "../input-tracker/IInputTracker";
 import IWorld from "../world/IWorld";
-import ILogger from "../logger/ILogger";
+import ILogger from "../common/logger/ILogger";
 import CellType from "../world/map/CellType";
 
 const Speed = 0.25;
