@@ -7,23 +7,26 @@ import IMap from "./IMap";
 export default class Map implements IMap {
 	size: number;
 	cells: Cell[][];
-
-	private _occupiedCells: number[][];
+	occupiedCells: number[][];
 
 	constructor(size: number, cells: Cell[][]) {
 		this.size = size;
 		this.cells = cells;
 
-		this._occupiedCells = [];
+		this.initOccupiedCells();
+	}
 
-		for (let i = 0; i < size; i++) {
+	private initOccupiedCells() {
+		this.occupiedCells = [];
+
+		for (let i = 0; i < this.size; i++) {
 			const row = [];
 
-			for (let j = 0; j < size; j++) {
+			for (let j = 0; j < this.size; j++) {
 				row.push(0);
 			}
 
-			this._occupiedCells.push(row);
+			this.occupiedCells.push(row);
 		}
 	}
 
@@ -51,17 +54,17 @@ export default class Map implements IMap {
 			return false;
 		}
 
-		const occupiedCell = this._occupiedCells[y][x];
+		const occupiedCell = this.occupiedCells[y][x];
 		const isOccupied = occupiedCell !== 0 && occupiedCell !== id;
 
 		return !isOccupied && cell.type === CellType.EmptyFloor;
 	}
 
 	occupyCell(x: number, y: number, id: number) {
-		this._occupiedCells[y][x] = id;
+		this.occupiedCells[y][x] = id;
 	}
 
 	vacateCell(x: number, y: number) {
-		this._occupiedCells[y][x] = 0;
+		this.occupiedCells[y][x] = 0;
 	}
 }

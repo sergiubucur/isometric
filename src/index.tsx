@@ -23,7 +23,7 @@ container.registerSingleton("IAssetService", AssetService);
 container.registerSingleton("IInputTracker", InputTracker);
 container.registerSingleton("Core", Core,
 	"ILogger", "IAssetService", "IInputTracker", Factory("ICamera"), Factory("IRenderer"), Factory("IWorld"), Factory("IPlayer"),
-	Factory("IMonster"), Factory("UIRoot"));
+	Factory("IMonster"), Factory("IUIRoot"));
 container.registerSingleton("ICamera", Camera);
 container.registerSingleton("IRenderer", Renderer);
 container.register("IWorldMeshBuilder", WorldMeshBuilder);
@@ -35,6 +35,6 @@ container.registerSingleton("IPlayer", Player,
 container.register("IMonster", Monster, "IWorld", "IPlayer", "IEntityId", "IEntityMovementEngine");
 container.registerSingleton("IEntityId", EntityId);
 container.register("IEntityMovementEngine", EntityMovementEngine, "IWorld");
-container.registerSingleton("UIRoot", UIRoot, "IWorld", "IPlayer");
+container.registerSingleton("IUIRoot", UIRoot, "IWorld", "IPlayer");
 
 container.resolve("Core");

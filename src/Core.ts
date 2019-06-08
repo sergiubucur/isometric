@@ -10,7 +10,7 @@ import CoreState from "./CoreState";
 import IInputTracker from "./input-tracker/IInputTracker";
 import IPlayer from "./entity/player/IPlayer";
 import IMonster from "./entity/monster/IMonster";
-import UIRoot from "./ui/UIRoot";
+import IUIRoot from "./ui/IUIRoot";
 
 export default class Core {
 	private _assets: object | null;
@@ -21,7 +21,7 @@ export default class Core {
 	private _renderer: IRenderer | null;
 	private _player: IPlayer | null;
 	private _monsters: IMonster[] | null;
-	private _uiRoot: UIRoot | null;
+	private _uiRoot: IUIRoot | null;
 
 	constructor(private _logger: ILogger,
 		private _assetService: IAssetService,
@@ -31,7 +31,7 @@ export default class Core {
 		private _worldFactory: () => IWorld & IWorldComponent,
 		private _playerFactory: () => IPlayer,
 		private _monsterFactory: () => IMonster,
-		private _uiRootFactory: () => UIRoot) {
+		private _uiRootFactory: () => IUIRoot) {
 
 		this._assets = null;
 		this._state = CoreState.None;

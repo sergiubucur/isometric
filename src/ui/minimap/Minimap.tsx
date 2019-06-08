@@ -12,7 +12,8 @@ interface Props {
 type CellInfo = {
 	id: number,
 	type: CellType,
-	passable: boolean
+	player: boolean,
+	monster: boolean
 };
 
 const CellSize = 8;
@@ -37,8 +38,12 @@ export default class Minimap extends Component<Props> {
 		if (cell.type === CellType.Void) {
 			background = "#fff";
 		} else {
-			if (!cell.passable) {
+			if (cell.player) {
 				background = "#bada55";
+			} else {
+				if (cell.monster) {
+					background = "#ff0000";
+				}
 			}
 		}
 
@@ -48,7 +53,7 @@ export default class Minimap extends Component<Props> {
 	}
 
 	render() {
-		const { world } = this.props;
+		const { world, player } = this.props;
 		const size = world.map.size;
 
 		const styles: any = {
@@ -58,16 +63,20 @@ export default class Minimap extends Component<Props> {
 			width: CellSize * size,
 			height: CellSize * size,
 			display: "flex",
-			flexWrap: "wrap"
+			flexWrap: "wrap",
+			opacity: 0.75
 		};
 
 		const cells = [];
 		for (let y = 0; y < size; y++) {
 			for (let x = 0; x < size; x++) {
+				const id = world.map.occupiedCells[y][x];
+
 				cells.push({
 					id: y * size + x,
 					type: world.map.cells[y][x].type,
-					passable: world.map.isCellPassable(x, y)
+					player: id === player.id,
+					monster: id !== player.id && id !== 0
 				});
 			}
 		}
