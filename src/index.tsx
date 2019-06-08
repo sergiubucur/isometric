@@ -13,22 +13,26 @@ import Player from "./entity/player/Player";
 import Core from "./Core";
 import Monster from "./entity/monster/Monster";
 import EntityId from "./entity/entity-id/EntityId";
+import EntityMovementEngine from "./entity/movement/EntityMovementEngine";
 
 const container = new Container();
 
 container.registerSingleton("ILogger", Logger);
 container.registerSingleton("IAssetService", AssetService);
 container.registerSingleton("IInputTracker", InputTracker);
-container.registerSingleton("ICore", Core, "ILogger", "IAssetService", "IInputTracker",
-	Factory("ICamera"), Factory("IRenderer"), Factory("IWorld"), Factory("IPlayer"), Factory("IMonster"));
+container.registerSingleton("ICore", Core,
+	"ILogger", "IAssetService", "IInputTracker", Factory("ICamera"), Factory("IRenderer"), Factory("IWorld"), Factory("IPlayer"),
+	Factory("IMonster"));
 container.registerSingleton("ICamera", Camera);
 container.registerSingleton("IRenderer", Renderer);
 container.register("IWorldMeshBuilder", WorldMeshBuilder);
 container.register("IMapLoader", MapLoader);
 container.registerSingleton("IWorld", World, "IMapLoader", "IWorldMeshBuilder");
 container.register("IMouseControls", MouseControls, "ICamera", "IInputTracker", "IWorld", "ILogger");
-container.registerSingleton("IPlayer", Player, "IMouseControls", "ICamera", "IInputTracker", "IWorld", "ILogger", "IEntityId");
-container.register("IMonster", Monster, "IWorld", "IPlayer", "IEntityId");
+container.registerSingleton("IPlayer", Player,
+	"IMouseControls", "ICamera", "IInputTracker", "IWorld", "ILogger", "IEntityId", "IEntityMovementEngine");
+container.register("IMonster", Monster, "IWorld", "IPlayer", "IEntityId", "IEntityMovementEngine");
 container.registerSingleton("IEntityId", EntityId);
+container.register("IEntityMovementEngine", EntityMovementEngine, "IWorld");
 
 container.resolve("ICore");
