@@ -8,9 +8,9 @@ import IWorldComponent from "./world/IWorldComponent";
 import IWorld from "./world/IWorld";
 import CoreState from "./CoreState";
 import IInputTracker from "./input-tracker/IInputTracker";
-import IPlayer from "./player/IPlayer";
+import IPlayer from "./entity/player/IPlayer";
 import ICore from "./ICore";
-import IMonster from "./monster/IMonster";
+import IMonster from "./entity/monster/IMonster";
 
 export default class Core implements ICore {
 	private _assets: object | null;

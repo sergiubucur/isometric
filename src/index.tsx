@@ -8,11 +8,11 @@ import Renderer from "./renderer/Renderer";
 import WorldMeshBuilder from "./world/mesh-builder/WorldMeshBuilder";
 import MapLoader from "./world/map/loader/MapLoader";
 import World from "./world/World";
-import MouseControls from "./player/mouse-controls/MouseControls";
-import Player from "./player/Player";
+import MouseControls from "./entity/player/mouse-controls/MouseControls";
+import Player from "./entity/player/Player";
 import Core from "./Core";
-import Monster from "./monster/Monster";
-import EntityId from "./common/entity-id/EntityId";
+import Monster from "./entity/monster/Monster";
+import EntityId from "./entity/entity-id/EntityId";
 
 const container = new Container();
 
