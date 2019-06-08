@@ -95,26 +95,28 @@ export default class Player implements IPlayer {
 	}
 
 	private canMove(position: THREE.Vector3) {
-		const offsets = [
-			{ x: -1, z: -1 },
-			{ x: 0, z: -1 },
-			{ x: 1, z: -1 },
-			{ x: -1, z: 0 },
-			{ x: 0, z: 0 },
-			{ x: 1, z: 0 },
-			{ x: -1, z: 1 },
-			{ x: 0, z: 1 },
-			{ x: 1, z: 1 },
-		];
-
-		const size = 1.5;
+		const size = 2;
 		const radius = size / 2;
 
-		for (let i = 0; i < offsets.length; i++) {
-			const nextCell = this.getNextCell(position, offsets[i].x * radius, offsets[i].z * radius);
+		const p0 = position.clone();
+		p0.x -= radius;
+		p0.z -= radius;
 
-			if (!nextCell || nextCell.type !== CellType.EmptyFloor) {
-				return false;
+		const c0 = this._world.map.convertToMapPosition(p0);
+
+		const p1 = position.clone();
+		p1.x += radius;
+		p1.z += radius;
+
+		const c1 = this._world.map.convertToMapPosition(p1);
+
+		for (let x = c0.x; x <= c1.x; x++) {
+			for (let z = c0.z; z <= c1.z; z++) {
+				const nextCell = this._world.map.getCell(x, z);
+
+				if (!nextCell || nextCell.type !== CellType.EmptyFloor) {
+					return false;
+				}
 			}
 		}
 
