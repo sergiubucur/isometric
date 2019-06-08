@@ -13,7 +13,6 @@ const TeleportCooldown = 17;
 
 export default class Player implements IPlayer {
 	private _position: THREE.Vector3;
-	private _mapPosition: THREE.Vector3;
 	private _velocity: THREE.Vector3;
 	private _target: THREE.Vector3;
 	private _steps: number;
@@ -28,7 +27,6 @@ export default class Player implements IPlayer {
 		this._mouseControls.onRightClick = (mousePosition) => this.handleRightClick(mousePosition);
 
 		this._position = new THREE.Vector3(Math.floor(this._world.map.size / 2), 0, Math.floor(this._world.map.size / 2));
-		this._mapPosition = this._position.clone();
 		this._velocity = new THREE.Vector3();
 		this._target = new THREE.Vector3();
 		this._steps = 0;
@@ -144,7 +142,6 @@ export default class Player implements IPlayer {
 			}
 		}
 
-		this._mapPosition = this._world.map.convertToMapPosition(this._position);
 		this._camera.setPosition(this._position);
 		this.updateMeshPosition();
 	}
