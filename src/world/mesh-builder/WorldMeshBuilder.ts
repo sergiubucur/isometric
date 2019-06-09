@@ -84,13 +84,13 @@ export default class WorldMeshBuilder implements IWorldMeshBuilder {
 	private getWallGeometry(edge: Edge) {
 		const geometry = new THREE.Geometry();
 
+		geometry.vertices.push(new THREE.Vector3(edge.x0 - CellSize / 2, 0, edge.y0 - CellSize / 2));
 		geometry.vertices.push(new THREE.Vector3(edge.x0 - CellSize / 2, WallHeight, edge.y0 - CellSize / 2));
-		geometry.vertices.push(new THREE.Vector3(edge.x1 - CellSize / 2, WallHeight, edge.y0 - CellSize / 2));
 		geometry.vertices.push(new THREE.Vector3(edge.x1 - CellSize / 2, 0, edge.y1 - CellSize / 2));
 
 		geometry.vertices.push(new THREE.Vector3(edge.x0 - CellSize / 2, WallHeight, edge.y0 - CellSize / 2));
+		geometry.vertices.push(new THREE.Vector3(edge.x1 - CellSize / 2, WallHeight, edge.y1 - CellSize / 2));
 		geometry.vertices.push(new THREE.Vector3(edge.x1 - CellSize / 2, 0, edge.y1 - CellSize / 2));
-		geometry.vertices.push(new THREE.Vector3(edge.x0 - CellSize / 2, 0, edge.y1 - CellSize / 2));
 
 		geometry.faces.push(new THREE.Face3(2, 1, 0));
 		geometry.faces.push(new THREE.Face3(5, 4, 3));

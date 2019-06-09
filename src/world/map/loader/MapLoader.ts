@@ -203,14 +203,10 @@ export default class MapLoader implements IMapLoader {
 		let edges: Edge[] = [];
 
 		const addEdge = (x0: number, y0: number, x1: number, y1: number, type: CellType, toAdd: Edge[]) => {
-			toAdd.push({ x0, y0, x1, y1, type });
+			toAdd.push(ensureEdgeDirection({ x0, y0, x1, y1, type }));
 		};
 
-		const cloneEdge = (e: Edge) => {
-			return { x0: e.x0, y0: e.y0, x1: e.x1, y1: e.y1, type: e.type };
-		};
-
-		const rotateEdge = (e: Edge) => {
+		const ensureEdgeDirection = (e: Edge) => {
 			if (e.x0 > e.x1) {
 				let aux = e.x0;
 				e.x0 = e.x1;
@@ -231,7 +227,7 @@ export default class MapLoader implements IMapLoader {
 			const toRemove: Edge[] = [];
 
 			for (let i = 0; i < edges.length; i++) {
-				let e0 = rotateEdge(cloneEdge(edges[i]));
+				const e0 = edges[i];
 				const points: Point[] = [];
 
 				for (let j = 0; j < edges.length; j++) {
@@ -239,7 +235,7 @@ export default class MapLoader implements IMapLoader {
 						continue;
 					}
 
-					const e1 = rotateEdge(cloneEdge(edges[j]));
+					const e1 = edges[j];
 
 					const notIntersecting = e1.x1 < e0.x0 || e1.x0 > e0.x1 || e1.y1 < e0.y0 || e1.y0 > e0.y1;
 					if (notIntersecting) {
@@ -265,7 +261,6 @@ export default class MapLoader implements IMapLoader {
 				}
 
 				if (points.length > 0) {
-					e0 = edges[i];
 					toRemove.push(e0);
 
 					if (e0.x0 < e0.x1) {
@@ -281,19 +276,6 @@ export default class MapLoader implements IMapLoader {
 						}
 
 						addEdge(p1.x, p1.y, e0.x1, e0.y1, e0.type, toAdd);
-					} else {
-						points.sort((a, b) => b.x - a.x);
-
-						let p0 = { x: e0.x1, y: e0.y1 };
-						let p1;
-
-						for (let i = points.length - 1; i >= 0; i--) {
-							p1 = points[i];
-							addEdge(p0.x, p0.y, p1.x, p1.y, e0.type, toAdd);
-							p0 = p1;
-						}
-
-						addEdge(p1.x, p1.y, e0.x0, e0.y0, e0.type, toAdd);
 					}
 				}
 			}
