@@ -37,7 +37,7 @@ export default class World implements IWorld, IWorldComponent {
 		const result = this._mapLoader.loadMap(this._assetService.assets.test.content as HTMLImageElement);
 		this.map = result.map;
 
-		const worldMesh = this._worldMeshBuilder.buildWorldMesh(result.map, result.rectangles);
+		const worldMesh = this._worldMeshBuilder.buildWorldMesh(result);
 		this.scene.add(worldMesh);
 	}
 

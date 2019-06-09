@@ -1,5 +1,5 @@
-import { Result } from "./MapLoader";
+import { MapLoaderResult } from "./MapLoader";
 
 export default interface IMapLoader {
-	loadMap(source: HTMLImageElement): Result;
+	loadMap(source: HTMLImageElement): MapLoaderResult;
 }

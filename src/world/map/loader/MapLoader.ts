@@ -22,6 +22,11 @@ const CellTypeColorMapping: { [key: number]: Color } = {
 	[CellType.EmptyFloor]: { r: 192, g: 0, b: 0, a: 255 },
 };
 
+type Point = {
+	x: number,
+	y: number
+};
+
 type Corner = {
 	x: number,
 	y: number,
@@ -37,13 +42,16 @@ export type Rectangle = {
 	type: CellType
 };
 
-export type Result = {
+export type Edge = Rectangle;
+
+export type MapLoaderResult = {
 	map: Map;
 	rectangles: Rectangle[];
+	edges: Edge[];
 };
 
 export default class MapLoader implements IMapLoader {
-	loadMap(source: HTMLImageElement): Result {
+	loadMap(source: HTMLImageElement): MapLoaderResult {
 		const data = this.getImageData(source);
 
 		const size = source.width;
@@ -65,15 +73,16 @@ export default class MapLoader implements IMapLoader {
 			cells.push(row);
 		}
 
-		const rectangles = this.getMeshDefinitions(cells);
+		const { rectangles, edges } = this.getMeshDefinitions(cells);
 
 		return {
 			map: new Map(size, cells),
-			rectangles
+			rectangles,
+			edges
 		};
 	}
 
-	private getMeshDefinitions(cells: Cell[][]) {
+	private getMeshDefinitions(cells: Cell[][]): { rectangles: Rectangle[], edges: Edge[] } {
 		const size = cells.length;
 
 		const canvas = this.getCanvas(cells);
@@ -84,21 +93,62 @@ export default class MapLoader implements IMapLoader {
 		const data = imageData.data;
 
 		let rectangles = this.processCells(cells, data);
+		let edges = this.getEdges(rectangles);
 
-		// const drawRectangle = (i: number) => {
-		// 	if (i >= rectangles.length) {
-		// 		return;
-		// 	}
+		// this.debugDrawRectangles(ctx, imageData, size, rectangles, 20).then(() => {
+		// 	this.debugDrawEdges(ctx, imageData, size, edges, 20);
+		// });
 
-		// 	this.drawRectangle(data, size, rectangles[i]);
-		// 	ctx.putImageData(imageData, 0, 0);
+		return {
+			rectangles,
+			edges
+		};
+	}
 
-		// 	setTimeout(() => drawRectangle(i + 1), 200);
-		// }
+	private debugDrawRectangles(ctx: CanvasRenderingContext2D, imageData: ImageData, size: number, rectangles: Rectangle[], delay = 0) {
+		return new Promise((resolve) => {
+			const drawRectangle = (i: number) => {
+				if (i >= rectangles.length) {
+					resolve();
+					return;
+				}
 
-		// drawRectangle(0);
+				this.drawRectangle(imageData.data, size, rectangles[i]);
+				ctx.putImageData(imageData, 0, 0);
 
-		return rectangles;
+				setTimeout(() => drawRectangle(i + 1), delay);
+			}
+
+			drawRectangle(0);
+		});
+	}
+
+	private debugDrawEdges(ctx: CanvasRenderingContext2D, imageData: ImageData, size: number, edges: Edge[], delay = 0) {
+		return new Promise((resolve) => {
+			const drawEdge = (i: number) => {
+				if (i >= edges.length) {
+					resolve();
+					return;
+				}
+
+				const edge = edges[i];
+
+				if (edge.type === CellType.Concrete) {
+					ctx.strokeStyle = "#ff0000";
+				} else {
+					ctx.strokeStyle = "#0080ff";
+				}
+
+				ctx.beginPath();
+				ctx.moveTo(edge.x0, edge.y0);
+				ctx.lineTo(edge.x1, edge.y1);
+				ctx.stroke();
+
+				setTimeout(() => drawEdge(i + 1), delay);
+			}
+
+			drawEdge(0);
+		});
 	}
 
 	private getCanvas(cells: Cell[][]): HTMLCanvasElement {
@@ -127,15 +177,15 @@ export default class MapLoader implements IMapLoader {
 
 				switch (cell.type) {
 					case CellType.Void:
-						this.putPixel(data, size, x, y, 0, 0, 0, 255);
+						this.debugPutPixel(data, size, x, y, 0, 0, 0, 255);
 						break;
 
 					case CellType.Concrete:
-						this.putPixel(data, size, x, y, 64, 64, 64, 255);
+						this.debugPutPixel(data, size, x, y, 64, 64, 64, 255);
 						break;
 
 					case CellType.EmptyFloor:
-						this.putPixel(data, size, x, y, 255, 255, 255, 255);
+						this.debugPutPixel(data, size, x, y, 255, 255, 255, 255);
 						break;
 
 					default:
@@ -149,7 +199,164 @@ export default class MapLoader implements IMapLoader {
 		return canvas;
 	}
 
-	private putPixel(buffer: Uint8ClampedArray, size: number, x: number, y: number, r: number, g: number, b: number, a: number) {
+	private getEdges(rectangles: Rectangle[]) {
+		let edges: Edge[] = [];
+
+		const addEdge = (x0: number, y0: number, x1: number, y1: number, type: CellType, toAdd: Edge[]) => {
+			toAdd.push({ x0, y0, x1, y1, type });
+		};
+
+		const cloneEdge = (e: Edge) => {
+			return { x0: e.x0, y0: e.y0, x1: e.x1, y1: e.y1, type: e.type };
+		};
+
+		const rotateEdge = (e: Edge) => {
+			if (e.x0 > e.x1) {
+				let aux = e.x0;
+				e.x0 = e.x1;
+				e.x1 = aux;
+			}
+
+			if (e.y0 > e.y1) {
+				let aux = e.y0;
+				e.y0 = e.y1;
+				e.y1 = aux;
+			}
+
+			return e;
+		};
+
+		const splitIntersectingEdges = () => {
+			const toAdd: Edge[] = [];
+			const toRemove: Edge[] = [];
+
+			for (let i = 0; i < edges.length; i++) {
+				let e0 = rotateEdge(cloneEdge(edges[i]));
+				const points: Point[] = [];
+
+				for (let j = 0; j < edges.length; j++) {
+					if (i === j) {
+						continue;
+					}
+
+					const e1 = rotateEdge(cloneEdge(edges[j]));
+
+					const notIntersecting = e1.x1 < e0.x0 || e1.x0 > e0.x1 || e1.y1 < e0.y0 || e1.y0 > e0.y1;
+					if (notIntersecting) {
+						continue;
+					}
+
+					const parallel = (e0.x0 === e0.x1 && e1.x0 === e1.x1) || (e0.y0 === e0.y1 && e1.y0 === e1.y1)
+					if (parallel) {
+						continue;
+					}
+
+					const intersectionPointIsEdgeVertex = (e0.x0 === e1.x0 && e0.y0 === e1.y0) || (e0.x1 === e1.x1 && e0.y1 === e1.y1)
+						|| (e0.x1 === e1.x0 && e0.y1 === e1.y0) || (e0.x0 === e1.x1 && e0.y0 === e1.y1);
+					if (intersectionPointIsEdgeVertex) {
+						continue;
+					}
+
+					if ((e0.x0 < e1.x0 && e1.x0 < e0.x1) || (e0.y0 < e1.y0 && e1.y0 < e0.y1)) {
+						if (!points.find(p => p.x === e1.x0 && p.y === e1.y0)) {
+							points.push({ x: e1.x0, y: e1.y0 });
+						}
+					}
+				}
+
+				if (points.length > 0) {
+					e0 = edges[i];
+					toRemove.push(e0);
+
+					if (e0.x0 < e0.x1) {
+						points.sort((a, b) => a.x - b.x);
+
+						let p0 = { x: e0.x0, y: e0.y0 };
+						let p1;
+
+						for (let i = 0; i < points.length; i++) {
+							p1 = points[i];
+							addEdge(p0.x, p0.y, p1.x, p1.y, e0.type, toAdd);
+							p0 = p1;
+						}
+
+						addEdge(p1.x, p1.y, e0.x1, e0.y1, e0.type, toAdd);
+					} else {
+						points.sort((a, b) => b.x - a.x);
+
+						let p0 = { x: e0.x1, y: e0.y1 };
+						let p1;
+
+						for (let i = points.length - 1; i >= 0; i--) {
+							p1 = points[i];
+							addEdge(p0.x, p0.y, p1.x, p1.y, e0.type, toAdd);
+							p0 = p1;
+						}
+
+						addEdge(p1.x, p1.y, e0.x0, e0.y0, e0.type, toAdd);
+					}
+				}
+			}
+
+			edges = edges.filter(x => !toRemove.find(y => y === x));
+			edges.push(...toAdd);
+		}
+
+		const edgeVerticesEquals = (e0: Edge, e1: Edge) => {
+			return (e0.x0 === e1.x0 && e0.y0 === e1.y0 && e0.x1 === e1.x1 && e0.y1 === e1.y1)
+				|| (e0.x0 === e1.x1 && e0.y0 === e1.y1 && e0.x1 === e1.x0 && e0.y1 === e1.y0);
+		};
+
+		const reduceToCommonEdges = () => {
+			const commonEdges: Edge[] = [];
+
+			for (let i = 0; i < edges.length; i++) {
+				const e0 = edges[i];
+
+				for (let j = 0; j < edges.length; j++) {
+					if (i === j) {
+						continue;
+					}
+
+					const e1 = edges[j];
+
+					if (e0.type !== e1.type && edgeVerticesEquals(e0, e1)) {
+						if (e0.type === CellType.Concrete) {
+							const index = commonEdges.findIndex(e => edgeVerticesEquals(e, e1));
+
+							if (index > -1) {
+								commonEdges.splice(index, 1);
+							}
+
+							commonEdges.push(e0);
+						} else {
+							if (e0.type === CellType.EmptyFloor) {
+								if (!commonEdges.find(e => edgeVerticesEquals(e, e1))) {
+									commonEdges.push(e0);
+								}
+							}
+						}
+					}
+				}
+			}
+
+			edges = commonEdges;
+		};
+
+		rectangles.forEach(r => {
+			addEdge(r.x0, r.y0, r.x1, r.y0, r.type, edges);
+			addEdge(r.x1, r.y0, r.x1, r.y1, r.type, edges);
+			addEdge(r.x1, r.y1, r.x0, r.y1, r.type, edges);
+			addEdge(r.x0, r.y1, r.x0, r.y0, r.type, edges);
+		});
+
+		splitIntersectingEdges();
+		reduceToCommonEdges();
+
+		return edges;
+	}
+
+	private debugPutPixel(buffer: Uint8ClampedArray, size: number, x: number, y: number, r: number, g: number, b: number, a: number) {
 		const i = (y * size + x) * 4;
 
 		buffer[i] = r;
@@ -167,7 +374,7 @@ export default class MapLoader implements IMapLoader {
 					continue;
 				}
 
-				this.putPixel(buffer, size, x, y, color.r, color.g, color.b, color.a);
+				this.debugPutPixel(buffer, size, x, y, color.r, color.g, color.b, color.a);
 			}
 		}
 	}
@@ -252,9 +459,7 @@ export default class MapLoader implements IMapLoader {
 				type: topLeftCorner.type
 			};
 
-			if (topLeftCorner.type !== CellType.Void) {
-				rectangles.push(rectangle);
-			}
+			rectangles.push(rectangle);
 
 			this.tryAddCorner(corners, cells, rectangle.x1, rectangle.y0);
 			this.tryAddCorner(corners, cells, rectangle.x1, rectangle.y1);
