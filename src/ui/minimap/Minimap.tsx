@@ -11,10 +11,11 @@ interface Props {
 	logger: ILogger
 }
 
-const Size = 48;
-const CellSize = 4;
+const Size = 32;
+const CellSize = 8;
 const RefreshRateMs = Math.floor(1 / 30 * 1000);
 
+// TODO: reimplement using canvas or something faster
 export default class Minimap extends Component<Props> {
 	private _intervalId: NodeJS.Timeout;
 	private _ref: RefObject<HTMLDivElement>;
