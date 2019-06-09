@@ -44,8 +44,6 @@ export default class MapLoader implements IMapLoader {
 		ctx.drawImage(image, 0, 0);
 		const imageData = ctx.getImageData(0, 0, image.width, image.height);
 
-		document.body.appendChild(canvas);
-
 		return imageData.data;
 	}
 }
