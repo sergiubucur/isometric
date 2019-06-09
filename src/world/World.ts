@@ -18,7 +18,6 @@ export default class World implements IWorld, IWorldComponent {
 	init(): Promise<void> {
 		return new Promise((resolve) => {
 			this.initMap();
-			this.initWorldMesh();
 			this.initLights();
 
 			setTimeout(() => {
@@ -35,12 +34,10 @@ export default class World implements IWorld, IWorldComponent {
 	}
 
 	private initMap() {
-		this.map = this._mapLoader.loadMap(this._assetService.assets.test.content as HTMLImageElement);
-	}
+		const result = this._mapLoader.loadMap(this._assetService.assets.test.content as HTMLImageElement);
+		this.map = result.map;
 
-	private initWorldMesh() {
-		const worldMesh = this._worldMeshBuilder.buildWorldMesh(this.map);
-
+		const worldMesh = this._worldMeshBuilder.buildWorldMesh(result.map, result.rectangles);
 		this.scene.add(worldMesh);
 	}
 

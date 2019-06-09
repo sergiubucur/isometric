@@ -2,13 +2,16 @@ import * as THREE from "three";
 
 import Map from "../map/Map";
 import CellType from "../map/CellType";
+import { Rectangle } from "../map/loader/MapLoader";
 
+const CellSize = 1;
 const WallHeight = 2;
 const FloorColor = new THREE.Color(0.5, 0.5, 0.5);
 const WallColor = new THREE.Color(0.35, 0.35, 0.35);
 
 export default class WorldMeshBuilder {
 	private _map: Map;
+	private _rectangles: Rectangle[];
 	private _rootMesh: THREE.Object3D;
 	private _geometries: { [key: string]: THREE.BufferGeometry };
 	private _materials: { [key: string]: THREE.Material };
@@ -20,37 +23,46 @@ export default class WorldMeshBuilder {
 		this.initGeometriesAndMaterials();
 	}
 
-	buildWorldMesh(map: Map): THREE.Object3D {
+	buildWorldMesh(map: Map, rectangles: Rectangle[]): THREE.Object3D {
 		this._map = map;
+		this._rectangles = rectangles;
 		this._rootMesh = new THREE.Object3D();
 
-		for (let y = 0; y < this._map.size; y++) {
-			for (let x = 0; x < this._map.size; x++) {
-				const cell = this._map.cells[y][x];
+		rectangles.forEach(rectangle => {
+			const geometry = this.getFloorGeometry(rectangle);
+			const material = rectangle.type === CellType.EmptyFloor ? this._materials.floorConcrete : this._materials.ceilingConcrete;
 
-				let mesh;
-				switch (cell.type) {
-					case CellType.EmptyFloor:
-						mesh = this.getEmptyFloorCellMesh(cell, x, y);
-						break;
-
-					case CellType.Concrete:
-						mesh = this.getConcreteCellMesh(cell, x, y);
-						break;
-
-					default:
-						break;
-				}
-
-				if (mesh) {
-					this._rootMesh.add(mesh);
-				}
+			const floorMesh = new THREE.Mesh(geometry, material);
+			if (rectangle.type === CellType.Concrete) {
+				floorMesh.position.y = WallHeight;
 			}
-		}
+
+			this._rootMesh.add(floorMesh);
+		});
 
 		console.log("world mesh count", this._rootMesh.children.length);
 
 		return this._rootMesh;
+	}
+
+	private getFloorGeometry(rectangle: Rectangle) {
+		const geometry = new THREE.Geometry();
+
+		geometry.vertices.push(new THREE.Vector3(rectangle.x0 - CellSize / 2, 0, rectangle.y0 - CellSize / 2));
+		geometry.vertices.push(new THREE.Vector3(rectangle.x1 - CellSize / 2, 0, rectangle.y0 - CellSize / 2));
+		geometry.vertices.push(new THREE.Vector3(rectangle.x1 - CellSize / 2, 0, rectangle.y1 - CellSize / 2));
+
+		geometry.vertices.push(new THREE.Vector3(rectangle.x0 - CellSize / 2, 0, rectangle.y0 - CellSize / 2));
+		geometry.vertices.push(new THREE.Vector3(rectangle.x1 - CellSize / 2, 0, rectangle.y1 - CellSize / 2));
+		geometry.vertices.push(new THREE.Vector3(rectangle.x0 - CellSize / 2, 0, rectangle.y1 - CellSize / 2));
+
+		geometry.faces.push(new THREE.Face3(2, 1, 0));
+		geometry.faces.push(new THREE.Face3(5, 4, 3));
+
+		geometry.mergeVertices();
+		geometry.computeVertexNormals();
+
+		return new THREE.BufferGeometry().fromGeometry(geometry);
 	}
 
 	private initGeometriesAndMaterials() {
@@ -128,17 +140,5 @@ export default class WorldMeshBuilder {
 
 			cellMesh.add(leftWallMesh);
 		}
-	}
-
-	private getConcreteCellMesh(cell: object, x: number, y: number): THREE.Object3D {
-		const cellMesh = new THREE.Object3D();
-		cellMesh.position.set(x, 0, y);
-
-		const ceiling = new THREE.Mesh(this._geometries.concrete, this._materials.ceilingConcrete);
-		ceiling.position.y = WallHeight;
-		ceiling.rotation.x = -Math.PI / 2;
-		cellMesh.add(ceiling);
-
-		return cellMesh;
 	}
 }
