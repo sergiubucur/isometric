@@ -35,6 +35,6 @@ container.registerSingleton("IPlayer", Player,
 container.register("IMonster", Monster, "IWorld", "IPlayer", "IEntityId", "IEntityMovementEngine");
 container.registerSingleton("IEntityId", EntityId);
 container.register("IEntityMovementEngine", EntityMovementEngine, "IWorld");
-container.registerSingleton("IUIRoot", UIRoot, "IWorld", "IPlayer");
+container.registerSingleton("IUIRoot", UIRoot, "IWorld", "IPlayer", "ILogger");
 
 container.resolve("Core");
