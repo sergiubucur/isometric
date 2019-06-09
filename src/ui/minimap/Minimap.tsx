@@ -69,12 +69,12 @@ export default class Minimap extends Component<Props> {
 				color.g = 64;
 				color.b = 64;
 
-				if (!cell) {
+				if (!cell || cell.type === CellType.Void) {
 					color.r = 0;
 					color.g = 0;
 					color.b = 0;
 				} else {
-					if (cell.type === CellType.Void) {
+					if (cell.type === CellType.Concrete) {
 						color.r = 255;
 						color.g = 255;
 						color.b = 255;
@@ -109,7 +109,7 @@ export default class Minimap extends Component<Props> {
 		data[i] = color.r;
 		data[i + 1] = color.g;
 		data[i + 2] = color.b;
-		data[i + 3] = 0;
+		data[i + 3] = 255;
 	}
 
 	render() {

@@ -1,5 +1,6 @@
 enum CellType {
 	Void = 1,
+	Concrete,
 	EmptyFloor
 };
 

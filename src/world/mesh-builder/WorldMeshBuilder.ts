@@ -29,15 +29,26 @@ export default class WorldMeshBuilder {
 				const cell = this._map.cells[y][x];
 
 				let mesh;
-				if (cell.type === CellType.EmptyFloor) {
-					mesh = this.getEmptyFloorCellMesh(cell, x, y);
-				} else {
-					mesh = this.getVoidCellMesh(cell, x, y);
+				switch (cell.type) {
+					case CellType.EmptyFloor:
+						mesh = this.getEmptyFloorCellMesh(cell, x, y);
+						break;
+
+					case CellType.Concrete:
+						mesh = this.getConcreteCellMesh(cell, x, y);
+						break;
+
+					default:
+						break;
 				}
 
-				this._rootMesh.add(mesh);
+				if (mesh) {
+					this._rootMesh.add(mesh);
+				}
 			}
 		}
+
+		console.log("world mesh count", this._rootMesh.children.length);
 
 		return this._rootMesh;
 	}
@@ -64,7 +75,7 @@ export default class WorldMeshBuilder {
 
 		const topAdjacentCell = this._map.getCell(x, y - 1);
 
-		if (!topAdjacentCell || topAdjacentCell.type === CellType.Void) {
+		if (!topAdjacentCell || topAdjacentCell.type === CellType.Void || topAdjacentCell.type === CellType.Concrete) {
 			const topWallMesh = new THREE.Mesh(this._geometries.concrete, this._materials.wallConcrete);
 
 			topWallMesh.scale.set(1, WallHeight, 1);
@@ -76,7 +87,7 @@ export default class WorldMeshBuilder {
 
 		const rightAdjacentCell = this._map.getCell(x + 1, y);
 
-		if (!rightAdjacentCell || rightAdjacentCell.type === CellType.Void) {
+		if (!rightAdjacentCell || rightAdjacentCell.type === CellType.Void || rightAdjacentCell.type === CellType.Concrete) {
 			const rightWallMesh = new THREE.Mesh(this._geometries.concrete, this._materials.wallConcrete);
 
 			rightWallMesh.scale.set(1, WallHeight, 1);
@@ -87,7 +98,7 @@ export default class WorldMeshBuilder {
 			cellMesh.add(rightWallMesh);
 		}
 
-		// this.addBottomAndLeftWalls(cellMesh, x, y);
+		this.addBottomAndLeftWalls(cellMesh, x, y);
 
 		return cellMesh;
 	}
@@ -95,7 +106,7 @@ export default class WorldMeshBuilder {
 	private addBottomAndLeftWalls(cellMesh: THREE.Object3D, x: number, y: number) {
 		const bottomAdjacentCell = this._map.getCell(x, y + 1);
 
-		if (!bottomAdjacentCell || bottomAdjacentCell.type === CellType.Void) {
+		if (!bottomAdjacentCell || bottomAdjacentCell.type === CellType.Void || bottomAdjacentCell.type === CellType.Concrete) {
 			const bottomWallMesh = new THREE.Mesh(this._geometries.concrete, this._materials.translucentWallConcrete);
 
 			bottomWallMesh.scale.set(1, WallHeight, 1);
@@ -107,7 +118,7 @@ export default class WorldMeshBuilder {
 
 		const leftAdjacentCell = this._map.getCell(x - 1, y);
 
-		if (!leftAdjacentCell || leftAdjacentCell.type === CellType.Void) {
+		if (!leftAdjacentCell || leftAdjacentCell.type === CellType.Void || leftAdjacentCell.type === CellType.Concrete) {
 			const leftWallMesh = new THREE.Mesh(this._geometries.concrete, this._materials.translucentWallConcrete);
 
 			leftWallMesh.scale.set(1, WallHeight, 1);
@@ -119,7 +130,7 @@ export default class WorldMeshBuilder {
 		}
 	}
 
-	private getVoidCellMesh(cell: object, x: number, y: number): THREE.Object3D {
+	private getConcreteCellMesh(cell: object, x: number, y: number): THREE.Object3D {
 		const cellMesh = new THREE.Object3D();
 		cellMesh.position.set(x, 0, y);
 

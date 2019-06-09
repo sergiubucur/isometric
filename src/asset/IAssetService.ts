@@ -1,3 +1,7 @@
+import { AssetManifest } from "./AssetManifest";
+
 export default interface IAssetService {
-	loadAssets() : Promise<object>;
+	readonly assets: AssetManifest;
+
+	loadAssets(): Promise<void>;
 }

@@ -40,7 +40,7 @@ export default class Player implements IPlayer {
 		this.id = this._entityId.getNewId();
 		this._teleportCooldown = 0;
 
-		const startPosition = new THREE.Vector3(Math.floor(this._world.map.size / 2), 0, Math.floor(this._world.map.size / 2));
+		const startPosition = new THREE.Vector3(16, 0, 16);
 		this._movementEngine.init(this.id, startPosition, Size, Speed);
 		this._movementEngine.afterPositionUpdate = () => {
 			this._camera.setPosition(this._movementEngine.position);

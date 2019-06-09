@@ -3,32 +3,28 @@ import Cell from "../Cell";
 import CellType from "../CellType";
 import IMapLoader from "./IMapLoader";
 
-export default class MapLoader implements IMapLoader {
-	loadMap(source: string): Map {
-		const data = source.split("\n").filter(x => x.length > 0);
+const ColorCellTypeMapping: { [key: string]: CellType } = {
+	"0,0,0": CellType.Void,
+	"64,64,64": CellType.Concrete,
+	"255,255,255": CellType.EmptyFloor
+};
 
-		const size = data.length;
+export default class MapLoader implements IMapLoader {
+	loadMap(source: HTMLImageElement): Map {
+		const data = this.getImageData(source);
+
+		const size = source.width;
 		const cells = [];
 
 		for (let y = 0; y < size; y++) {
 			const row = [];
 
-			for (let x = 0; x < size * 2; x += 2) {
-				const cellStr = data[y].substr(x, 2);
+			for (let x = 0; x < size; x++) {
 				const cell: Cell = { type: null };
 
-				switch (cellStr) {
-					case "..":
-						cell.type = CellType.Void;
-						break;
-
-					case "AB":
-						cell.type = CellType.EmptyFloor;
-						break;
-
-					default:
-						throw new Error("invalid cell");
-				}
+				const i = (y * size + x) * 4;
+				const colorStr = `${data[i]},${data[i + 1]},${data[i + 2]}`;
+				cell.type = ColorCellTypeMapping[colorStr];
 
 				row.push(cell);
 			}
@@ -37,5 +33,19 @@ export default class MapLoader implements IMapLoader {
 		}
 
 		return new Map(size, cells);
+	}
+
+	private getImageData(image: HTMLImageElement): Uint8ClampedArray {
+		const canvas = document.createElement("canvas");
+		canvas.width = image.width;
+		canvas.height = image.height;
+
+		const ctx = canvas.getContext("2d");
+		ctx.drawImage(image, 0, 0);
+		const imageData = ctx.getImageData(0, 0, image.width, image.height);
+
+		document.body.appendChild(canvas);
+
+		return imageData.data;
 	}
 }

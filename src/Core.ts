@@ -11,9 +11,9 @@ import IInputTracker from "./input-tracker/IInputTracker";
 import IPlayer from "./entity/player/IPlayer";
 import IMonster from "./entity/monster/IMonster";
 import IUIRoot from "./ui/IUIRoot";
+import CellType from "./world/map/CellType";
 
 export default class Core {
-	private _assets: object | null;
 	private _state: CoreState;
 	private _nextState: CoreState | null;
 	private _camera: ICamera | null;
@@ -33,7 +33,6 @@ export default class Core {
 		private _monsterFactory: () => IMonster,
 		private _uiRootFactory: () => IUIRoot) {
 
-		this._assets = null;
 		this._state = CoreState.None;
 		this._nextState = null;
 		this._camera = null;
@@ -130,8 +129,7 @@ export default class Core {
 	}
 
 	private load() {
-		this._assetService.loadAssets().then((assets) => {
-			this._assets = assets;
+		this._assetService.loadAssets().then(() => {
 			this._nextState = CoreState.Init;
 		});
 	}
@@ -152,17 +150,25 @@ export default class Core {
 			this._player = this._playerFactory();
 
 			this._monsters = [];
-			const rarity = 16;
 
 			for (let z = 0; z < this._world.map.size; z++) {
 				for (let x = 0; x < this._world.map.size; x++) {
-					if (x === 0 || x === this._world.map.size - 1 || z === 0 || z === this._world.map.size - 1) {
-						if (x % rarity === 0 && z % rarity === 0) {
-							this.addMonster(new THREE.Vector3(x, 0, z));
-						}
+					if (x < 64 && z < 64) {
+						continue;
+					}
+
+					const cell = this._world.map.getCell(x, z);
+					if (!cell || cell.type !== CellType.EmptyFloor) {
+						continue;
+					}
+
+					if (Math.random() < 0.01) {
+						this.addMonster(new THREE.Vector3(x, 0, z));
 					}
 				}
 			}
+
+			console.log("monster count", this._monsters.length);
 
 			this._uiRoot = this._uiRootFactory();
 			this._nextState = CoreState.Run;

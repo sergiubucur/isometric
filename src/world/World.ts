@@ -1,17 +1,17 @@
 import * as THREE from "three";
 
 import Map from "./map/Map";
-import TestMap from "./map/TestMap";
 import IWorldMeshBuilder from "./mesh-builder/IWorldMeshBuilder";
 import IWorld from "./IWorld";
 import IWorldComponent from "./IWorldComponent";
 import IMapLoader from "./map/loader/IMapLoader";
+import IAssetService from "../asset/IAssetService";
 
 export default class World implements IWorld, IWorldComponent {
 	readonly scene: THREE.Scene;
 	map: Map;
 
-	constructor(private _mapLoader: IMapLoader, private _worldMeshBuilder: IWorldMeshBuilder) {
+	constructor(private _assetService: IAssetService, private _mapLoader: IMapLoader, private _worldMeshBuilder: IWorldMeshBuilder) {
 		this.scene = new THREE.Scene();
 	}
 
@@ -35,7 +35,7 @@ export default class World implements IWorld, IWorldComponent {
 	}
 
 	private initMap() {
-		this.map = this._mapLoader.loadMap(TestMap);
+		this.map = this._mapLoader.loadMap(this._assetService.assets.test.content as HTMLImageElement);
 	}
 
 	private initWorldMesh() {
