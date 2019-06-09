@@ -19,6 +19,7 @@ type Color = {
 
 const Size = 48;
 const CellSize = 6;
+const Zoom = 4;
 
 export default class Minimap extends Component<Props> {
 	private _animationFrameId: number;
@@ -61,8 +62,8 @@ export default class Minimap extends Component<Props> {
 
 		for (let z = 0; z < Size; z++) {
 			for (let x = 0; x < Size; x++) {
-				let x0 = playerPosition.x - Size / 2 + x;
-				let z0 = playerPosition.z - Size / 2 + z;
+				let x0 = playerPosition.x + (-Size / 2 + x) * Zoom;
+				let z0 = playerPosition.z + (-Size / 2 + z) * Zoom;
 
 				const cell = world.map.getCell(x0, z0);
 				color.r = 64;
@@ -78,20 +79,6 @@ export default class Minimap extends Component<Props> {
 						color.r = 255;
 						color.g = 255;
 						color.b = 255;
-					} else {
-						const id = world.map.occupiedCells[z0][x0];
-
-						if (id === player.id) {
-							color.r = 186;
-							color.g = 218;
-							color.b = 85;
-						} else {
-							if (id !== player.id && id !== 0) {
-								color.r = 255;
-								color.g = 0;
-								color.b = 0;
-							}
-						}
 					}
 				}
 
@@ -132,10 +119,15 @@ export default class Minimap extends Component<Props> {
 			imageRendering: "pixelated"
 		};
 
-		const cells = [];
-		for (let i = 0; i < Size * Size; i++) {
-			cells.push(true);
-		}
+		const playerStyles: any = {
+			position: "absolute",
+			left: Size * CellSize / 2 - 4,
+			top: Size * CellSize / 2 - 4,
+			width: 8,
+			height: 8,
+			background: "#bada55",
+			borderRadius: 4
+		};
 
 		return(
 			<div style={styles}>
@@ -144,6 +136,8 @@ export default class Minimap extends Component<Props> {
 					width={Size}
 					height={Size}
 					style={canvasStyles}></canvas>
+
+				<div style={playerStyles}></div>
 			</div>
 		);
 	}

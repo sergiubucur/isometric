@@ -162,7 +162,7 @@ export default class Core {
 						continue;
 					}
 
-					if (Math.random() < 0.01) {
+					if (Math.random() < 0.0025) {
 						this.addMonster(new THREE.Vector3(x, 0, z));
 					}
 				}
