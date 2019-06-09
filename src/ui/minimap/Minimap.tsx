@@ -20,7 +20,6 @@ type Color = {
 const Size = 48;
 const CellSize = 6;
 
-// TODO: reimplement using canvas or something faster
 export default class Minimap extends Component<Props> {
 	private _animationFrameId: number;
 	private _canvasRef: RefObject<HTMLCanvasElement>;
