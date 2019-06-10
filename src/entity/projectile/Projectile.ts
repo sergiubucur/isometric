@@ -9,6 +9,7 @@ import IWorld from "../../world/IWorld";
 const Size = 1;
 const MeshRadius = 0.5;
 const YOffset = 2;
+const ExplosionAnimationTotalFrames = 10;
 
 export default class Projectile implements IProjectile {
 	id: number;
@@ -16,10 +17,13 @@ export default class Projectile implements IProjectile {
 
 	private _mesh: THREE.Mesh;
 	private _data: ProjectileData;
+	private _exploded: boolean;
+	private _explosionAnimationFrames: number;
 
 	constructor(private _world: IWorld, private _entityId: IEntityId, private _movementEngine: IEntityMovementEngine) {
 		this.id = this._entityId.getNewId();
 		this.toBeDeleted = false;
+		this._explosionAnimationFrames = ExplosionAnimationTotalFrames;
 	}
 
 	init(data: ProjectileData) {
@@ -37,6 +41,23 @@ export default class Projectile implements IProjectile {
 	}
 
 	update() {
+		if (this._exploded) {
+			if (this._explosionAnimationFrames > 0) {
+				this._explosionAnimationFrames--;
+
+				const value = this._explosionAnimationFrames / ExplosionAnimationTotalFrames;
+				const scale = Size + (this._data.splashRadius - Size) * (1 - value);
+
+				this._mesh.scale.set(scale, scale, scale);
+
+				if (this._explosionAnimationFrames === 0) {
+					this.toBeDeleted = true;
+				}
+			}
+
+			return;
+		}
+
 		this._movementEngine.move();
 	}
 
@@ -49,7 +70,7 @@ export default class Projectile implements IProjectile {
 		this._world.areaDamage(this._movementEngine.position, this._data.splashRadius, this._data.originEntityId);
 
 		this._movementEngine.stop();
-		this.toBeDeleted = true;
+		this._exploded = true;
 	}
 
 	private initMesh() {

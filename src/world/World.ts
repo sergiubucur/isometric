@@ -10,6 +10,7 @@ import CellType from "./map/CellType";
 import IMap from "./map/IMap";
 import IProjectile from "../entity/projectile/IProjectile";
 import ProjectileData from "../entity/projectile/ProjectileData";
+import ILogger from "../common/logger/ILogger";
 
 export default class World implements IWorld, IWorldComponent {
 	readonly scene: THREE.Scene;
@@ -19,7 +20,7 @@ export default class World implements IWorld, IWorldComponent {
 	private _projectiles: IProjectile[];
 
 	constructor(private _assetService: IAssetService, private _mapLoader: IMapLoader, private _worldMeshBuilder: IWorldMeshBuilder,
-		private _monsterFactory: () => IMonster, private _projectileFactory: () => IProjectile) {
+		private _monsterFactory: () => IMonster, private _projectileFactory: () => IProjectile, private _logger: ILogger) {
 
 		this.scene = new THREE.Scene();
 		this._monsters = [];
@@ -47,6 +48,8 @@ export default class World implements IWorld, IWorldComponent {
 		});
 
 		this.deleteMarkedEntities();
+
+		this._logger.logNumber("entities", this._monsters.length + this._projectiles.length + 1, 0);
 	}
 
 	deleteMarkedEntities() {
