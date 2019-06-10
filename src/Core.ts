@@ -16,6 +16,7 @@ export default class Core {
 	private _world: IWorld & IWorldComponent | null;
 	private _renderer: IRenderer | null;
 	private _player: IPlayer | null;
+	private _uiRoot: IUIRoot | null;
 
 	constructor(private _logger: ILogger,
 		private _assetService: IAssetService,
@@ -133,6 +134,7 @@ export default class Core {
 			this._player = this._playerFactory();
 			this._world.initMonsters();
 
+			this._uiRoot = this._uiRootFactory();
 			this._nextState = CoreState.Run;
 		});
 	}
