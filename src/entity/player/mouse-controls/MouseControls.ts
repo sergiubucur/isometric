@@ -7,8 +7,10 @@ import ILogger from "../../../common/logger/ILogger";
 import IMouseControls from "./IMouseControls";
 
 export default class MouseControls implements IMouseControls {
-	onLeftClick: (mousePosition: THREE.Vector3) => void;
-	onRightClick: (mousePosition: THREE.Vector3) => void;
+	mousePosition: THREE.Vector3;
+
+	onLeftClick: () => void;
+	onRightClick: () => void;
 
 	private _pointerMesh: THREE.Mesh;
 	private _plane: THREE.Plane;
@@ -34,19 +36,19 @@ export default class MouseControls implements IMouseControls {
 		const raycaster = new THREE.Raycaster();
 		raycaster.setFromCamera({ x: mouseX, y: mouseY }, this._camera.camera);
 
-		let mousePosition = new THREE.Vector3();
-		raycaster.ray.intersectPlane(this._plane, mousePosition);
+		this.mousePosition = new THREE.Vector3();
+		raycaster.ray.intersectPlane(this._plane, this.mousePosition);
 
-		mousePosition = this._world.map.convertToMapPosition(mousePosition);
+		this.mousePosition = this._world.map.convertToMapPosition(this.mousePosition);
 
 		if (this._inputTracker.leftMouseDown) {
-			this.onLeftClick(mousePosition);
+			this.onLeftClick();
 		}
 		if (this._inputTracker.rightMouseDown) {
-			this.onRightClick(mousePosition);
+			this.onRightClick();
 		}
 
-		this._pointerMesh.position.set(mousePosition.x, 0.05, mousePosition.z);
+		this._pointerMesh.position.set(this.mousePosition.x, 0.05, this.mousePosition.z);
 	}
 
 	private updateZoomLevel() {

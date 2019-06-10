@@ -43,8 +43,9 @@ export default class Monster implements IMonster {
 			if (this._deathAnimationFrames > 0) {
 				this._deathAnimationFrames--;
 
-				const value = 1 - (this._deathAnimationFrames / DeathAnimationTotalFrames);
-				this._mesh.rotation.x = value * (Math.PI / 2);
+				const value = this._deathAnimationFrames / DeathAnimationTotalFrames;
+				this._mesh.rotation.x = (1 - value) * (Math.PI / 2);
+				this._mesh.position.y = (MeshHeight / 2) * 0.5 + value * 0.5 * (MeshHeight / 2);
 			}
 
 			return;

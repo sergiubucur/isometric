@@ -6,5 +6,9 @@ export default {
 	Up: 38,
 	Down: 40,
 	Left: 37,
-	Right: 39
+	Right: 39,
+	D1: 49,
+	D2: 50,
+	D3: 51,
+	D4: 52
 };

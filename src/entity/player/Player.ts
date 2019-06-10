@@ -8,6 +8,7 @@ import IWorld from "../../world/IWorld";
 import ILogger from "../../common/logger/ILogger";
 import IEntityId from "../entity-id/IEntityId";
 import IEntityMovementEngine from "../movement/IEntityMovementEngine";
+import Keybinds from "../../input-tracker/Keybinds";
 
 const Size = 2;
 const Speed = 0.25;
@@ -34,8 +35,8 @@ export default class Player implements IPlayer {
 	constructor(private _mouseControls: IMouseControls, private _camera: ICamera, private _inputTracker: IInputTracker,
 		private _world: IWorld, private _logger: ILogger, private _entityId: IEntityId, private _movementEngine: IEntityMovementEngine) {
 
-		this._mouseControls.onLeftClick = (mousePosition) => this.handleLeftClick(mousePosition);
-		this._mouseControls.onRightClick = (mousePosition) => this.handleRightClick(mousePosition);
+		this._mouseControls.onLeftClick = () => this.handleLeftClick();
+		this._mouseControls.onRightClick = () => this.handleRightClick();
 
 		this.id = this._entityId.getNewId();
 		this._spellCooldown = 0;
@@ -55,6 +56,10 @@ export default class Player implements IPlayer {
 		this._mouseControls.update();
 		this.move();
 
+		if (this._inputTracker.keysPressed[Keybinds.D4]) {
+			this.teleport();
+		}
+
 		this._logger.logVector3("position", this._movementEngine.position);
 	}
 
@@ -66,23 +71,34 @@ export default class Player implements IPlayer {
 		}
 	}
 
-	private handleLeftClick(mousePosition: THREE.Vector3) {
-		this._movementEngine.startMovingTo(mousePosition);
+	private handleLeftClick() {
+		this._movementEngine.startMovingTo(this._mouseControls.mousePosition);
 	}
 
-	private handleRightClick(mousePosition: THREE.Vector3) {
+	private handleRightClick() {
 		if (this._spellCooldown === 0) {
 			this._movementEngine.stop();
 			this._spellCooldown = SpellCooldown;
 
 			this._world.addProjectile({
 				startPosition: this._movementEngine.position,
-				targetPosition: mousePosition,
+				targetPosition: this._mouseControls.mousePosition,
 				speed: 0.5,
 				color: new THREE.Color(0x00c0ff),
 				originEntityId: this.id,
 				splashRadius: 3
 			});
+		}
+	}
+
+	private teleport() {
+		if (this._spellCooldown === 0) {
+			this._movementEngine.stop();
+			this._spellCooldown = SpellCooldown;
+
+			if (this._movementEngine.canMoveTo(this._mouseControls.mousePosition)) {
+				this._movementEngine.moveTo(this._mouseControls.mousePosition);
+			}
 		}
 	}
 
