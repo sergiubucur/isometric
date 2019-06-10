@@ -7,8 +7,9 @@ export default interface IMap {
 
 	convertToMapPosition(position: THREE.Vector3): THREE.Vector3;
 	getCell(x: number, y: number): Cell | null;
-	isCellPassable(x: number, y: number, id?: number): boolean;
+	isCellPassable(x: number, y: number, ignoreIds?: number[]): boolean;
 	occupyCell(x: number, y: number, id: number): void;
 	vacateCell(x: number, y: number): void;
 	areaContains(x: number, y: number, radius: number, predicate: (id: number) => boolean): boolean;
+	getAllEntityIdsInArea(x: number, y: number, radius: number): number[];
 }

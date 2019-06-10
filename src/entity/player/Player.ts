@@ -11,7 +11,7 @@ import IEntityMovementEngine from "../movement/IEntityMovementEngine";
 
 const Size = 2;
 const Speed = 0.25;
-const TeleportCooldown = 17;
+const SpellCooldown = 17;
 const MeshRadius = 0.75;
 const MeshHeight = 4;
 const MeshRadialSegments = 16;
@@ -27,7 +27,7 @@ export default class Player implements IPlayer {
 
 	id: number;
 
-	private _teleportCooldown: number;
+	private _spellCooldown: number;
 	private _mesh: THREE.Mesh;
 	private _pointLight: THREE.PointLight;
 
@@ -38,7 +38,7 @@ export default class Player implements IPlayer {
 		this._mouseControls.onRightClick = (mousePosition) => this.handleRightClick(mousePosition);
 
 		this.id = this._entityId.getNewId();
-		this._teleportCooldown = 0;
+		this._spellCooldown = 0;
 
 		const startPosition = new THREE.Vector3(16, 0, 16);
 		this._movementEngine.init(this.id, startPosition, Size, Speed);
@@ -61,8 +61,8 @@ export default class Player implements IPlayer {
 	private move() {
 		this._movementEngine.move();
 
-		if (this._teleportCooldown > 0) {
-			this._teleportCooldown--;
+		if (this._spellCooldown > 0) {
+			this._spellCooldown--;
 		}
 	}
 
@@ -71,17 +71,18 @@ export default class Player implements IPlayer {
 	}
 
 	private handleRightClick(mousePosition: THREE.Vector3) {
-		if (this._teleportCooldown === 0) {
+		if (this._spellCooldown === 0) {
 			this._movementEngine.stop();
-			this._teleportCooldown = TeleportCooldown;
+			this._spellCooldown = SpellCooldown;
 
-			if (this._movementEngine.canMoveTo(mousePosition)) {
-				this._movementEngine.moveTo(mousePosition);
-			} else {
-				if (this._world.map.areaContains(mousePosition.x, mousePosition.z, 3, id => id > 0 && id !== this.id)) {
-					console.log("can't teleport due to monsters");
-				}
-			}
+			this._world.addProjectile({
+				startPosition: this._movementEngine.position,
+				targetPosition: mousePosition,
+				speed: 0.5,
+				color: new THREE.Color(0x00c0ff),
+				originEntityId: this.id,
+				splashRadius: 3
+			});
 		}
 	}
 

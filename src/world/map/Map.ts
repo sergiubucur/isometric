@@ -65,15 +65,36 @@ export default class Map implements IMap {
 		return false;
 	}
 
-	isCellPassable(x: number, y: number, id = -1) {
+	getAllEntityIdsInArea(x: number, y: number, radius: number): number[] {
+		const entityIds = [];
+
+		for (let i = y - radius; i < y + radius; i++) {
+			for (let j = x - radius; j < x + radius; j++) {
+				const cell = this.getCell(x, y);
+
+				if (!cell) {
+					continue;
+				}
+
+				const id = this.occupiedCells[i][j];
+				if (id > 0 && entityIds.indexOf(id) === -1) {
+					entityIds.push(id);
+				}
+			}
+		}
+
+		return entityIds;
+	}
+
+	isCellPassable(x: number, y: number, ignoreIds: number[] = []) {
 		const cell = this.getCell(x, y);
 
 		if (!cell) {
 			return false;
 		}
 
-		const occupiedCell = this.occupiedCells[y][x];
-		const isOccupied = occupiedCell !== 0 && occupiedCell !== id;
+		const id = this.occupiedCells[y][x];
+		const isOccupied = id !== 0 && ignoreIds.indexOf(id) === -1;
 
 		return !isOccupied && cell.type === CellType.EmptyFloor;
 	}

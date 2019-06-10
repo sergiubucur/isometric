@@ -15,6 +15,7 @@ import Monster from "./entity/monster/Monster";
 import EntityId from "./entity/entity-id/EntityId";
 import EntityMovementEngine from "./entity/movement/EntityMovementEngine";
 import UIRoot from "./ui/UIRoot";
+import Projectile from "./entity/projectile/Projectile";
 
 const container = new Container();
 
@@ -28,7 +29,7 @@ container.registerSingleton("ICamera", Camera);
 container.registerSingleton("IRenderer", Renderer);
 container.register("IWorldMeshBuilder", WorldMeshBuilder);
 container.register("IMapLoader", MapLoader);
-container.registerSingleton("IWorld", World, "IAssetService", "IMapLoader", "IWorldMeshBuilder", Factory("IMonster"));
+container.registerSingleton("IWorld", World, "IAssetService", "IMapLoader", "IWorldMeshBuilder", Factory("IMonster"), Factory("IProjectile"));
 container.register("IMouseControls", MouseControls, "ICamera", "IInputTracker", "IWorld", "ILogger");
 container.registerSingleton("IPlayer", Player,
 	"IMouseControls", "ICamera", "IInputTracker", "IWorld", "ILogger", "IEntityId", "IEntityMovementEngine");
@@ -36,5 +37,6 @@ container.register("IMonster", Monster, "IWorld", "IPlayer", "IEntityId", "IEnti
 container.registerSingleton("IEntityId", EntityId);
 container.register("IEntityMovementEngine", EntityMovementEngine, "IWorld");
 container.registerSingleton("IUIRoot", UIRoot, "IWorld", "IPlayer", "ILogger");
+container.register("IProjectile", Projectile, "IWorld", "IEntityId", "IEntityMovementEngine");
 
 container.resolve("Core");

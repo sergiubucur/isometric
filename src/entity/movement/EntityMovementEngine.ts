@@ -11,11 +11,17 @@ export default class EntityMovementEngine {
 
 	private _velocity: THREE.Vector3;
 	private _steps: number;
+	private _projectileMode: boolean;
+	private _projectileOriginId: number;
+	private _projectileOnHit: () => void;
 
 	constructor(private _world: IWorld) {
 		this.position = new THREE.Vector3();
 		this._velocity = new THREE.Vector3();
 		this._steps = 0;
+		this._projectileMode = false;
+		this._projectileOriginId = 0;
+		this._projectileOnHit = () => {};
 
 		this.afterPositionUpdate = () => {};
 	}
@@ -26,10 +32,31 @@ export default class EntityMovementEngine {
 		this.size = size;
 		this.speed = speed;
 
-		this.modifyCells(true);
+		if (!this._projectileMode) {
+			this.modifyCells(true);
+		}
+	}
+
+	setProjectileMode(value: boolean, projectileOriginId = 0, onHit = () => {}) {
+		this._projectileMode = value;
+		this._projectileOriginId = projectileOriginId;
+		this._projectileOnHit = onHit;
 	}
 
 	move() {
+		if (this._projectileMode && this._steps > 0) {
+			const position = this.position.clone().add(this._velocity);
+			const canMove = this.canMoveTo(position);
+
+			if (canMove) {
+				this.moveTo(position);
+			} else {
+				this._projectileOnHit();
+			}
+
+			return;
+		}
+
 		if (this._steps > 0) {
 			let position = null;
 
@@ -83,9 +110,14 @@ export default class EntityMovementEngine {
 
 		const c1 = this._world.map.convertToMapPosition(p1);
 
+		const ignoreIds = [this.id];
+		if (this._projectileMode) {
+			ignoreIds.push(this._projectileOriginId);
+		}
+
 		for (let x = c0.x; x <= c1.x; x++) {
 			for (let z = c0.z; z <= c1.z; z++) {
-				if (!this._world.map.isCellPassable(x, z, this.id)) {
+				if (!this._world.map.isCellPassable(x, z, ignoreIds)) {
 					return false;
 				}
 			}
@@ -99,11 +131,21 @@ export default class EntityMovementEngine {
 	}
 
 	moveTo(position: THREE.Vector3) {
-		this.modifyCells(false);
+		if (!this._projectileMode) {
+			this.modifyCells(false);
+		}
+
 		this.position.copy(position);
-		this.modifyCells(true);
+
+		if (!this._projectileMode) {
+			this.modifyCells(true);
+		}
 
 		this.afterPositionUpdate();
+	}
+
+	clearCells() {
+		this.modifyCells(false);
 	}
 
 	private modifyCells(occupy?: boolean) {

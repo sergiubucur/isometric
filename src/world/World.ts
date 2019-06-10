@@ -8,18 +8,22 @@ import IAssetService from "../asset/IAssetService";
 import IMonster from "../entity/monster/IMonster";
 import CellType from "./map/CellType";
 import IMap from "./map/IMap";
+import IProjectile from "../entity/projectile/IProjectile";
+import ProjectileData from "../entity/projectile/ProjectileData";
 
 export default class World implements IWorld, IWorldComponent {
 	readonly scene: THREE.Scene;
 	map: IMap;
 
-	private _monsters: IMonster[] | null;
+	private _monsters: IMonster[];
+	private _projectiles: IProjectile[];
 
 	constructor(private _assetService: IAssetService, private _mapLoader: IMapLoader, private _worldMeshBuilder: IWorldMeshBuilder,
-		private _monsterFactory: () => IMonster) {
+		private _monsterFactory: () => IMonster, private _projectileFactory: () => IProjectile) {
 
 		this.scene = new THREE.Scene();
 		this._monsters = [];
+		this._projectiles = [];
 	}
 
 	init(): Promise<void> {
@@ -35,10 +39,47 @@ export default class World implements IWorld, IWorldComponent {
 
 	update() {
 		this._monsters.forEach(x => x.update());
+
+		this._projectiles.forEach(x => {
+			if (!x.toBeDeleted) {
+				x.update();
+			}
+		});
+
+		this.deleteMarkedEntities();
 	}
 
-	addMesh(mesh: THREE.Mesh): void {
+	deleteMarkedEntities() {
+		this._projectiles.filter(x => x.toBeDeleted).forEach(x => x.dispose());
+		this._projectiles = this._projectiles.filter(x => !x.toBeDeleted);
+	}
+
+	addMesh(mesh: THREE.Mesh) {
 		this.scene.add(mesh);
+	}
+
+	removeMesh(mesh: THREE.Mesh) {
+		this.scene.remove(mesh);
+	}
+
+	areaDamage(position: THREE.Vector3, radius: number, originId: number) {
+		const mapPosition = this.map.convertToMapPosition(position);
+		const entityIds = this.map.getAllEntityIdsInArea(mapPosition.x, mapPosition.z, radius);
+
+		entityIds.forEach(id => {
+			const monster = this._monsters.find(x => x.id === id);
+
+			if (monster) {
+				monster.damage();
+			}
+		});
+	}
+
+	addProjectile(data: ProjectileData) {
+		const projectile = this._projectileFactory();
+		projectile.init(data);
+
+		this._projectiles.push(projectile);
 	}
 
 	initMonsters() {
