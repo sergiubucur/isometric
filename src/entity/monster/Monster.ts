@@ -12,18 +12,21 @@ const MeshRadius = 0.5;
 const MeshHeight = 2;
 const MeshRadialSegments = 16;
 const Color = 0xff0000;
+const DeathAnimationTotalFrames = 30;
 
 export default class Monster implements IMonster {
 	id: number;
 
 	private _mesh: THREE.Mesh;
 	private _isDead: boolean;
+	private _deathAnimationFrames: number;
 
 	constructor(private _world: IWorld, private _player: IPlayer, private _entityId: IEntityId,
 		private _movementEngine: IEntityMovementEngine) {
 
 		this.id = this._entityId.getNewId();
 		this._isDead = false;
+		this._deathAnimationFrames = DeathAnimationTotalFrames;
 	}
 
 	init(position: THREE.Vector3) {
@@ -37,6 +40,13 @@ export default class Monster implements IMonster {
 
 	update() {
 		if (this._isDead) {
+			if (this._deathAnimationFrames > 0) {
+				this._deathAnimationFrames--;
+
+				const value = 1 - (this._deathAnimationFrames / DeathAnimationTotalFrames);
+				this._mesh.rotation.x = value * (Math.PI / 2);
+			}
+
 			return;
 		}
 
@@ -48,8 +58,6 @@ export default class Monster implements IMonster {
 		if (this._isDead) {
 			return;
 		}
-
-		this._mesh.rotation.x = Math.PI / 2;
 
 		this._isDead = true;
 		this._movementEngine.clearCells();
