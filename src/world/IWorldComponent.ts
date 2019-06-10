@@ -6,4 +6,5 @@ export default interface IWorldComponent extends IComponent {
 	readonly scene: THREE.Scene;
 
 	init(): Promise<void>;
+	initMonsters(): void;
 }

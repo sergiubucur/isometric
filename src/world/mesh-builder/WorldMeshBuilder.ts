@@ -1,9 +1,9 @@
 import * as THREE from "three";
 
-import Map from "../map/Map";
 import CellType from "../map/CellType";
 import { Rectangle, MapLoaderResult, Edge } from "../map/loader/MapLoader";
 import IWorldMeshBuilder from "./IWorldMeshBuilder";
+import IMap from "../map/IMap";
 
 const CellSize = 1;
 const WallHeight = 2;
@@ -11,7 +11,7 @@ const FloorColor = new THREE.Color(0.5, 0.5, 0.5);
 const WallColor = new THREE.Color(0.35, 0.35, 0.35);
 
 export default class WorldMeshBuilder implements IWorldMeshBuilder {
-	private _map: Map;
+	private _map: IMap;
 	private _rectangles: Rectangle[];
 	private _edges: Edge[];
 	private _rootMesh: THREE.Object3D;

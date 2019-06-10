@@ -77,6 +77,10 @@ export default class Player implements IPlayer {
 
 			if (this._movementEngine.canMoveTo(mousePosition)) {
 				this._movementEngine.moveTo(mousePosition);
+			} else {
+				if (this._world.map.areaContains(mousePosition.x, mousePosition.z, 3, id => id > 0 && id !== this.id)) {
+					console.log("can't teleport due to monsters");
+				}
 			}
 		}
 	}

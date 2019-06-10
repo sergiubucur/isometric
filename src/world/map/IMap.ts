@@ -10,4 +10,5 @@ export default interface IMap {
 	isCellPassable(x: number, y: number, id?: number): boolean;
 	occupyCell(x: number, y: number, id: number): void;
 	vacateCell(x: number, y: number): void;
+	areaContains(x: number, y: number, radius: number, predicate: (id: number) => boolean): boolean;
 }

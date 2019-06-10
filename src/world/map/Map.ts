@@ -47,6 +47,24 @@ export default class Map implements IMap {
 		return null;
 	}
 
+	areaContains(x: number, y: number, radius: number, predicate: (id: number) => boolean) {
+		for (let i = y - radius; i < y + radius; i++) {
+			for (let j = x - radius; j < x + radius; j++) {
+				const cell = this.getCell(x, y);
+
+				if (!cell) {
+					continue;
+				}
+
+				if (predicate(this.occupiedCells[i][j])) {
+					return true;
+				}
+			}
+		}
+
+		return false;
+	}
+
 	isCellPassable(x: number, y: number, id = -1) {
 		const cell = this.getCell(x, y);
 

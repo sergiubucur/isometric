@@ -1,5 +1,3 @@
-import * as THREE from "three";
-
 import ILogger from "./common/logger/ILogger";
 import IAssetService from "./asset/IAssetService";
 import ICamera from "./camera/ICamera";
@@ -9,9 +7,7 @@ import IWorld from "./world/IWorld";
 import CoreState from "./CoreState";
 import IInputTracker from "./input-tracker/IInputTracker";
 import IPlayer from "./entity/player/IPlayer";
-import IMonster from "./entity/monster/IMonster";
 import IUIRoot from "./ui/IUIRoot";
-import CellType from "./world/map/CellType";
 
 export default class Core {
 	private _state: CoreState;
@@ -20,8 +16,6 @@ export default class Core {
 	private _world: IWorld & IWorldComponent | null;
 	private _renderer: IRenderer | null;
 	private _player: IPlayer | null;
-	private _monsters: IMonster[] | null;
-	private _uiRoot: IUIRoot | null;
 
 	constructor(private _logger: ILogger,
 		private _assetService: IAssetService,
@@ -30,7 +24,6 @@ export default class Core {
 		private _rendererFactory: () => IRenderer,
 		private _worldFactory: () => IWorld & IWorldComponent,
 		private _playerFactory: () => IPlayer,
-		private _monsterFactory: () => IMonster,
 		private _uiRootFactory: () => IUIRoot) {
 
 		this._state = CoreState.None;
@@ -39,8 +32,6 @@ export default class Core {
 		this._world = null;
 		this._renderer = null;
 		this._player = null;
-		this._monsters = null;
-		this._uiRoot = null;
 
 		this.run();
 		this._nextState = CoreState.Load;
@@ -73,7 +64,6 @@ export default class Core {
 
 				this._world.update();
 				this._player.update();
-				this._monsters.forEach(x => x.update());
 
 				this._logger.logBounds("update time", performance.now() - time);
 				break;
@@ -134,13 +124,6 @@ export default class Core {
 		});
 	}
 
-	private addMonster(position: THREE.Vector3) {
-		const monster = this._monsterFactory();
-		monster.init(position);
-
-		this._monsters.push(monster);
-	}
-
 	private init() {
 		this._camera = this._cameraFactory();
 		this._renderer = this._rendererFactory();
@@ -148,29 +131,8 @@ export default class Core {
 
 		this._world.init().then(() => {
 			this._player = this._playerFactory();
+			this._world.initMonsters();
 
-			this._monsters = [];
-
-			for (let z = 0; z < this._world.map.size; z++) {
-				for (let x = 0; x < this._world.map.size; x++) {
-					if (x < 64 && z < 64) {
-						continue;
-					}
-
-					const cell = this._world.map.getCell(x, z);
-					if (!cell || cell.type !== CellType.EmptyFloor) {
-						continue;
-					}
-
-					if (Math.random() < 0.0025) {
-						this.addMonster(new THREE.Vector3(x, 0, z));
-					}
-				}
-			}
-
-			console.log("monster count", this._monsters.length);
-
-			this._uiRoot = this._uiRootFactory();
 			this._nextState = CoreState.Run;
 		});
 	}
