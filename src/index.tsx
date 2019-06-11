@@ -16,7 +16,9 @@ import EntityId from "./entity/entity-id/EntityId";
 import EntityMovementEngine from "./entity/movement/EntityMovementEngine";
 import UIRoot from "./ui/UIRoot";
 import Projectile from "./entity/projectile/Projectile";
+import PointLightCache from "./world/point-light-cache/PointLightCache";
 
+// TODO: use constants instead of strings
 const container = new Container();
 
 container.registerSingleton("ILogger", Logger);
@@ -39,5 +41,6 @@ container.registerSingleton("IEntityId", EntityId);
 container.register("IEntityMovementEngine", EntityMovementEngine, "IWorld");
 container.registerSingleton("IUIRoot", UIRoot, "IWorld", "IPlayer", "ILogger");
 container.register("IProjectile", Projectile, "IWorld", "IEntityId", "IEntityMovementEngine");
+container.registerSingleton("IPointLightCache", PointLightCache, "IWorld");
 
 container.resolve("Core");

@@ -34,6 +34,7 @@ type Corner = {
 	expanded?: boolean
 };
 
+// TODO: move exported types to interface
 export type Rectangle = {
 	x0: number,
 	y0: number,

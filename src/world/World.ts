@@ -59,11 +59,11 @@ export default class World implements IWorld, IWorldComponent {
 		this._projectiles = this._projectiles.filter(x => !x.toBeDeleted);
 	}
 
-	addMesh(mesh: THREE.Mesh) {
+	addMesh(mesh: THREE.Object3D) {
 		this.scene.add(mesh);
 	}
 
-	removeMesh(mesh: THREE.Mesh) {
+	removeMesh(mesh: THREE.Object3D) {
 		this.scene.remove(mesh);
 	}
 
