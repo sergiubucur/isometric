@@ -58,7 +58,6 @@ export default class World implements IWorld, IWorldComponent {
 
 		this.deleteMarkedEntities();
 
-		// TODO: merge all entities into one array
 		this._logger.logNumber("entities", this._monsters.length + this._projectiles.length + 1, 0);
 	}
 
@@ -75,7 +74,6 @@ export default class World implements IWorld, IWorldComponent {
 		this.scene.remove(mesh);
 	}
 
-	// TODO: better way to get entity from entity id
 	areaDamage(position: THREE.Vector3, radius: number, originId: number) {
 		const mapPosition = this.map.convertToMapPosition(position);
 		const entityIds = this.map.getAllEntityIdsInArea(mapPosition.x, mapPosition.z, radius);
@@ -83,7 +81,7 @@ export default class World implements IWorld, IWorldComponent {
 		entityIds.forEach(id => {
 			const monster = this._monsters.find(x => x.id === id);
 
-			if (monster) {
+			if (monster && monster.id !== originId) {
 				monster.damage();
 			}
 		});
