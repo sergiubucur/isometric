@@ -7,7 +7,7 @@ import IMap from "../map/IMap";
 import IAssetService from "../../asset/IAssetService";
 
 const CellSize = 1;
-const WallHeight = 2;
+const WallHeight = 4;
 const FloorColor = new THREE.Color(0.5, 0.5, 0.5);
 const WallColor = new THREE.Color(0.35, 0.35, 0.35);
 const TexScale = 16;

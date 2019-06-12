@@ -46,7 +46,7 @@ export default class Renderer implements IRenderer {
 		renderer.gammaOutput = true;
 		renderer.gammaFactor = 2.2;
 		renderer.shadowMap.enabled = true;
-		renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+		renderer.toneMapping = THREE.ReinhardToneMapping;
 
 		return renderer;
 	}
