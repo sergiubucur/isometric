@@ -35,7 +35,7 @@ container.registerSingleton(Types.ICamera, Camera);
 
 container.registerSingleton(Types.IRenderer, Renderer);
 
-container.register(Types.IWorldMeshBuilder, WorldMeshBuilder);
+container.register(Types.IWorldMeshBuilder, WorldMeshBuilder, Types.IAssetService);
 
 container.register(Types.IMapLoader, MapLoader);
 

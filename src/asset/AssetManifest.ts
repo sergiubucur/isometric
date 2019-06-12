@@ -7,13 +7,15 @@ export type Asset = {
 	content?: object;
 };
 
-export type AssetManifest = {
+export type AssetDictionary = {
 	[key: string]: Asset
 };
 
-const manifest: AssetManifest = {
-	testMap: { name: "testMap", type: AssetType.Map, filename: "test.png" },
-	human: { name: "human", type: AssetType.Mesh, filename: "human_low.glb" }
-};
+const manifest: Asset[] = [
+	{ name: "testMap", type: AssetType.Map, filename: "test.png" },
+	{ name: "human", type: AssetType.Mesh, filename: "human_low.glb" },
+	{ name: "metal", type: AssetType.Texture, filename: "metal.jpg" },
+	{ name: "normalMetal", type: AssetType.Texture, filename: "normal_metal.jpg" }
+];
 
 export default manifest;

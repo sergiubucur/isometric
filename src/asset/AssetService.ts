@@ -1,16 +1,18 @@
+import * as THREE from "three";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 
 import IAssetService from "./IAssetService";
-import manifest, { AssetManifest, Asset } from "./AssetManifest";
+import manifest, { AssetDictionary, Asset } from "./AssetManifest";
 import AssetType from "./AssetType";
 
 const Paths = {
 	[AssetType.Map]: "assets/maps/",
 	[AssetType.Mesh]: "assets/meshes/",
+	[AssetType.Texture]: "assets/textures/"
 };
 
 export default class AssetService implements IAssetService {
-	assets: AssetManifest;
+	assets: AssetDictionary;
 
 	private _resolve: any;
 	private _totalAssets: number;
@@ -18,14 +20,12 @@ export default class AssetService implements IAssetService {
 
 	loadAssets() : Promise<void> {
 		return new Promise((resolve) => {
-			this._totalAssets = Object.keys(manifest).length;
+			this._totalAssets = manifest.length;
 			this._loadedAssets = 0;
 			this.assets = {};
 			this._resolve = resolve;
 
-			Object.keys(manifest).forEach(key => {
-				const asset = manifest[key];
-
+			manifest.forEach(asset => {
 				switch (asset.type) {
 					case AssetType.Map:
 						this.loadMap(asset);
@@ -33,6 +33,10 @@ export default class AssetService implements IAssetService {
 
 					case AssetType.Mesh:
 						this.loadMesh(asset);
+						break;
+
+					case AssetType.Texture:
+						this.loadTexture(asset);
 						break;
 
 					default:
@@ -61,6 +65,24 @@ export default class AssetService implements IAssetService {
 		const loader = new GLTFLoader();
 		loader.load(Paths[asset.type] + asset.filename, (gltf) => {
 			this.assets[asset.name].content = gltf.scene.children[0];
+			this.onAssetLoaded();
+		});
+	}
+
+	private loadTexture(asset: Asset) {
+		this.assets[asset.name] = {};
+		Object.assign(this.assets[asset.name], asset);
+
+		const loader = new THREE.TextureLoader();
+
+		loader.load(Paths[asset.type] + asset.filename, (texture) => {
+			if (asset.filename.indexOf("normal") === -1) {
+				texture.encoding = THREE.sRGBEncoding;
+			}
+
+			texture.flipY = true;
+
+			this.assets[asset.name].content = texture;
 			this.onAssetLoaded();
 		});
 	}

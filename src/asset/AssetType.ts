@@ -1,6 +1,7 @@
 enum AssetType {
 	Map = 1,
-	Mesh
+	Mesh,
+	Texture
 };
 
 export default AssetType;
