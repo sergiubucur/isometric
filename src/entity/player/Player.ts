@@ -15,6 +15,7 @@ const Size = 2;
 const Speed = 0.25;
 const SpellCooldown = 17;
 const Color = 0xFFD8B2;
+const ProjectileColor = 0xbada55;
 const PointLightIntensity = 3;
 const PointLightDistance = 20;
 const PointLightYOffset = 4;
@@ -87,7 +88,7 @@ export default class Player implements IPlayer {
 				startPosition: this._movementEngine.position,
 				targetPosition: this._mouseControls.mousePosition,
 				speed: 0.5,
-				color: new THREE.Color(0x00c0ff),
+				color: new THREE.Color(ProjectileColor),
 				originEntityId: this.id,
 				splashRadius: 3
 			});

@@ -61,6 +61,10 @@ export default class Projectile implements IProjectile {
 
 				this._mesh.scale.set(scale, scale, scale);
 
+				if (this._pointLightCacheItem) {
+					this._pointLightCacheItem.pointLight.distance = (2 - value) * this._data.splashRadius;
+				}
+
 				if (this._explosionAnimationFrames === 0) {
 					this.toBeDeleted = true;
 				}
@@ -99,6 +103,7 @@ export default class Projectile implements IProjectile {
 	private initMesh() {
 		const material = new THREE.MeshPhongMaterial({ color: this._data.color });
 		material.emissive.set(this._data.color);
+		material.emissiveIntensity = 3;
 
 		this._mesh = new THREE.Mesh(Projectile._geometry, material);
 		this._mesh.visible = false;
