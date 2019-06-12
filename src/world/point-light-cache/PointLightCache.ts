@@ -33,7 +33,7 @@ export default class PointLightCache implements IPointLightCache {
 				item
 			};
 
-			item.pointLight.visible = false;
+			item.pointLight.intensity = 0;
 			this._world.addMesh(item.pointLight);
 		}
 	}
@@ -45,13 +45,12 @@ export default class PointLightCache implements IPointLightCache {
 			return null;
 		}
 
-		item.item.pointLight.visible = true;
 		item.free = false;
 		return item.item;
 	}
 
 	free(item: PointLightCacheItem) {
-		item.pointLight.visible = false;
+		item.pointLight.intensity = 0;
 		this._cache[item.id].free = true;
 	}
 

@@ -56,7 +56,7 @@ container.register(Types.IEntityMovementEngine, EntityMovementEngine, Types.IWor
 
 container.registerSingleton(Types.IUIRoot, UIRoot, Types.IWorld, Types.IPlayer, Types.ILogger);
 
-container.register(Types.IProjectile, Projectile, Types.IWorld, Types.IEntityId, Types.IEntityMovementEngine);
+container.register(Types.IProjectile, Projectile, Types.IWorld, Types.IEntityId, Types.IEntityMovementEngine, Types.IPointLightCache);
 
 container.registerSingleton(Types.IPointLightCache, PointLightCache, Types.IWorld);
 

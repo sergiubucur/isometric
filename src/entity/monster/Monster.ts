@@ -75,8 +75,6 @@ export default class Monster implements IMonster {
 		this._mesh = new THREE.Mesh(geometry, Monster._material);
 		this._mesh.scale.set(Size, Size, Size);
 		this._mesh.rotation.order = "ZYX";
-		this._mesh.castShadow = true;
-		this._mesh.receiveShadow = true;
 
 		this.updateMeshPosition();
 

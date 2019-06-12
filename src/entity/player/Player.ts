@@ -113,15 +113,9 @@ export default class Player implements IPlayer {
 		this._mesh = new THREE.Mesh(geometry, material);
 		this._mesh.scale.set(Size, Size, Size);
 		this._mesh.rotation.order = "ZYX";
-		this._mesh.castShadow = true;
 
 		this._pointLight = new THREE.PointLight(Color, PointLightIntensity, PointLightDistance);
 		this._pointLight.position.set(0, PointLightYOffset, 0);
-		this._pointLight.castShadow = true;
-		this._pointLight.shadow.mapSize.width = 512;
-		this._pointLight.shadow.mapSize.height = 512;
-		this._pointLight.shadow.camera.near = 2;
-		this._pointLight.shadow.camera.far = PointLightDistance;
 
 		this._mesh.add(this._pointLight);
 

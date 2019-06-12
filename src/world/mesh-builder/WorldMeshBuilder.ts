@@ -45,7 +45,6 @@ export default class WorldMeshBuilder implements IWorldMeshBuilder {
 			if (rectangle.type === CellType.Concrete) {
 				floorMesh.position.y = WallHeight;
 			}
-			floorMesh.receiveShadow = true;
 
 			this._rootMesh.add(floorMesh);
 		});
@@ -55,7 +54,6 @@ export default class WorldMeshBuilder implements IWorldMeshBuilder {
 			const material = this._materials.wallConcrete;
 
 			const wallMesh = new THREE.Mesh(geometry, material);
-			wallMesh.receiveShadow = true;
 
 			this._rootMesh.add(wallMesh);
 		});

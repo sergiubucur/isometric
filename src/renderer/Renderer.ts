@@ -45,7 +45,6 @@ export default class Renderer implements IRenderer {
 		renderer.setSize(width, height);
 		renderer.gammaOutput = true;
 		renderer.gammaFactor = 2.2;
-		renderer.shadowMap.enabled = true;
 		renderer.toneMapping = THREE.ReinhardToneMapping;
 
 		return renderer;

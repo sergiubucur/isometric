@@ -5,6 +5,7 @@ import IEntityMovementEngine from "../movement/IEntityMovementEngine";
 import ProjectileData from "./ProjectileData";
 import IEntityId from "../entity-id/IEntityId";
 import IWorld from "../../world/IWorld";
+import IPointLightCache, { PointLightCacheItem } from "../../world/point-light-cache/IPointLightCache";
 
 const Size = 1;
 const MeshRadius = 0.5;
@@ -21,8 +22,11 @@ export default class Projectile implements IProjectile {
 	private _exploded: boolean;
 	private _explosionAnimationFrames: number;
 	private _fadeInAnimationFrames: number;
+	private _pointLightCacheItem: PointLightCacheItem;
 
-	constructor(private _world: IWorld, private _entityId: IEntityId, private _movementEngine: IEntityMovementEngine) {
+	constructor(private _world: IWorld, private _entityId: IEntityId, private _movementEngine: IEntityMovementEngine,
+		private _pointLightCache: IPointLightCache) {
+
 		this.id = this._entityId.getNewId();
 		this.toBeDeleted = false;
 		this._explosionAnimationFrames = ExplosionAnimationTotalFrames;
@@ -75,6 +79,10 @@ export default class Projectile implements IProjectile {
 	}
 
 	dispose() {
+		if (this._pointLightCacheItem) {
+			this._pointLightCache.free(this._pointLightCacheItem);
+		}
+
 		this._world.removeMesh(this._mesh);
 		this._mesh = null;
 	}
@@ -94,6 +102,13 @@ export default class Projectile implements IProjectile {
 		this._mesh = new THREE.Mesh(geometry, material);
 		this._mesh.visible = false;
 
+		this._pointLightCacheItem = this._pointLightCache.allocate();
+		if (this._pointLightCacheItem) {
+			this._pointLightCacheItem.pointLight.intensity = 3;
+			this._pointLightCacheItem.pointLight.distance = this._data.splashRadius;
+			this._pointLightCacheItem.pointLight.color.set(this._data.color);
+		}
+
 		this.updateMeshPosition();
 
 		this._world.addMesh(this._mesh);
@@ -102,5 +117,10 @@ export default class Projectile implements IProjectile {
 	private updateMeshPosition() {
 		this._mesh.position.copy(this._movementEngine.position);
 		this._mesh.position.y += YOffset;
+
+		if (this._pointLightCacheItem) {
+			this._pointLightCacheItem.pointLight.position.copy(this._movementEngine.position);
+			this._pointLightCacheItem.pointLight.position.y += YOffset;
+		}
 	}
 }
