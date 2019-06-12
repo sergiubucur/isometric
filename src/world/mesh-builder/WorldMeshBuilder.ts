@@ -1,7 +1,7 @@
 import * as THREE from "three";
 
 import CellType from "../map/CellType";
-import { Rectangle, MapLoaderResult, Edge } from "../map/loader/MapLoader";
+import { Rectangle, MapLoaderResult, Edge } from "../map/loader/IMapLoader";
 import IWorldMeshBuilder from "./IWorldMeshBuilder";
 import IMap from "../map/IMap";
 

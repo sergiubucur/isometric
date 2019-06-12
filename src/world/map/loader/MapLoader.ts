@@ -1,7 +1,7 @@
 import Map from "../Map";
 import Cell from "../Cell";
 import CellType from "../CellType";
-import IMapLoader from "./IMapLoader";
+import IMapLoader, { Rectangle, Edge, MapLoaderResult } from "./IMapLoader";
 
 type Color = {
 	r: number,
@@ -32,23 +32,6 @@ type Corner = {
 	y: number,
 	type?: CellType,
 	expanded?: boolean
-};
-
-// TODO: move exported types to interface
-export type Rectangle = {
-	x0: number,
-	y0: number,
-	x1: number,
-	y1: number,
-	type: CellType
-};
-
-export type Edge = Rectangle;
-
-export type MapLoaderResult = {
-	map: Map;
-	rectangles: Rectangle[];
-	edges: Edge[];
 };
 
 export default class MapLoader implements IMapLoader {
