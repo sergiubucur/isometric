@@ -1,5 +1,6 @@
 import "./index.scss";
 import Container, { Factory } from "./common/ioc-container/Container";
+import Types from "./common/ioc-container/Types";
 import Logger from "./common/logger/Logger";
 import AssetService from "./asset/AssetService";
 import InputTracker from "./input-tracker/InputTracker";
@@ -18,29 +19,28 @@ import UIRoot from "./ui/UIRoot";
 import Projectile from "./entity/projectile/Projectile";
 import PointLightCache from "./world/point-light-cache/PointLightCache";
 
-// TODO: use constants instead of strings
 const container = new Container();
 
-container.registerSingleton("ILogger", Logger);
-container.registerSingleton("IAssetService", AssetService);
-container.registerSingleton("IInputTracker", InputTracker);
-container.registerSingleton("Core", Core,
-	"ILogger", "IAssetService", "IInputTracker", Factory("ICamera"), Factory("IRenderer"), Factory("IWorld"), Factory("IPlayer"),
-	Factory("IUIRoot"));
-container.registerSingleton("ICamera", Camera);
-container.registerSingleton("IRenderer", Renderer);
-container.register("IWorldMeshBuilder", WorldMeshBuilder);
-container.register("IMapLoader", MapLoader);
-container.registerSingleton("IWorld", World, "IAssetService", "IMapLoader", "IWorldMeshBuilder", Factory("IMonster"), Factory("IProjectile"),
-	"ILogger");
-container.register("IMouseControls", MouseControls, "ICamera", "IInputTracker", "IWorld", "ILogger");
-container.registerSingleton("IPlayer", Player,
-	"IMouseControls", "ICamera", "IInputTracker", "IWorld", "ILogger", "IEntityId", "IEntityMovementEngine");
-container.register("IMonster", Monster, "IWorld", "IPlayer", "IEntityId", "IEntityMovementEngine");
-container.registerSingleton("IEntityId", EntityId);
-container.register("IEntityMovementEngine", EntityMovementEngine, "IWorld");
-container.registerSingleton("IUIRoot", UIRoot, "IWorld", "IPlayer", "ILogger");
-container.register("IProjectile", Projectile, "IWorld", "IEntityId", "IEntityMovementEngine");
-container.registerSingleton("IPointLightCache", PointLightCache, "IWorld");
+container.registerSingleton(Types.ILogger, Logger);
+container.registerSingleton(Types.IAssetService, AssetService);
+container.registerSingleton(Types.IInputTracker, InputTracker);
+container.registerSingleton(Types.ICore, Core,
+	Types.ILogger, Types.IAssetService, Types.IInputTracker, Factory(Types.ICamera), Factory(Types.IRenderer), Factory(Types.IWorld),
+	Factory(Types.IPlayer), Factory(Types.IUIRoot));
+container.registerSingleton(Types.ICamera, Camera);
+container.registerSingleton(Types.IRenderer, Renderer);
+container.register(Types.IWorldMeshBuilder, WorldMeshBuilder);
+container.register(Types.IMapLoader, MapLoader);
+container.registerSingleton(Types.IWorld, World, Types.IAssetService, Types.IMapLoader, Types.IWorldMeshBuilder, Factory(Types.IMonster),
+	Factory(Types.IProjectile), Types.ILogger);
+container.register(Types.IMouseControls, MouseControls, Types.ICamera, Types.IInputTracker, Types.IWorld, Types.ILogger);
+container.registerSingleton(Types.IPlayer, Player,
+	Types.IMouseControls, Types.ICamera, Types.IInputTracker, Types.IWorld, Types.ILogger, Types.IEntityId, Types.IEntityMovementEngine);
+container.register(Types.IMonster, Monster, Types.IWorld, Types.IPlayer, Types.IEntityId, Types.IEntityMovementEngine);
+container.registerSingleton(Types.IEntityId, EntityId);
+container.register(Types.IEntityMovementEngine, EntityMovementEngine, Types.IWorld);
+container.registerSingleton(Types.IUIRoot, UIRoot, Types.IWorld, Types.IPlayer, Types.ILogger);
+container.register(Types.IProjectile, Projectile, Types.IWorld, Types.IEntityId, Types.IEntityMovementEngine);
+container.registerSingleton(Types.IPointLightCache, PointLightCache, Types.IWorld);
 
-container.resolve("Core");
+container.resolve(Types.ICore);

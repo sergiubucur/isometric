@@ -8,8 +8,9 @@ import CoreState from "./CoreState";
 import IInputTracker from "./input-tracker/IInputTracker";
 import IPlayer from "./entity/player/IPlayer";
 import IUIRoot from "./ui/IUIRoot";
+import ICore from "./ICore";
 
-export default class Core {
+export default class Core implements ICore {
 	private _state: CoreState;
 	private _nextState: CoreState | null;
 	private _camera: ICamera | null;

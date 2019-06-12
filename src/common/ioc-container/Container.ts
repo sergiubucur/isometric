@@ -1,44 +1,44 @@
 type TypeInfo = {
-	name: string,
+	id: number,
 	type: object,
-	dependencies: string[],
+	dependencies: number[],
 	singleton: boolean
 };
 
-const FactoryPrefix = "Factory_";
+const FactoryPrefix = 1000000;
 
-export function Factory(name: string) {
-	return FactoryPrefix + name;
+export function Factory(id: number) {
+	return FactoryPrefix + id;
 }
 
 export default class Container {
-	_types: { [key: string]: TypeInfo };
-	_singletons: { [key: string]: object };
+	_types: { [key: number]: TypeInfo };
+	_singletons: { [key: number]: object };
 
 	constructor() {
 		this._types = {};
 		this._singletons = {};
 	}
 
-	register(name: string, type: object, ...dependencies: string[]) {
-		this.registerType(name, type, dependencies);
+	register(id: number, type: object, ...dependencies: number[]) {
+		this.registerType(id, type, dependencies);
 	}
 
-	registerSingleton(name: string, type: object, ...dependencies: string[]) {
-		this.registerType(name, type, dependencies, true);
+	registerSingleton(id: number, type: object, ...dependencies: number[]) {
+		this.registerType(id, type, dependencies, true);
 	}
 
-	private registerType(name: string, type: object, dependencies: string[], singleton = false) {
-		this._types[name] = {
-			name,
+	private registerType(id: number, type: object, dependencies: number[], singleton = false) {
+		this._types[id] = {
+			id,
 			type,
 			dependencies,
 			singleton
 		};
 	}
 
-	resolve(name: string): object {
-		const type = this._types[name];
+	resolve(id: number): object {
+		const type = this._types[id];
 
 		if (!type) {
 			throw new Error("unregistered type");
@@ -47,8 +47,8 @@ export default class Container {
 		if (type.dependencies.length > 0) {
 			return this.singleton(type, () => {
 				const dependencies = type.dependencies.map(x => {
-					if (x.indexOf(FactoryPrefix) === 0) {
-						x = x.substr(FactoryPrefix.length);
+					if (x >= FactoryPrefix) {
+						x = x - FactoryPrefix;
 						return () => this.resolve(x);
 					}
 
@@ -66,11 +66,11 @@ export default class Container {
 
 	private singleton(type: TypeInfo, callback: () => object) {
 		if (type.singleton) {
-			if (!this._singletons[type.name]) {
-				this._singletons[type.name] = callback();
+			if (!this._singletons[type.id]) {
+				this._singletons[type.id] = callback();
 			}
 
-			return this._singletons[type.name];
+			return this._singletons[type.id];
 		}
 
 		return callback();
