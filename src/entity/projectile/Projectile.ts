@@ -24,6 +24,8 @@ export default class Projectile implements IProjectile {
 	private _fadeInAnimationFrames: number;
 	private _pointLightCacheItem: PointLightCacheItem;
 
+	private static _geometry = new THREE.SphereBufferGeometry(MeshRadius);
+
 	constructor(private _world: IWorld, private _entityId: IEntityId, private _movementEngine: IEntityMovementEngine,
 		private _pointLightCache: IPointLightCache) {
 
@@ -95,11 +97,10 @@ export default class Projectile implements IProjectile {
 	}
 
 	private initMesh() {
-		const geometry = new THREE.SphereGeometry(MeshRadius);
 		const material = new THREE.MeshPhongMaterial({ color: this._data.color });
 		material.emissive.set(this._data.color);
 
-		this._mesh = new THREE.Mesh(geometry, material);
+		this._mesh = new THREE.Mesh(Projectile._geometry, material);
 		this._mesh.visible = false;
 
 		this._pointLightCacheItem = this._pointLightCache.allocate();
