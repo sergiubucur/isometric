@@ -128,10 +128,10 @@ export default class World implements IWorld, IWorldComponent {
 	}
 
 	private initLights() {
-		const ambLight = new THREE.AmbientLight(new THREE.Color(0.025, 0.025, 0.025));
+		const ambLight = new THREE.AmbientLight(new THREE.Color(0.001, 0.001, 0.001));
 		this.scene.add(ambLight);
 
-		const dirLight = new THREE.DirectionalLight(new THREE.Color(1, 1, 1));
+		const dirLight = new THREE.DirectionalLight(new THREE.Color(0.01, 0.01, 0.01));
 		dirLight.position.set(-0.25, 0.5, -0.75).normalize();
 		this.scene.add(dirLight);
 	}

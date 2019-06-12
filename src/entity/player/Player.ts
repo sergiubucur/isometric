@@ -14,10 +14,10 @@ import IAssetService from "../../asset/IAssetService";
 const Size = 2;
 const Speed = 0.25;
 const SpellCooldown = 17;
-const Color = 0xbada55;
+const Color = 0xFFD8B2;
 const PointLightIntensity = 3;
-const PointLightDistance = 5;
-const PointLightYOffset = 1;
+const PointLightDistance = 20;
+const PointLightYOffset = 4;
 const MeshName = "human";
 
 export default class Player implements IPlayer {
@@ -113,9 +113,15 @@ export default class Player implements IPlayer {
 		this._mesh = new THREE.Mesh(geometry, material);
 		this._mesh.scale.set(Size, Size, Size);
 		this._mesh.rotation.order = "ZYX";
+		this._mesh.castShadow = true;
 
 		this._pointLight = new THREE.PointLight(Color, PointLightIntensity, PointLightDistance);
 		this._pointLight.position.set(0, PointLightYOffset, 0);
+		this._pointLight.castShadow = true;
+		this._pointLight.shadow.mapSize.width = 512;
+		this._pointLight.shadow.mapSize.height = 512;
+		this._pointLight.shadow.camera.near = 2;
+		this._pointLight.shadow.camera.far = PointLightDistance;
 
 		this._mesh.add(this._pointLight);
 
