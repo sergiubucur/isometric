@@ -40,7 +40,7 @@ container.register(Types.IWorldMeshBuilder, WorldMeshBuilder, Types.IAssetServic
 container.register(Types.IMapLoader, MapLoader);
 
 container.registerSingleton(Types.IWorld, World, Types.IAssetService, Types.IMapLoader, Types.IWorldMeshBuilder, Factory(Types.IMonster),
-	Factory(Types.IProjectile), Types.ILogger);
+	Factory(Types.IProjectile), Types.ILogger, Factory(Types.IPointLightCache));
 
 container.register(Types.IMouseControls, MouseControls, Types.ICamera, Types.IInputTracker, Types.IWorld, Types.ILogger);
 

@@ -12,6 +12,7 @@ import IProjectile from "../entity/projectile/IProjectile";
 import ProjectileData from "../entity/projectile/ProjectileData";
 import ILogger from "../common/logger/ILogger";
 import IPlayer from "../entity/player/IPlayer";
+import IPointLightCache from "./point-light-cache/IPointLightCache";
 
 const MapName = "testMap";
 
@@ -22,9 +23,11 @@ export default class World implements IWorld, IWorldComponent {
 	private _monsters: IMonster[];
 	private _projectiles: IProjectile[];
 	private _player: IPlayer | null;
+	private _pointLightCache: IPointLightCache;
 
 	constructor(private _assetService: IAssetService, private _mapLoader: IMapLoader, private _worldMeshBuilder: IWorldMeshBuilder,
-		private _monsterFactory: () => IMonster, private _projectileFactory: () => IProjectile, private _logger: ILogger) {
+		private _monsterFactory: () => IMonster, private _projectileFactory: () => IProjectile, private _logger: ILogger,
+		private _pointLightCacheFactory: () => IPointLightCache) {
 
 		this.scene = new THREE.Scene();
 		this._monsters = [];
@@ -134,6 +137,8 @@ export default class World implements IWorld, IWorldComponent {
 		const dirLight = new THREE.DirectionalLight(new THREE.Color(0.01, 0.01, 0.01));
 		dirLight.position.set(-0.25, 0.5, -0.75).normalize();
 		this.scene.add(dirLight);
+
+		this._pointLightCache = this._pointLightCacheFactory();
 	}
 
 	private addMonster(position: THREE.Vector3) {
