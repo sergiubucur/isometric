@@ -43,7 +43,7 @@ export default class Monster implements IMonster {
 				this._deathAnimationFrames--;
 
 				const value = this._deathAnimationFrames / DeathAnimationTotalFrames;
-				this._mesh.rotation.x = (1 - value) * (Math.PI / 2);
+				this._mesh.rotation.x = -(1 - value) * (Math.PI / 2);
 				this._mesh.position.y = (Size / 4) + Math.sin(Math.PI * value) * Size;
 			}
 
@@ -73,6 +73,7 @@ export default class Monster implements IMonster {
 
 		this._mesh = new THREE.Mesh(geometry, material);
 		this._mesh.scale.set(Size, Size, Size);
+		this._mesh.rotation.order = "ZYX";
 
 		this.updateMeshPosition();
 
@@ -81,5 +82,6 @@ export default class Monster implements IMonster {
 
 	private updateMeshPosition() {
 		this._mesh.position.copy(this._movementEngine.position);
+		this._mesh.rotation.y = this._movementEngine.rotationY;
 	}
 }

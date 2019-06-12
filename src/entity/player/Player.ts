@@ -80,6 +80,9 @@ export default class Player implements IPlayer {
 			this._movementEngine.stop();
 			this._spellCooldown = SpellCooldown;
 
+			this._movementEngine.velocity.copy(this._mouseControls.mousePosition).sub(this._movementEngine.position);
+			this.updateMeshPosition();
+
 			this._world.addProjectile({
 				startPosition: this._movementEngine.position,
 				targetPosition: this._mouseControls.mousePosition,
@@ -97,6 +100,7 @@ export default class Player implements IPlayer {
 			this._spellCooldown = SpellCooldown;
 
 			if (this._movementEngine.canMoveTo(this._mouseControls.mousePosition)) {
+				this._movementEngine.velocity.copy(this._mouseControls.mousePosition).sub(this._movementEngine.position);
 				this._movementEngine.moveTo(this._mouseControls.mousePosition);
 			}
 		}
@@ -108,6 +112,7 @@ export default class Player implements IPlayer {
 
 		this._mesh = new THREE.Mesh(geometry, material);
 		this._mesh.scale.set(Size, Size, Size);
+		this._mesh.rotation.order = "ZYX";
 
 		this._pointLight = new THREE.PointLight(Color, PointLightIntensity, PointLightDistance);
 		this._pointLight.position.set(0, PointLightYOffset, 0);
@@ -121,5 +126,6 @@ export default class Player implements IPlayer {
 
 	private updateMeshPosition() {
 		this._mesh.position.copy(this._movementEngine.position);
+		this._mesh.rotation.y = this._movementEngine.rotationY;
 	}
 }

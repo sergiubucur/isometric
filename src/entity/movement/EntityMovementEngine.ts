@@ -6,10 +6,14 @@ export default class EntityMovementEngine {
 	afterPositionUpdate: () => void;
 	id: number;
 	position: THREE.Vector3;
+	velocity: THREE.Vector3;
 	size: number;
 	speed: number;
 
-	private _velocity: THREE.Vector3;
+	get rotationY() {
+		return Math.atan2(this.velocity.x, this.velocity.z);
+	}
+
 	private _steps: number;
 	private _projectileMode: boolean;
 	private _projectileOriginId: number;
@@ -17,8 +21,8 @@ export default class EntityMovementEngine {
 
 	constructor(private _world: IWorld) {
 		this.position = new THREE.Vector3();
-		this._velocity = new THREE.Vector3();
 		this._steps = 0;
+		this.velocity = new THREE.Vector3();
 		this._projectileMode = false;
 		this._projectileOriginId = 0;
 		this._projectileOnHit = () => {};
@@ -45,7 +49,7 @@ export default class EntityMovementEngine {
 
 	move() {
 		if (this._projectileMode && this._steps > 0) {
-			const position = this.position.clone().add(this._velocity);
+			const position = this.position.clone().add(this.velocity);
 			const canMove = this.canMoveTo(position);
 
 			if (canMove) {
@@ -60,19 +64,19 @@ export default class EntityMovementEngine {
 		if (this._steps > 0) {
 			let position = null;
 
-			const positionXZ = this.position.clone().add(new THREE.Vector3(this._velocity.x, 0, this._velocity.z));
+			const positionXZ = this.position.clone().add(new THREE.Vector3(this.velocity.x, 0, this.velocity.z));
 			const canMoveXZ = this.canMoveTo(positionXZ);
 
 			if (canMoveXZ) {
 				position = positionXZ;
 			} else {
-				const positionX = this.position.clone().add(new THREE.Vector3(this._velocity.x, 0, 0));
+				const positionX = this.position.clone().add(new THREE.Vector3(this.velocity.x, 0, 0));
 				const canMoveX = this.canMoveTo(positionX);
 
 				if (canMoveX) {
 					position = positionX;
 				} else {
-					const positionZ = this.position.clone().add(new THREE.Vector3(0, 0, this._velocity.z));
+					const positionZ = this.position.clone().add(new THREE.Vector3(0, 0, this.velocity.z));
 					const canMoveZ = this.canMoveTo(positionZ);
 
 					if (canMoveZ) {
@@ -91,8 +95,8 @@ export default class EntityMovementEngine {
 	}
 
 	startMovingTo(position: THREE.Vector3) {
-		this._velocity.copy(position).sub(this.position).normalize().multiplyScalar(this.speed);
 		this._steps = Math.ceil(position.clone().sub(this.position).length() / this.speed);
+		this.velocity.copy(position).sub(this.position).normalize().multiplyScalar(this.speed);
 	}
 
 	canMoveTo(position: THREE.Vector3) {

@@ -10,6 +10,7 @@ const Size = 1;
 const MeshRadius = 0.5;
 const YOffset = 2;
 const ExplosionAnimationTotalFrames = 10;
+const FadeInAnimationTotalFrames = 3;
 
 export default class Projectile implements IProjectile {
 	id: number;
@@ -19,11 +20,13 @@ export default class Projectile implements IProjectile {
 	private _data: ProjectileData;
 	private _exploded: boolean;
 	private _explosionAnimationFrames: number;
+	private _fadeInAnimationFrames: number;
 
 	constructor(private _world: IWorld, private _entityId: IEntityId, private _movementEngine: IEntityMovementEngine) {
 		this.id = this._entityId.getNewId();
 		this.toBeDeleted = false;
 		this._explosionAnimationFrames = ExplosionAnimationTotalFrames;
+		this._fadeInAnimationFrames = FadeInAnimationTotalFrames;
 	}
 
 	init(data: ProjectileData) {
@@ -42,6 +45,8 @@ export default class Projectile implements IProjectile {
 
 	update() {
 		if (this._exploded) {
+			this._mesh.visible = true;
+
 			if (this._explosionAnimationFrames > 0) {
 				this._explosionAnimationFrames--;
 
@@ -56,6 +61,14 @@ export default class Projectile implements IProjectile {
 			}
 
 			return;
+		}
+
+		if (this._fadeInAnimationFrames > 0) {
+			this._fadeInAnimationFrames--;
+
+			if (this._fadeInAnimationFrames === 0) {
+				this._mesh.visible = true;
+			}
 		}
 
 		this._movementEngine.move();
@@ -79,6 +92,7 @@ export default class Projectile implements IProjectile {
 		material.emissive.set(this._data.color);
 
 		this._mesh = new THREE.Mesh(geometry, material);
+		this._mesh.visible = false;
 
 		this.updateMeshPosition();
 
