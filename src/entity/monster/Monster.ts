@@ -74,8 +74,6 @@ export default class Monster implements IMonster {
 		this._mesh = new THREE.Mesh(geometry, material);
 		this._mesh.scale.set(Size, Size, Size);
 
-		this._mesh = new THREE.Mesh(geometry, material);
-
 		this.updateMeshPosition();
 
 		this._world.addMesh(this._mesh);
