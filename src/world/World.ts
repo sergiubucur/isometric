@@ -13,6 +13,8 @@ import ProjectileData from "../entity/projectile/ProjectileData";
 import ILogger from "../common/logger/ILogger";
 import IPlayer from "../entity/player/IPlayer";
 
+const MapName = "testMap";
+
 export default class World implements IWorld, IWorldComponent {
 	readonly scene: THREE.Scene;
 	map: IMap;
@@ -118,7 +120,7 @@ export default class World implements IWorld, IWorldComponent {
 	}
 
 	private initMap() {
-		const result = this._mapLoader.loadMap(this._assetService.assets.test.content as HTMLImageElement);
+		const result = this._mapLoader.loadMap(this._assetService.assets[MapName].content as HTMLImageElement);
 		this.map = result.map;
 
 		const worldMesh = this._worldMeshBuilder.buildWorldMesh(result);
@@ -126,10 +128,10 @@ export default class World implements IWorld, IWorldComponent {
 	}
 
 	private initLights() {
-		const ambLight = new THREE.AmbientLight(new THREE.Color(0.25, 0.25, 0.25));
+		const ambLight = new THREE.AmbientLight(new THREE.Color(0.025, 0.025, 0.025));
 		this.scene.add(ambLight);
 
-		const dirLight = new THREE.DirectionalLight(new THREE.Color(1, 0.85, 0.7));
+		const dirLight = new THREE.DirectionalLight(new THREE.Color(1, 1, 1));
 		dirLight.position.set(-0.25, 0.5, -0.75).normalize();
 		this.scene.add(dirLight);
 	}

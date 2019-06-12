@@ -5,14 +5,13 @@ import IWorld from "../../world/IWorld";
 import IPlayer from "../player/IPlayer";
 import IEntityId from "../entity-id/IEntityId";
 import IEntityMovementEngine from "../movement/IEntityMovementEngine";
+import IAssetService from "../../asset/IAssetService";
 
 const Size = 1;
 const Speed = 0.1;
-const MeshRadius = 0.5;
-const MeshHeight = 2;
-const MeshRadialSegments = 16;
 const Color = 0xff0000;
 const DeathAnimationTotalFrames = 30;
+const MeshName = "human";
 
 export default class Monster implements IMonster {
 	id: number;
@@ -22,7 +21,7 @@ export default class Monster implements IMonster {
 	private _deathAnimationFrames: number;
 
 	constructor(private _world: IWorld, private _player: IPlayer, private _entityId: IEntityId,
-		private _movementEngine: IEntityMovementEngine) {
+		private _movementEngine: IEntityMovementEngine, private _assetService: IAssetService) {
 
 		this.id = this._entityId.getNewId();
 		this._isDead = false;
@@ -45,7 +44,7 @@ export default class Monster implements IMonster {
 
 				const value = this._deathAnimationFrames / DeathAnimationTotalFrames;
 				this._mesh.rotation.x = (1 - value) * (Math.PI / 2);
-				this._mesh.position.y = (MeshHeight / 4) + Math.sin(Math.PI * value) * MeshHeight;
+				this._mesh.position.y = (Size / 4) + Math.sin(Math.PI * value) * Size;
 			}
 
 			return;
@@ -69,8 +68,11 @@ export default class Monster implements IMonster {
 	}
 
 	private initMesh() {
-		const geometry = new THREE.CylinderBufferGeometry(MeshRadius, MeshRadius, MeshHeight, MeshRadialSegments);
+		const geometry = (this._assetService.assets[MeshName].content as THREE.Mesh).geometry;
 		const material = new THREE.MeshPhongMaterial({ color: Color });
+
+		this._mesh = new THREE.Mesh(geometry, material);
+		this._mesh.scale.set(Size, Size, Size);
 
 		this._mesh = new THREE.Mesh(geometry, material);
 
@@ -81,6 +83,5 @@ export default class Monster implements IMonster {
 
 	private updateMeshPosition() {
 		this._mesh.position.copy(this._movementEngine.position);
-		this._mesh.position.y += MeshHeight / 2;
 	}
 }

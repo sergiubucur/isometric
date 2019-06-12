@@ -29,8 +29,7 @@ export default class Renderer implements IRenderer {
 			height /= 2;
 		}
 
-		this._renderer = new THREE.WebGLRenderer({ antialias: AntiAliasing });
-		this._renderer.setSize(width, height);
+		this._renderer = this.getRenderer(width, height);
 
 		document.body.appendChild(this._renderer.domElement);
 
@@ -38,5 +37,15 @@ export default class Renderer implements IRenderer {
 			this._renderer.domElement.style.width = width * 2 + "px";
 			this._renderer.domElement.style.height = height * 2 + "px";
 		}
+	}
+
+	private getRenderer(width: number, height: number) {
+		const renderer = new THREE.WebGLRenderer({ antialias: AntiAliasing });
+
+		renderer.setSize(width, height);
+		renderer.gammaOutput = true;
+		renderer.gammaFactor = 2.2;
+
+		return renderer;
 	}
 }

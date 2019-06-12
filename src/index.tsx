@@ -45,9 +45,10 @@ container.registerSingleton(Types.IWorld, World, Types.IAssetService, Types.IMap
 container.register(Types.IMouseControls, MouseControls, Types.ICamera, Types.IInputTracker, Types.IWorld, Types.ILogger);
 
 container.registerSingleton(Types.IPlayer, Player,
-	Types.IMouseControls, Types.ICamera, Types.IInputTracker, Types.IWorld, Types.ILogger, Types.IEntityId, Types.IEntityMovementEngine);
+	Types.IMouseControls, Types.ICamera, Types.IInputTracker, Types.IWorld, Types.ILogger, Types.IEntityId, Types.IEntityMovementEngine,
+	Types.IAssetService);
 
-container.register(Types.IMonster, Monster, Types.IWorld, Types.IPlayer, Types.IEntityId, Types.IEntityMovementEngine);
+container.register(Types.IMonster, Monster, Types.IWorld, Types.IPlayer, Types.IEntityId, Types.IEntityMovementEngine, Types.IAssetService);
 
 container.registerSingleton(Types.IEntityId, EntityId);
 

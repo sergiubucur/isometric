@@ -9,17 +9,16 @@ import ILogger from "../../common/logger/ILogger";
 import IEntityId from "../entity-id/IEntityId";
 import IEntityMovementEngine from "../movement/IEntityMovementEngine";
 import Keybinds from "../../input-tracker/Keybinds";
+import IAssetService from "../../asset/IAssetService";
 
 const Size = 2;
 const Speed = 0.25;
 const SpellCooldown = 17;
-const MeshRadius = 0.75;
-const MeshHeight = 4;
-const MeshRadialSegments = 16;
 const Color = 0xbada55;
 const PointLightIntensity = 3;
 const PointLightDistance = 5;
-const PointLightYOffset = 0.5;
+const PointLightYOffset = 1;
+const MeshName = "human";
 
 export default class Player implements IPlayer {
 	get position() {
@@ -33,7 +32,8 @@ export default class Player implements IPlayer {
 	private _pointLight: THREE.PointLight;
 
 	constructor(private _mouseControls: IMouseControls, private _camera: ICamera, private _inputTracker: IInputTracker,
-		private _world: IWorld, private _logger: ILogger, private _entityId: IEntityId, private _movementEngine: IEntityMovementEngine) {
+		private _world: IWorld, private _logger: ILogger, private _entityId: IEntityId, private _movementEngine: IEntityMovementEngine,
+		private _assetService: IAssetService) {
 
 		this._mouseControls.onLeftClick = () => this.handleLeftClick();
 		this._mouseControls.onRightClick = () => this.handleRightClick();
@@ -103,12 +103,15 @@ export default class Player implements IPlayer {
 	}
 
 	private initMesh() {
-		const geometry = new THREE.CylinderBufferGeometry(MeshRadius, MeshRadius, MeshHeight, MeshRadialSegments);
+		const geometry = (this._assetService.assets[MeshName].content as THREE.Mesh).geometry;
 		const material = new THREE.MeshPhongMaterial({ color: Color });
 
 		this._mesh = new THREE.Mesh(geometry, material);
+		this._mesh.scale.set(Size, Size, Size);
+
 		this._pointLight = new THREE.PointLight(Color, PointLightIntensity, PointLightDistance);
 		this._pointLight.position.set(0, PointLightYOffset, 0);
+
 		this._mesh.add(this._pointLight);
 
 		this.updateMeshPosition();
@@ -118,6 +121,5 @@ export default class Player implements IPlayer {
 
 	private updateMeshPosition() {
 		this._mesh.position.copy(this._movementEngine.position);
-		this._mesh.position.y += MeshHeight / 2;
 	}
 }

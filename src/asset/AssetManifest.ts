@@ -12,7 +12,8 @@ export type AssetManifest = {
 };
 
 const manifest: AssetManifest = {
-	test: { name: "test", type: AssetType.Map, filename: "test.png" }
+	testMap: { name: "testMap", type: AssetType.Map, filename: "test.png" },
+	human: { name: "human", type: AssetType.Mesh, filename: "human_low.glb" }
 };
 
 export default manifest;
