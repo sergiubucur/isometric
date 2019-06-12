@@ -7,7 +7,7 @@ import IEntityId from "../entity-id/IEntityId";
 import IEntityMovementEngine from "../movement/IEntityMovementEngine";
 import IAssetService from "../../asset/IAssetService";
 
-const Size = 1;
+const Size = 2;
 const Speed = 0.1;
 const Color = 0xff0000;
 const DeathAnimationTotalFrames = 30;

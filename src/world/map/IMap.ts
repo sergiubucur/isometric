@@ -10,6 +10,6 @@ export default interface IMap {
 	isCellPassable(x: number, y: number, ignoreIds?: number[]): boolean;
 	occupyCell(x: number, y: number, id: number): void;
 	vacateCell(x: number, y: number): void;
-	areaContains(x: number, y: number, radius: number, predicate: (id: number) => boolean): boolean;
+	areaIsPassable(x: number, y: number, radius: number): boolean;
 	getAllEntityIdsInArea(x: number, y: number, radius: number): number[];
 }

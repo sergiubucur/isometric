@@ -6,7 +6,6 @@ import IWorldComponent from "./IWorldComponent";
 import IMapLoader from "./map/loader/IMapLoader";
 import IAssetService from "../asset/IAssetService";
 import IMonster from "../entity/monster/IMonster";
-import CellType from "./map/CellType";
 import IMap from "./map/IMap";
 import IProjectile from "../entity/projectile/IProjectile";
 import ProjectileData from "../entity/projectile/ProjectileData";
@@ -108,8 +107,7 @@ export default class World implements IWorld, IWorldComponent {
 					continue;
 				}
 
-				const cell = this.map.getCell(x, z);
-				if (!cell || cell.type !== CellType.EmptyFloor) {
+				if (!this.map.areaIsPassable(x, z, 3)) {
 					continue;
 				}
 

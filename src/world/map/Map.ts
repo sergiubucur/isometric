@@ -47,22 +47,16 @@ export default class Map implements IMap {
 		return null;
 	}
 
-	areaContains(x: number, y: number, radius: number, predicate: (id: number) => boolean) {
+	areaIsPassable(x: number, y: number, radius: number) {
 		for (let i = y - radius; i < y + radius; i++) {
 			for (let j = x - radius; j < x + radius; j++) {
-				const cell = this.getCell(x, y);
-
-				if (!cell) {
-					continue;
-				}
-
-				if (predicate(this.occupiedCells[i][j])) {
-					return true;
+				if (!this.isCellPassable(j, i)) {
+					return false;
 				}
 			}
 		}
 
-		return false;
+		return true;
 	}
 
 	getAllEntityIdsInArea(x: number, y: number, radius: number): number[] {
@@ -70,7 +64,7 @@ export default class Map implements IMap {
 
 		for (let i = y - radius; i < y + radius; i++) {
 			for (let j = x - radius; j < x + radius; j++) {
-				const cell = this.getCell(x, y);
+				const cell = this.getCell(j, i);
 
 				if (!cell) {
 					continue;
