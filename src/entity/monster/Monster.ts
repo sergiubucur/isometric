@@ -20,6 +20,8 @@ export default class Monster implements IMonster {
 	private _isDead: boolean;
 	private _deathAnimationFrames: number;
 
+	private static _material: THREE.MeshPhongMaterial = new THREE.MeshPhongMaterial({ color: Color });
+
 	constructor(private _world: IWorld, private _player: IPlayer, private _entityId: IEntityId,
 		private _movementEngine: IEntityMovementEngine, private _assetService: IAssetService) {
 
@@ -69,9 +71,8 @@ export default class Monster implements IMonster {
 
 	private initMesh() {
 		const geometry = (this._assetService.assets[MeshName].content as THREE.Mesh).geometry;
-		const material = new THREE.MeshPhongMaterial({ color: Color });
 
-		this._mesh = new THREE.Mesh(geometry, material);
+		this._mesh = new THREE.Mesh(geometry, Monster._material);
 		this._mesh.scale.set(Size, Size, Size);
 		this._mesh.rotation.order = "ZYX";
 		this._mesh.castShadow = true;
