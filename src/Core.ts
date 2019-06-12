@@ -16,7 +16,6 @@ export default class Core implements ICore {
 	private _camera: ICamera | null;
 	private _world: IWorld & IWorldComponent | null;
 	private _renderer: IRenderer | null;
-	private _player: IPlayer | null;
 	private _uiRoot: IUIRoot | null;
 
 	constructor(private _logger: ILogger,
@@ -33,7 +32,6 @@ export default class Core implements ICore {
 		this._camera = null;
 		this._world = null;
 		this._renderer = null;
-		this._player = null;
 
 		this.run();
 		this._nextState = CoreState.Load;
@@ -65,7 +63,6 @@ export default class Core implements ICore {
 				const time = performance.now();
 
 				this._world.update();
-				this._player.update();
 
 				this._logger.logBounds("update time", performance.now() - time);
 				break;
@@ -132,7 +129,8 @@ export default class Core implements ICore {
 		this._world = this._worldFactory();
 
 		this._world.init().then(() => {
-			this._player = this._playerFactory();
+			const player = this._playerFactory();
+			this._world.setPlayer(player);
 			this._world.initMonsters();
 
 			this._uiRoot = this._uiRootFactory();

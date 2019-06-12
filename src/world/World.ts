@@ -11,14 +11,15 @@ import IMap from "./map/IMap";
 import IProjectile from "../entity/projectile/IProjectile";
 import ProjectileData from "../entity/projectile/ProjectileData";
 import ILogger from "../common/logger/ILogger";
+import IPlayer from "../entity/player/IPlayer";
 
-// TODO: add reference to player
 export default class World implements IWorld, IWorldComponent {
 	readonly scene: THREE.Scene;
 	map: IMap;
 
 	private _monsters: IMonster[];
 	private _projectiles: IProjectile[];
+	private _player: IPlayer | null;
 
 	constructor(private _assetService: IAssetService, private _mapLoader: IMapLoader, private _worldMeshBuilder: IWorldMeshBuilder,
 		private _monsterFactory: () => IMonster, private _projectileFactory: () => IProjectile, private _logger: ILogger) {
@@ -26,6 +27,7 @@ export default class World implements IWorld, IWorldComponent {
 		this.scene = new THREE.Scene();
 		this._monsters = [];
 		this._projectiles = [];
+		this._player = null;
 	}
 
 	init(): Promise<void> {
@@ -39,6 +41,10 @@ export default class World implements IWorld, IWorldComponent {
 		});
 	}
 
+	setPlayer(player: IPlayer) {
+		this._player = player;
+	}
+
 	update() {
 		this._monsters.forEach(x => x.update());
 
@@ -47,6 +53,8 @@ export default class World implements IWorld, IWorldComponent {
 				x.update();
 			}
 		});
+
+		this._player.update();
 
 		this.deleteMarkedEntities();
 
