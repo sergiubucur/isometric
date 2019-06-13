@@ -15,9 +15,9 @@ const MeshName = "human";
 
 export default class Monster implements IMonster {
 	id: number;
+	dead: boolean;
 
 	private _mesh: THREE.Mesh;
-	private _isDead: boolean;
 	private _deathAnimationFrames: number;
 
 	private static _material: THREE.MeshPhongMaterial = new THREE.MeshPhongMaterial({ color: Color });
@@ -26,7 +26,7 @@ export default class Monster implements IMonster {
 		private _movementEngine: IEntityMovementEngine, private _assetService: IAssetService) {
 
 		this.id = this._entityId.getNewId();
-		this._isDead = false;
+		this.dead = false;
 		this._deathAnimationFrames = DeathAnimationTotalFrames;
 	}
 
@@ -40,7 +40,7 @@ export default class Monster implements IMonster {
 	}
 
 	update() {
-		if (this._isDead) {
+		if (this.dead) {
 			if (this._deathAnimationFrames > 0) {
 				this._deathAnimationFrames--;
 
@@ -57,11 +57,11 @@ export default class Monster implements IMonster {
 	}
 
 	damage() {
-		if (this._isDead) {
+		if (this.dead) {
 			return;
 		}
 
-		this._isDead = true;
+		this.dead = true;
 		this._movementEngine.clearCells();
 	}
 

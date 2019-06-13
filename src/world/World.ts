@@ -63,6 +63,7 @@ export default class World implements IWorld, IWorldComponent {
 		this.deleteMarkedEntities();
 
 		this._logger.logNumber("entities", this._monsters.length + this._projectiles.length + 1, 0);
+		this._logger.logNumber("monsters left", this._monsters.filter(x => !x.dead).length, 0);
 	}
 
 	deleteMarkedEntities() {
