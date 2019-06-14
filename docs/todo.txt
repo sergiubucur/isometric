@@ -1,0 +1,13 @@
+powerups
+health/mana UI
+spell UI
+spell cooldowns
+monster attacks
+different types of monsters
+multiple levels
+procedurally generated levels
+monsters get tougher the further you progress
+player death
+experience
+player leveling
+doors
