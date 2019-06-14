@@ -17,3 +17,5 @@ lava/slime floors
 switches
 teleporters
 secrets
+level editor
+continuous deployment
