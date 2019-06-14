@@ -143,33 +143,21 @@ export default class WorldMeshBuilder implements IWorldMeshBuilder {
 	}
 
 	private initGeometriesAndMaterials() {
-		this._geometries.concrete = new THREE.PlaneBufferGeometry();
+		this._materials.floorConcrete = this.getMaterial("metal", "normalMetal", FloorColor);
+		this._materials.ceilingConcrete = this.getMaterial("metal", "normalMetal", WallColor);
+		this._materials.wallConcrete = this.getMaterial("metal", "normalMetal", WallColor);
+	}
 
-		const floorConcrete = new THREE.MeshPhongMaterial({ color: FloorColor });
-		floorConcrete.map = this._assetService.assets.metal.content as THREE.Texture;
-		floorConcrete.map.wrapS = THREE.RepeatWrapping;
-		floorConcrete.map.wrapT = THREE.RepeatWrapping;
-		floorConcrete.normalMap = this._assetService.assets.normalMetal.content as THREE.Texture;
-		floorConcrete.normalMap.wrapS = THREE.RepeatWrapping;
-		floorConcrete.normalMap.wrapT = THREE.RepeatWrapping;
-		this._materials.floorConcrete = floorConcrete;
+	private getMaterial(textureName: string, normalMapName: string, color = new THREE.Color(1, 1, 1)) {
+		const material = new THREE.MeshPhongMaterial({ color });
 
-		const ceilingConcrete = new THREE.MeshPhongMaterial({ color: WallColor });
-		ceilingConcrete.map = this._assetService.assets.metal.content as THREE.Texture;
-		ceilingConcrete.map.wrapS = THREE.RepeatWrapping;
-		ceilingConcrete.map.wrapT = THREE.RepeatWrapping;
-		ceilingConcrete.normalMap = this._assetService.assets.normalMetal.content as THREE.Texture;
-		ceilingConcrete.normalMap.wrapS = THREE.RepeatWrapping;
-		ceilingConcrete.normalMap.wrapT = THREE.RepeatWrapping;
-		this._materials.ceilingConcrete = ceilingConcrete;
+		material.map = this._assetService.assets[textureName].content as THREE.Texture;
+		material.map.wrapS = THREE.RepeatWrapping;
+		material.map.wrapT = THREE.RepeatWrapping;
+		material.normalMap = this._assetService.assets[normalMapName].content as THREE.Texture;
+		material.normalMap.wrapS = THREE.RepeatWrapping;
+		material.normalMap.wrapT = THREE.RepeatWrapping;
 
-		const wallConcrete = new THREE.MeshPhongMaterial({ color: WallColor });
-		wallConcrete.map = this._assetService.assets.metal.content as THREE.Texture;
-		wallConcrete.map.wrapS = THREE.RepeatWrapping;
-		wallConcrete.map.wrapT = THREE.RepeatWrapping;
-		wallConcrete.normalMap = this._assetService.assets.normalMetal.content as THREE.Texture;
-		wallConcrete.normalMap.wrapS = THREE.RepeatWrapping;
-		wallConcrete.normalMap.wrapT = THREE.RepeatWrapping;
-		this._materials.wallConcrete = wallConcrete;
+		return material;
 	}
 }
