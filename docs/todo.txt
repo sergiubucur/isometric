@@ -11,3 +11,8 @@ player death
 experience
 player leveling
 doors
+bosses
+moving floors
+lava/slime floors
+switches
+teleporters
