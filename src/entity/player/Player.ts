@@ -62,7 +62,7 @@ export default class Player implements IPlayer {
 		this.move();
 
 		if (this._mouseOverTarget && !this._mouseOverTarget.dead && this._inputTracker.keysPressed[Keybinds.D1]) {
-			this._mouseOverTarget.damage();
+			this.touchOfDeath();
 		}
 
 		if (this._inputTracker.keysPressed[Keybinds.D4]) {
@@ -70,9 +70,8 @@ export default class Player implements IPlayer {
 		}
 
 		this._logger.logVector3("position", this._movementEngine.position);
-		if (this._mouseOverTarget) {
-			this._logger.log(`mouseOverTarget: monster id ${this._mouseOverTarget.id}`);
-		}
+		this._logger.log(`mouseOverTarget: ${this._mouseOverTarget ? `monster id ${this._mouseOverTarget.id}` : null}`);
+		this._logger.logNumber("spell cooldown", this._spellCooldown);
 	}
 
 	private move() {
@@ -103,6 +102,15 @@ export default class Player implements IPlayer {
 				originEntityId: this.id,
 				splashRadius: 3
 			});
+		}
+	}
+
+	private touchOfDeath() {
+		if (this._spellCooldown === 0) {
+			this._movementEngine.stop();
+			this._spellCooldown = SpellCooldown;
+
+			this._mouseOverTarget.damage();
 		}
 	}
 
