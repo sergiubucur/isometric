@@ -6,6 +6,8 @@ import IWorld from "../../../world/IWorld";
 import ILogger from "../../../common/logger/ILogger";
 import IMouseControls from "./IMouseControls";
 
+const Color = 0xbada55;
+
 export default class MouseControls implements IMouseControls {
 	mousePosition: THREE.Vector3;
 
@@ -60,7 +62,9 @@ export default class MouseControls implements IMouseControls {
 
 	private initPointerMesh() {
 		const geometry = new THREE.BoxBufferGeometry();
-		const material = new THREE.MeshPhongMaterial({ color: 0xbada55 });
+		const material = new THREE.MeshPhongMaterial({ color: Color });
+		material.emissive.set(Color);
+		material.emissiveIntensity = 1;
 		material.opacity = 0.5;
 		material.transparent = true;
 
