@@ -61,6 +61,10 @@ export default class Player implements IPlayer {
 		this._mouseOverTarget = this._world.getMonsterAtPosition(this._mouseControls.mousePosition, false);
 		this.move();
 
+		if (this._inputTracker.keysPressed[Keybinds.D2]) {
+			this.nova();
+		}
+
 		if (this._mouseOverTarget && !this._mouseOverTarget.dead && this._inputTracker.keysPressed[Keybinds.D1]) {
 			this.touchOfDeath();
 		}
@@ -102,6 +106,29 @@ export default class Player implements IPlayer {
 				originEntityId: this.id,
 				splashRadius: 3
 			});
+		}
+	}
+
+	private nova() {
+		if (this._spellCooldown === 0) {
+			this._movementEngine.stop();
+			this._spellCooldown = SpellCooldown;
+
+			for (let i = 0; i < 10; i++) {
+				const targetPosition = new THREE.Vector3();
+				targetPosition.x = Math.cos(Math.PI / 180 * i * 36);
+				targetPosition.z = Math.sin(Math.PI / 180 * i * 36);
+				targetPosition.add(this._movementEngine.position);
+
+				this._world.addProjectile({
+					startPosition: this._movementEngine.position,
+					targetPosition,
+					speed: 0.5,
+					color: new THREE.Color(ProjectileColor),
+					originEntityId: this.id,
+					splashRadius: 3
+				});
+			}
 		}
 	}
 
