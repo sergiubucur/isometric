@@ -28,6 +28,7 @@ export default class Player implements IPlayer {
 	}
 
 	id: number;
+	invisible: boolean;
 
 	private _spellCooldown: number;
 	private _mesh: THREE.Mesh;
@@ -42,6 +43,7 @@ export default class Player implements IPlayer {
 		this._mouseControls.onRightClick = () => this.handleRightClick();
 
 		this.id = this._entityId.getNewId();
+		this.invisible = false;
 		this._spellCooldown = 0;
 		this._mouseOverTarget = null;
 
@@ -61,11 +63,15 @@ export default class Player implements IPlayer {
 		this._mouseOverTarget = this._world.getMonsterAtPosition(this._mouseControls.mousePosition, false);
 		this.move();
 
-		if (this._inputTracker.keysPressed[Keybinds.D2]) {
+		if (this._inputTracker.keysPressed[Keybinds.D1]) {
+			this.cloak();
+		}
+
+		if (this._inputTracker.keysPressed[Keybinds.D3]) {
 			this.nova();
 		}
 
-		if (this._mouseOverTarget && !this._mouseOverTarget.dead && this._inputTracker.keysPressed[Keybinds.D1]) {
+		if (this._mouseOverTarget && !this._mouseOverTarget.dead && this._inputTracker.keysPressed[Keybinds.D2]) {
 			this.touchOfDeath();
 		}
 
@@ -94,6 +100,7 @@ export default class Player implements IPlayer {
 		if (this._spellCooldown === 0) {
 			this._movementEngine.stop();
 			this._spellCooldown = SpellCooldown;
+			this.uncloak();
 
 			this._movementEngine.velocity.copy(this._mouseControls.mousePosition).sub(this._movementEngine.position);
 			this.updateMeshPosition();
@@ -109,10 +116,29 @@ export default class Player implements IPlayer {
 		}
 	}
 
+	private cloak() {
+		if (this._spellCooldown === 0) {
+			this._movementEngine.stop();
+			this._spellCooldown = SpellCooldown;
+
+			this.setInvisibility(!this.invisible);
+		}
+	}
+
+	private uncloak() {
+		this.setInvisibility(false);
+	}
+
+	private setInvisibility(value: boolean) {
+		this.invisible = value;
+		(this._mesh.material as THREE.MeshPhongMaterial).opacity = this.invisible ? 0.5 : 1;
+	}
+
 	private nova() {
 		if (this._spellCooldown === 0) {
 			this._movementEngine.stop();
 			this._spellCooldown = SpellCooldown;
+			this.uncloak();
 
 			for (let i = 0; i < 10; i++) {
 				const targetPosition = new THREE.Vector3();
@@ -136,6 +162,7 @@ export default class Player implements IPlayer {
 		if (this._spellCooldown === 0) {
 			this._movementEngine.stop();
 			this._spellCooldown = SpellCooldown;
+			this.uncloak();
 
 			this._mouseOverTarget.damage();
 		}
@@ -145,6 +172,7 @@ export default class Player implements IPlayer {
 		if (this._spellCooldown === 0) {
 			this._movementEngine.stop();
 			this._spellCooldown = SpellCooldown;
+			this.uncloak();
 
 			if (this._movementEngine.canMoveTo(this._mouseControls.mousePosition)) {
 				this._movementEngine.velocity.copy(this._mouseControls.mousePosition).sub(this._movementEngine.position);
@@ -156,6 +184,8 @@ export default class Player implements IPlayer {
 	private initMesh() {
 		const geometry = (this._assetService.assets[MeshName].content as THREE.Mesh).geometry;
 		const material = new THREE.MeshPhongMaterial({ color: Color });
+		material.transparent = true;
+		material.opacity = 1;
 
 		this._mesh = new THREE.Mesh(geometry, material);
 		this._mesh.scale.set(Size, Size, Size);

@@ -66,7 +66,9 @@ export default class Monster implements IMonster {
 	}
 
 	private chase() {
-		this._movementEngine.startMovingTo(this._player.position);
+		if (!this._player.invisible) {
+			this._movementEngine.startMovingTo(this._player.position);
+		}
 	}
 
 	private initMesh() {
