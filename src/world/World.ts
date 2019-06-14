@@ -121,6 +121,13 @@ export default class World implements IWorld, IWorldComponent {
 		console.log("monster count", this._monsters.length);
 	}
 
+	getMonsterAtPosition(position: THREE.Vector3, convertToMapPosition = true) {
+		const mapPosition = convertToMapPosition ? this.map.convertToMapPosition(position) : position;
+		const entityId = this.map.getEntityIdAt(mapPosition.x, mapPosition.z);
+
+		return this._monsters.find(x => x.id === entityId);
+	}
+
 	private initMap() {
 		const result = this._mapLoader.loadMap(this._assetService.assets[MapName].content as HTMLImageElement);
 		this.map = result.map;

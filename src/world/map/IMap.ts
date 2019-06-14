@@ -12,4 +12,5 @@ export default interface IMap {
 	vacateCell(x: number, y: number): void;
 	areaIsPassable(x: number, y: number, radius: number): boolean;
 	getAllEntityIdsInArea(x: number, y: number, radius: number): number[];
+	getEntityIdAt(x: number, y: number): number | null;
 }

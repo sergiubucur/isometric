@@ -10,6 +10,7 @@ import IEntityId from "../entity-id/IEntityId";
 import IEntityMovementEngine from "../movement/IEntityMovementEngine";
 import Keybinds from "../../input-tracker/Keybinds";
 import IAssetService from "../../asset/IAssetService";
+import IMonster from "../monster/IMonster";
 
 const Size = 2;
 const Speed = 0.25;
@@ -31,6 +32,7 @@ export default class Player implements IPlayer {
 	private _spellCooldown: number;
 	private _mesh: THREE.Mesh;
 	private _pointLight: THREE.PointLight;
+	private _mouseOverTarget: IMonster | null;
 
 	constructor(private _mouseControls: IMouseControls, private _camera: ICamera, private _inputTracker: IInputTracker,
 		private _world: IWorld, private _logger: ILogger, private _entityId: IEntityId, private _movementEngine: IEntityMovementEngine,
@@ -41,6 +43,7 @@ export default class Player implements IPlayer {
 
 		this.id = this._entityId.getNewId();
 		this._spellCooldown = 0;
+		this._mouseOverTarget = null;
 
 		const startPosition = new THREE.Vector3(16, 0, 16);
 		this._movementEngine.init(this.id, startPosition, Size, Speed);
@@ -55,13 +58,21 @@ export default class Player implements IPlayer {
 
 	update() {
 		this._mouseControls.update();
+		this._mouseOverTarget = this._world.getMonsterAtPosition(this._mouseControls.mousePosition, false);
 		this.move();
+
+		if (this._mouseOverTarget && !this._mouseOverTarget.dead && this._inputTracker.keysPressed[Keybinds.D1]) {
+			this._mouseOverTarget.damage();
+		}
 
 		if (this._inputTracker.keysPressed[Keybinds.D4]) {
 			this.teleport();
 		}
 
 		this._logger.logVector3("position", this._movementEngine.position);
+		if (this._mouseOverTarget) {
+			this._logger.log(`mouseOverTarget: monster id ${this._mouseOverTarget.id}`);
+		}
 	}
 
 	private move() {

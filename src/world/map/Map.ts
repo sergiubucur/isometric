@@ -93,6 +93,16 @@ export default class Map implements IMap {
 		return !isOccupied && cell.type === CellType.EmptyFloor;
 	}
 
+	getEntityIdAt(x: number, y: number): number | null {
+		const cell = this.getCell(x, y);
+
+		if (!cell) {
+			return null;
+		}
+
+		return this.occupiedCells[y][x];
+	}
+
 	occupyCell(x: number, y: number, id: number) {
 		this.occupiedCells[y][x] = id;
 	}
