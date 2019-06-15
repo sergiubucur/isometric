@@ -6,12 +6,14 @@ import ProjectileData from "./ProjectileData";
 import IEntityId from "../entity-id/IEntityId";
 import IWorld from "../../world/IWorld";
 import IPointLightCache, { PointLightCacheItem } from "../../world/point-light-cache/IPointLightCache";
+import IPrimitiveCache from "../../world/primitive-cache/IPrimitiveCache";
 
 const Size = 1;
 const MeshRadius = 0.5;
 const YOffset = 2;
 const ExplosionAnimationTotalFrames = 10;
 const FadeInAnimationTotalFrames = 3;
+const GeometryCacheKey = "Projectile";
 
 export default class Projectile implements IProjectile {
 	id: number;
@@ -23,16 +25,16 @@ export default class Projectile implements IProjectile {
 	private _explosionAnimationFrames: number;
 	private _fadeInAnimationFrames: number;
 	private _pointLightCacheItem: PointLightCacheItem;
-
-	private static _geometry = new THREE.SphereBufferGeometry(MeshRadius);
+	private _geometry: THREE.SphereBufferGeometry;
 
 	constructor(private _world: IWorld, private _entityId: IEntityId, private _movementEngine: IEntityMovementEngine,
-		private _pointLightCache: IPointLightCache) {
+		private _pointLightCache: IPointLightCache, private _primitiveCache: IPrimitiveCache) {
 
 		this.id = this._entityId.getNewId();
 		this.toBeDeleted = false;
 		this._explosionAnimationFrames = ExplosionAnimationTotalFrames;
 		this._fadeInAnimationFrames = FadeInAnimationTotalFrames;
+		this._geometry = this._primitiveCache.getGeometry(GeometryCacheKey, () => new THREE.SphereBufferGeometry(MeshRadius));
 	}
 
 	init(data: ProjectileData) {
@@ -105,7 +107,7 @@ export default class Projectile implements IProjectile {
 		material.emissive.set(this._data.color);
 		material.emissiveIntensity = 3;
 
-		this._mesh = new THREE.Mesh(Projectile._geometry, material);
+		this._mesh = new THREE.Mesh(this._geometry, material);
 		this._mesh.visible = false;
 
 		this._pointLightCacheItem = this._pointLightCache.allocate();

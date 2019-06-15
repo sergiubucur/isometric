@@ -7,6 +7,7 @@ import IEntityId from "../entity-id/IEntityId";
 import IEntityMovementEngine from "../movement-engine/IEntityMovementEngine";
 import IAssetService from "../../asset/IAssetService";
 import IEntityMeleeAttackEngine from "../melee-attack-engine/IEntityMeleeAttackEngine";
+import IPrimitiveCache from "../../world/primitive-cache/IPrimitiveCache";
 
 const Size = 2;
 const Speed = 0.1;
@@ -15,6 +16,7 @@ const DeathAnimationTotalFrames = 30;
 const ScatterTotalFrames = 60;
 const ScatterRange = 10;
 const MeshName = "human";
+const MaterialCacheKey = "Monster";
 
 export default class Monster implements IMonster {
 	id: number;
@@ -24,18 +26,18 @@ export default class Monster implements IMonster {
 	private _mesh: THREE.Mesh;
 	private _deathAnimationFrames: number;
 	private _scatterFrames: number;
-
-	private static _material: THREE.MeshPhongMaterial = new THREE.MeshPhongMaterial({ color: Color });
+	private _material: THREE.MeshPhongMaterial;
 
 	constructor(private _world: IWorld, private _player: IPlayer, private _entityId: IEntityId,
 		private _movementEngine: IEntityMovementEngine, private _assetService: IAssetService,
-		private _meleeAttackEngine: IEntityMeleeAttackEngine) {
+		private _meleeAttackEngine: IEntityMeleeAttackEngine, private _primitiveCache: IPrimitiveCache) {
 
 		this.id = this._entityId.getNewId();
 		this.dead = false;
 		this.size = Size;
 		this._deathAnimationFrames = DeathAnimationTotalFrames;
 		this._scatterFrames = 0;
+		this._material = this._primitiveCache.getMaterial(MaterialCacheKey, () => new THREE.MeshPhongMaterial({ color: Color }));
 	}
 
 	init(position: THREE.Vector3) {
@@ -114,7 +116,7 @@ export default class Monster implements IMonster {
 	private initMesh() {
 		const geometry = (this._assetService.assets[MeshName].content as THREE.Mesh).geometry;
 
-		this._mesh = new THREE.Mesh(geometry, Monster._material);
+		this._mesh = new THREE.Mesh(geometry, this._material);
 		this._mesh.scale.set(Size, Size, Size);
 		this._mesh.rotation.order = "ZYX";
 

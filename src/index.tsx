@@ -20,6 +20,7 @@ import Projectile from "./entity/projectile/Projectile";
 import PointLightCache from "./world/point-light-cache/PointLightCache";
 import EntityMeleeAttackEngine from "./entity/melee-attack-engine/EntityMeleeAttackEngine";
 import ICore from "./ICore";
+import PrimitiveCache from "./world/primitive-cache/PrimitiveCache";
 
 const container = new Container();
 
@@ -42,7 +43,7 @@ container.register(Types.IWorldMeshBuilder, WorldMeshBuilder, Types.IAssetServic
 container.register(Types.IMapLoader, MapLoader);
 
 container.registerSingleton(Types.IWorld, World, Types.IAssetService, Types.IMapLoader, Types.IWorldMeshBuilder, Factory(Types.IMonster),
-	Factory(Types.IProjectile), Types.ILogger, Factory(Types.IPointLightCache));
+	Factory(Types.IProjectile), Types.ILogger, Factory(Types.IPointLightCache), Types.IPrimitiveCache);
 
 container.register(Types.IMouseControls, MouseControls, Types.ICamera, Types.IInputTracker, Types.IWorld, Types.ILogger);
 
@@ -51,7 +52,7 @@ container.registerSingleton(Types.IPlayer, Player,
 	Types.IAssetService);
 
 container.register(Types.IMonster, Monster, Types.IWorld, Types.IPlayer, Types.IEntityId, Types.IEntityMovementEngine, Types.IAssetService,
-	Types.IEntityMeleeAttackEngine);
+	Types.IEntityMeleeAttackEngine, Types.IPrimitiveCache);
 
 container.registerSingleton(Types.IEntityId, EntityId);
 
@@ -59,11 +60,14 @@ container.register(Types.IEntityMovementEngine, EntityMovementEngine, Types.IWor
 
 container.registerSingleton(Types.IUIRoot, UIRoot, Types.IWorld, Types.IPlayer, Types.ILogger);
 
-container.register(Types.IProjectile, Projectile, Types.IWorld, Types.IEntityId, Types.IEntityMovementEngine, Types.IPointLightCache);
+container.register(Types.IProjectile, Projectile, Types.IWorld, Types.IEntityId, Types.IEntityMovementEngine, Types.IPointLightCache,
+	Types.IPrimitiveCache);
 
 container.registerSingleton(Types.IPointLightCache, PointLightCache, Types.IWorld);
 
 container.register(Types.IEntityMeleeAttackEngine, EntityMeleeAttackEngine);
+
+container.registerSingleton(Types.IPrimitiveCache, PrimitiveCache);
 
 const core = container.resolve(Types.ICore) as ICore;
 core.onRestart = () => {
@@ -74,4 +78,5 @@ core.onRestart = () => {
 	container.disposeSingleton(Types.IEntityId);
 	container.disposeSingleton(Types.IUIRoot);
 	container.disposeSingleton(Types.IPointLightCache);
+	container.disposeSingleton(Types.IPrimitiveCache);
 };

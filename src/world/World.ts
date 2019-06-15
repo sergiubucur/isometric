@@ -12,6 +12,7 @@ import ProjectileData from "../entity/projectile/ProjectileData";
 import ILogger from "../common/logger/ILogger";
 import IPlayer from "../entity/player/IPlayer";
 import IPointLightCache from "./point-light-cache/IPointLightCache";
+import IPrimitiveCache from "./primitive-cache/IPrimitiveCache";
 
 const MapName = "testMap";
 
@@ -26,7 +27,7 @@ export default class World implements IWorld, IWorldComponent {
 
 	constructor(private _assetService: IAssetService, private _mapLoader: IMapLoader, private _worldMeshBuilder: IWorldMeshBuilder,
 		private _monsterFactory: () => IMonster, private _projectileFactory: () => IProjectile, private _logger: ILogger,
-		private _pointLightCacheFactory: () => IPointLightCache) {
+		private _pointLightCacheFactory: () => IPointLightCache, private _primitiveCache: IPrimitiveCache) {
 
 		this.scene = new THREE.Scene();
 		this._monsters = [];
@@ -149,6 +150,8 @@ export default class World implements IWorld, IWorldComponent {
 	}
 
 	dispose() {
+		this._primitiveCache.dispose();
+
 		this.scene.traverse((object) => {
 			if (object.type === "Mesh") {
 				const mesh = object as THREE.Mesh;

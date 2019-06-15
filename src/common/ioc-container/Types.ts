@@ -16,7 +16,8 @@ enum Types {
 	IUIRoot,
 	IProjectile,
 	IPointLightCache,
-	IEntityMeleeAttackEngine
+	IEntityMeleeAttackEngine,
+	IPrimitiveCache
 };
 
 export default Types;
