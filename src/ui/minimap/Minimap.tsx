@@ -101,7 +101,7 @@ export default class Minimap extends Component<Props> {
 
 	render() {
 		const styles: any = {
-			position: "absolute",
+			position: "fixed",
 			right: 0,
 			top: 0,
 			width: CellSize * Size,

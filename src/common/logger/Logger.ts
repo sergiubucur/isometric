@@ -27,7 +27,7 @@ export default class Logger implements ILogger {
 		this._domElement.style.color = "#fff";
 		this._domElement.style.fontFamily = "Arial, Helvetica, sans-serif";
 		this._domElement.style.fontSize = "22px";
-		this._domElement.style.position = "absolute";
+		this._domElement.style.position = "fixed";
 		this._domElement.style.left = "10px";
 		this._domElement.style.top = "10px";
 		this._domElement.style.zIndex = "100";
