@@ -1,8 +1,9 @@
 import * as THREE from "three";
 
 import IWorld from "../../world/IWorld";
+import IEntityMovementEngine from "./IEntityMovementEngine";
 
-export default class EntityMovementEngine {
+export default class EntityMovementEngine implements IEntityMovementEngine {
 	afterPositionUpdate: () => void;
 	id: number;
 	position: THREE.Vector3;

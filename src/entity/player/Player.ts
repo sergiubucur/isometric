@@ -7,7 +7,7 @@ import IInputTracker from "../../input-tracker/IInputTracker";
 import IWorld from "../../world/IWorld";
 import ILogger from "../../common/logger/ILogger";
 import IEntityId from "../entity-id/IEntityId";
-import IEntityMovementEngine from "../movement/IEntityMovementEngine";
+import IEntityMovementEngine from "../movement-engine/IEntityMovementEngine";
 import Keybinds from "../../input-tracker/Keybinds";
 import IAssetService from "../../asset/IAssetService";
 import IMonster from "../monster/IMonster";

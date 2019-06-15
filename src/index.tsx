@@ -14,10 +14,11 @@ import Player from "./entity/player/Player";
 import Core from "./Core";
 import Monster from "./entity/monster/Monster";
 import EntityId from "./entity/entity-id/EntityId";
-import EntityMovementEngine from "./entity/movement/EntityMovementEngine";
+import EntityMovementEngine from "./entity/movement-engine/EntityMovementEngine";
 import UIRoot from "./ui/UIRoot";
 import Projectile from "./entity/projectile/Projectile";
 import PointLightCache from "./world/point-light-cache/PointLightCache";
+import EntityMeleeAttackEngine from "./entity/melee-attack-engine/EntityMeleeAttackEngine";
 
 const container = new Container();
 
@@ -48,7 +49,8 @@ container.registerSingleton(Types.IPlayer, Player,
 	Types.IMouseControls, Types.ICamera, Types.IInputTracker, Types.IWorld, Types.ILogger, Types.IEntityId, Types.IEntityMovementEngine,
 	Types.IAssetService);
 
-container.register(Types.IMonster, Monster, Types.IWorld, Types.IPlayer, Types.IEntityId, Types.IEntityMovementEngine, Types.IAssetService);
+container.register(Types.IMonster, Monster, Types.IWorld, Types.IPlayer, Types.IEntityId, Types.IEntityMovementEngine, Types.IAssetService,
+	Types.IEntityMeleeAttackEngine);
 
 container.registerSingleton(Types.IEntityId, EntityId);
 
@@ -59,5 +61,7 @@ container.registerSingleton(Types.IUIRoot, UIRoot, Types.IWorld, Types.IPlayer, 
 container.register(Types.IProjectile, Projectile, Types.IWorld, Types.IEntityId, Types.IEntityMovementEngine, Types.IPointLightCache);
 
 container.registerSingleton(Types.IPointLightCache, PointLightCache, Types.IWorld);
+
+container.register(Types.IEntityMeleeAttackEngine, EntityMeleeAttackEngine);
 
 container.resolve(Types.ICore);

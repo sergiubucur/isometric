@@ -4,14 +4,14 @@ import IMonster from "./IMonster";
 import IWorld from "../../world/IWorld";
 import IPlayer from "../player/IPlayer";
 import IEntityId from "../entity-id/IEntityId";
-import IEntityMovementEngine from "../movement/IEntityMovementEngine";
+import IEntityMovementEngine from "../movement-engine/IEntityMovementEngine";
 import IAssetService from "../../asset/IAssetService";
+import IEntityMeleeAttackEngine from "../melee-attack-engine/IEntityMeleeAttackEngine";
 
 const Size = 2;
 const Speed = 0.1;
 const Color = 0xff0000;
 const DeathAnimationTotalFrames = 30;
-const MeleeAttackAnimationTotalFrames = 30;
 const MeshName = "human";
 
 export default class Monster implements IMonster {
@@ -22,25 +22,16 @@ export default class Monster implements IMonster {
 	private _mesh: THREE.Mesh;
 	private _deathAnimationFrames: number;
 
-	// TODO: refactor into MeleeAttackEngine class
-	private _meleeAttackOriginalPosition: THREE.Vector3;
-	private _meleeAttackAnimationFrames: number;
-	private _meleeAttackOffset: THREE.Vector3;
-	private _meleeAttackDirection: THREE.Vector3;
-
 	private static _material: THREE.MeshPhongMaterial = new THREE.MeshPhongMaterial({ color: Color });
 
 	constructor(private _world: IWorld, private _player: IPlayer, private _entityId: IEntityId,
-		private _movementEngine: IEntityMovementEngine, private _assetService: IAssetService) {
+		private _movementEngine: IEntityMovementEngine, private _assetService: IAssetService,
+		private _meleeAttackEngine: IEntityMeleeAttackEngine) {
 
 		this.id = this._entityId.getNewId();
 		this.dead = false;
 		this.size = Size;
 		this._deathAnimationFrames = DeathAnimationTotalFrames;
-		this._meleeAttackOriginalPosition = new THREE.Vector3();
-		this._meleeAttackAnimationFrames = 0;
-		this._meleeAttackOffset = new THREE.Vector3();
-		this._meleeAttackDirection = new THREE.Vector3();
 	}
 
 	init(position: THREE.Vector3) {
@@ -50,6 +41,11 @@ export default class Monster implements IMonster {
 		};
 
 		this.initMesh();
+
+		this._meleeAttackEngine.init(() => this._player.position, () => this._player.size, this._mesh, this._movementEngine, this.size);
+		this._meleeAttackEngine.onHit = () => {
+			console.log("melee hit");
+		};
 	}
 
 	update() {
@@ -65,28 +61,11 @@ export default class Monster implements IMonster {
 			return;
 		}
 
-		if (this._meleeAttackAnimationFrames > 0) {
-			this._meleeAttackAnimationFrames--;
-
-			this._movementEngine.startMovingTo(this._player.position);
-			this._meleeAttackDirection.copy(this._movementEngine.velocity).normalize();
-			this._mesh.rotation.y = this._movementEngine.rotationY;
-
-			const value = this._meleeAttackAnimationFrames / MeleeAttackAnimationTotalFrames;
-			this._meleeAttackOffset.x = Math.sin(Math.PI * value) * this._meleeAttackDirection.x;
-			this._meleeAttackOffset.y = Math.sin(Math.PI * value) * Size;
-			this._meleeAttackOffset.z = Math.sin(Math.PI * value) * this._meleeAttackDirection.z;
-			this._mesh.position.copy(this._meleeAttackOriginalPosition).add(this._meleeAttackOffset);
-
-			if (this._meleeAttackAnimationFrames === 0) {
-				if (this.canMeleeAttack()) {
-					console.log("melee hit");
-				}
-			}
+		if (this._meleeAttackEngine.isAttacking()) {
+			this._meleeAttackEngine.performAttack();
 		} else {
-			if (this.canMeleeAttack()) {
-				this._meleeAttackOriginalPosition.copy(this._movementEngine.position);
-				this._meleeAttackAnimationFrames = MeleeAttackAnimationTotalFrames;
+			if (this._meleeAttackEngine.canAttack()) {
+				this._meleeAttackEngine.startAttacking();
 			} else {
 				this.chase();
 				this._movementEngine.move();
@@ -102,12 +81,6 @@ export default class Monster implements IMonster {
 
 		this.dead = true;
 		this._movementEngine.clearCells();
-	}
-
-	private canMeleeAttack() {
-		const meleeRange = (this.size / 2 + this._player.size / 2) * 2;
-
-		return this._movementEngine.position.distanceTo(this._player.position) <= meleeRange;
 	}
 
 	private chase() {
