@@ -34,15 +34,9 @@ export default class World implements IWorld, IWorldComponent {
 		this._player = null;
 	}
 
-	init(): Promise<void> {
-		return new Promise((resolve) => {
-			this.initMap();
-			this.initLights();
-
-			setTimeout(() => {
-				resolve();
-			});
-		});
+	init() {
+		this.initMap();
+		this.initLights();
 	}
 
 	setPlayer(player: IPlayer) {

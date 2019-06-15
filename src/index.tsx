@@ -19,6 +19,7 @@ import UIRoot from "./ui/UIRoot";
 import Projectile from "./entity/projectile/Projectile";
 import PointLightCache from "./world/point-light-cache/PointLightCache";
 import EntityMeleeAttackEngine from "./entity/melee-attack-engine/EntityMeleeAttackEngine";
+import ICore from "./ICore";
 
 const container = new Container();
 
@@ -64,4 +65,15 @@ container.registerSingleton(Types.IPointLightCache, PointLightCache, Types.IWorl
 
 container.register(Types.IEntityMeleeAttackEngine, EntityMeleeAttackEngine);
 
-container.resolve(Types.ICore);
+const core = container.resolve(Types.ICore) as ICore;
+core.onRestart = () => {
+	container.disposeSingleton(Types.ICamera);
+	container.disposeSingleton(Types.IRenderer);
+	container.disposeSingleton(Types.IWorld);
+	container.disposeSingleton(Types.IPlayer);
+	container.disposeSingleton(Types.IEntityId);
+	container.disposeSingleton(Types.IUIRoot);
+	container.disposeSingleton(Types.IPointLightCache);
+};
+
+console.log(core);

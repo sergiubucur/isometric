@@ -6,7 +6,7 @@ import IPlayer from "../entity/player/IPlayer";
 export default interface IWorldComponent extends IComponent {
 	readonly scene: THREE.Scene;
 
-	init(): Promise<void>;
+	init(): void;
 	initMonsters(): void;
 	setPlayer(player: IPlayer): void;
 }

@@ -9,8 +9,11 @@ import IInputTracker from "./input-tracker/IInputTracker";
 import IPlayer from "./entity/player/IPlayer";
 import IUIRoot from "./ui/IUIRoot";
 import ICore from "./ICore";
+import Keybinds from "./input-tracker/Keybinds";
 
 export default class Core implements ICore {
+	onRestart: () => void;
+
 	private _state: CoreState;
 	private _nextState: CoreState | null;
 	private _camera: ICamera | null;
@@ -27,6 +30,7 @@ export default class Core implements ICore {
 		private _playerFactory: () => IPlayer,
 		private _uiRootFactory: () => IUIRoot) {
 
+		this.onRestart = () => {};
 		this._state = CoreState.None;
 		this._nextState = null;
 		this._camera = null;
@@ -65,6 +69,14 @@ export default class Core implements ICore {
 				this._world.update();
 
 				this._logger.logBounds("update time", performance.now() - time);
+
+				if (this._inputTracker.keysPressed[Keybinds.D4] && this._inputTracker.altKey && this._inputTracker.shiftKey) {
+					this._nextState = CoreState.Restart;
+				}
+				break;
+
+			case CoreState.Restart:
+				this._logger.log("Restarting...");
 				break;
 		}
 
@@ -77,6 +89,7 @@ export default class Core implements ICore {
 			case CoreState.None:
 			case CoreState.Load:
 			case CoreState.Init:
+			case CoreState.Restart:
 				break;
 
 			case CoreState.Run:
@@ -103,7 +116,7 @@ export default class Core implements ICore {
 		}
 
 		if (this._nextState === CoreState.Init) {
-			this.init();
+			setTimeout(() => this.init());
 
 			this._state = this._nextState;
 			this._nextState = null;
@@ -111,6 +124,14 @@ export default class Core implements ICore {
 		}
 
 		if (this._nextState === CoreState.Run) {
+			this._state = this._nextState;
+			this._nextState = null;
+			return;
+		}
+
+		if (this._nextState === CoreState.Restart) {
+			setTimeout(() => this.restart());
+
 			this._state = this._nextState;
 			this._nextState = null;
 			return;
@@ -128,13 +149,30 @@ export default class Core implements ICore {
 		this._renderer = this._rendererFactory();
 		this._world = this._worldFactory();
 
-		this._world.init().then(() => {
-			const player = this._playerFactory();
-			this._world.setPlayer(player);
-			this._world.initMonsters();
+		this._world.init();
 
-			this._uiRoot = this._uiRootFactory();
-			this._nextState = CoreState.Run;
-		});
+		const player = this._playerFactory();
+		this._world.setPlayer(player);
+		this._world.initMonsters();
+
+		this._uiRoot = this._uiRootFactory();
+		this._nextState = CoreState.Run;
+	}
+
+	private restart() {
+		this._logger.clear();
+		this.onRestart();
+
+		this._uiRoot.dispose();
+		this._uiRoot = null;
+
+		this._camera = null;
+
+		this._renderer.dispose();
+		this._renderer = null;
+
+		this._world = null;
+
+		this._nextState = CoreState.Init;
 	}
 }

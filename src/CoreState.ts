@@ -2,7 +2,8 @@ enum CoreState {
 	None = 1,
 	Load,
 	Init,
-	Run
+	Run,
+	Restart
 };
 
 export default CoreState;

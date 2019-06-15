@@ -46,6 +46,11 @@ export default class Logger implements ILogger {
 		});
 	}
 
+	clear() {
+		this._domElement.innerHTML = "";
+		this._logItems.length = 0;
+	}
+
 	dispose() {
 		document.body.removeChild(this._domElement);
 	}

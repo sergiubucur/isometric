@@ -16,4 +16,8 @@ export default class UIRoot implements IUIRoot {
 				logger={this._logger}>
 			</Minimap>, document.getElementById("root"));
 	}
+
+	dispose() {
+		ReactDOM.unmountComponentAtNode(document.getElementById("root"));
+	}
 }

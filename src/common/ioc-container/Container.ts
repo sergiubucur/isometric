@@ -64,6 +64,14 @@ export default class Container {
 		return this.singleton(type, () => new type.type());
 	}
 
+	disposeSingleton(id: number) {
+		if (!this._singletons[id]) {
+			return;
+		}
+
+		this._singletons[id] = undefined;
+	}
+
 	private singleton(type: TypeInfo, callback: () => object) {
 		if (type.singleton) {
 			if (!this._singletons[type.id]) {
