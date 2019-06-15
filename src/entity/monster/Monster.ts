@@ -21,6 +21,8 @@ export default class Monster implements IMonster {
 
 	private _mesh: THREE.Mesh;
 	private _deathAnimationFrames: number;
+
+	// TODO: refactor into MeleeAttackEngine class
 	private _meleeAttackOriginalPosition: THREE.Vector3;
 	private _meleeAttackAnimationFrames: number;
 	private _meleeAttackOffset: THREE.Vector3;
