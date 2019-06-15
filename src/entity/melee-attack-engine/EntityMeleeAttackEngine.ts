@@ -3,7 +3,8 @@ import * as THREE from "three";
 import IEntityMeleeAttackEngine from "./IEntityMeleeAttackEngine";
 import IEntityMovementEngine from "../movement-engine/IEntityMovementEngine";
 
-const MeleeAttackAnimationTotalFrames = 30;
+const AttackAnimationTotalFrames = 30;
+const HalfTime = Math.floor(AttackAnimationTotalFrames / 2);
 
 export default class EntityMeleeAttackEngine implements IEntityMeleeAttackEngine {
 	onHit: () => void;
@@ -48,13 +49,13 @@ export default class EntityMeleeAttackEngine implements IEntityMeleeAttackEngine
 		this._direction.copy(this._movementEngine.velocity).normalize();
 		this._mesh.rotation.y = this._movementEngine.rotationY;
 
-		const value = this._animationFrames / MeleeAttackAnimationTotalFrames;
+		const value = this._animationFrames / AttackAnimationTotalFrames;
 		this._offset.x = Math.sin(Math.PI * value) * this._direction.x;
 		this._offset.y = Math.sin(Math.PI * value) * this._size;
 		this._offset.z = Math.sin(Math.PI * value) * this._direction.z;
 		this._mesh.position.copy(this._originalPosition).add(this._offset);
 
-		if (this._animationFrames === 0) {
+		if (this._animationFrames === HalfTime) {
 			if (this.canAttack()) {
 				this.onHit();
 			}
@@ -69,6 +70,6 @@ export default class EntityMeleeAttackEngine implements IEntityMeleeAttackEngine
 
 	startAttacking() {
 		this._originalPosition.copy(this._movementEngine.position);
-		this._animationFrames = MeleeAttackAnimationTotalFrames;
+		this._animationFrames = AttackAnimationTotalFrames;
 	}
 }
