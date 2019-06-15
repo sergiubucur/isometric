@@ -9,6 +9,7 @@ multiple levels
 procedurally generated levels
 monsters get tougher the further you progress
 experience
+overlay minimap
 player leveling
 doors
 bosses
