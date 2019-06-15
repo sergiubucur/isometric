@@ -14,6 +14,7 @@ export default class Renderer implements IRenderer {
 
 	dispose() {
 		document.body.removeChild(this._renderer.domElement);
+		this._renderer.dispose();
 	}
 
 	render(scene: THREE.Scene, camera: THREE.Camera) {

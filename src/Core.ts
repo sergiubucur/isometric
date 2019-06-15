@@ -171,6 +171,7 @@ export default class Core implements ICore {
 		this._renderer.dispose();
 		this._renderer = null;
 
+		this._world.dispose();
 		this._world = null;
 
 		this._nextState = CoreState.Init;

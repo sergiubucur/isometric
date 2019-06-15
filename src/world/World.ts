@@ -147,4 +147,22 @@ export default class World implements IWorld, IWorldComponent {
 
 		this._monsters.push(monster);
 	}
+
+	dispose() {
+		this.scene.traverse((object) => {
+			if (object.type === "Mesh") {
+				const mesh = object as THREE.Mesh;
+				mesh.geometry.dispose();
+
+				if (Array.isArray(mesh.material)) {
+					const materials = mesh.material as THREE.Material[];
+					materials.forEach(x => x.dispose());
+				} else {
+					mesh.material.dispose();
+				}
+			}
+		});
+
+		this.scene.dispose();
+	}
 }

@@ -7,6 +7,7 @@ import IMonster from "../entity/monster/IMonster";
 export default interface IWorld {
 	readonly map: IMap;
 
+	dispose(): void;
 	addMesh(mesh: THREE.Object3D): void;
 	removeMesh(mesh: THREE.Object3D): void;
 	addProjectile(data: ProjectileData): void;

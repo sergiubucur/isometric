@@ -75,5 +75,3 @@ core.onRestart = () => {
 	container.disposeSingleton(Types.IUIRoot);
 	container.disposeSingleton(Types.IPointLightCache);
 };
-
-console.log(core);
