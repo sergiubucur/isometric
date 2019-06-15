@@ -2,6 +2,7 @@ health/mana UI
 spell UI
 monster attacks
 player death
+monster scatter AI
 powerups
 spell cooldowns
 different types of monsters
