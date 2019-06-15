@@ -12,6 +12,8 @@ const Size = 2;
 const Speed = 0.1;
 const Color = 0xff0000;
 const DeathAnimationTotalFrames = 30;
+const ScatterTotalFrames = 60;
+const ScatterRange = 10;
 const MeshName = "human";
 
 export default class Monster implements IMonster {
@@ -21,6 +23,7 @@ export default class Monster implements IMonster {
 
 	private _mesh: THREE.Mesh;
 	private _deathAnimationFrames: number;
+	private _scatterFrames: number;
 
 	private static _material: THREE.MeshPhongMaterial = new THREE.MeshPhongMaterial({ color: Color });
 
@@ -32,6 +35,7 @@ export default class Monster implements IMonster {
 		this.dead = false;
 		this.size = Size;
 		this._deathAnimationFrames = DeathAnimationTotalFrames;
+		this._scatterFrames = 0;
 	}
 
 	init(position: THREE.Vector3) {
@@ -67,7 +71,16 @@ export default class Monster implements IMonster {
 			if (this._meleeAttackEngine.canAttack()) {
 				this._meleeAttackEngine.startAttacking();
 			} else {
-				this.chase();
+				if (this._scatterFrames > 0) {
+					this._scatterFrames--;
+				} else {
+					this.chase();
+
+					if (Math.random() < 0.01) {
+						this.scatter();
+					}
+				}
+
 				this._movementEngine.move();
 			}
 		}
@@ -87,6 +100,15 @@ export default class Monster implements IMonster {
 		if (!this._player.invisible) {
 			this._movementEngine.startMovingTo(this._player.position);
 		}
+	}
+
+	private scatter() {
+		const position = this._movementEngine.position.clone();
+		position.x += Math.random() * ScatterRange * 2 - ScatterRange;
+		position.z += Math.random() * ScatterRange * 2 - ScatterRange;
+
+		this._movementEngine.startMovingTo(position);
+		this._scatterFrames = ScatterTotalFrames;
 	}
 
 	private initMesh() {
