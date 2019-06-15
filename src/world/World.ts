@@ -164,6 +164,10 @@ export default class World implements IWorld, IWorldComponent {
 					mesh.material.dispose();
 				}
 			}
+
+			if ((object as any).dispose) {
+				(object as any).dispose();
+			}
 		});
 
 		this.scene.dispose();
