@@ -21,3 +21,4 @@ secrets
 level editor
 continuous deployment
 crushers
+strobe lights
