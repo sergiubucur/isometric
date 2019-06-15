@@ -11,14 +11,20 @@ const Size = 2;
 const Speed = 0.1;
 const Color = 0xff0000;
 const DeathAnimationTotalFrames = 30;
+const MeleeAttackAnimationTotalFrames = 30;
 const MeshName = "human";
 
 export default class Monster implements IMonster {
 	id: number;
 	dead: boolean;
+	readonly size: number;
 
 	private _mesh: THREE.Mesh;
 	private _deathAnimationFrames: number;
+	private _meleeAttackOriginalPosition: THREE.Vector3;
+	private _meleeAttackAnimationFrames: number;
+	private _meleeAttackOffset: THREE.Vector3;
+	private _meleeAttackDirection: THREE.Vector3;
 
 	private static _material: THREE.MeshPhongMaterial = new THREE.MeshPhongMaterial({ color: Color });
 
@@ -27,7 +33,12 @@ export default class Monster implements IMonster {
 
 		this.id = this._entityId.getNewId();
 		this.dead = false;
+		this.size = Size;
 		this._deathAnimationFrames = DeathAnimationTotalFrames;
+		this._meleeAttackOriginalPosition = new THREE.Vector3();
+		this._meleeAttackAnimationFrames = 0;
+		this._meleeAttackOffset = new THREE.Vector3();
+		this._meleeAttackDirection = new THREE.Vector3();
 	}
 
 	init(position: THREE.Vector3) {
@@ -52,17 +63,49 @@ export default class Monster implements IMonster {
 			return;
 		}
 
-		this.chase();
-		this._movementEngine.move();
+		if (this._meleeAttackAnimationFrames > 0) {
+			this._meleeAttackAnimationFrames--;
+
+			this._movementEngine.startMovingTo(this._player.position);
+			this._meleeAttackDirection.copy(this._movementEngine.velocity).normalize();
+			this._mesh.rotation.y = this._movementEngine.rotationY;
+
+			const value = this._meleeAttackAnimationFrames / MeleeAttackAnimationTotalFrames;
+			this._meleeAttackOffset.x = Math.sin(Math.PI * value) * this._meleeAttackDirection.x;
+			this._meleeAttackOffset.y = Math.sin(Math.PI * value) * Size;
+			this._meleeAttackOffset.z = Math.sin(Math.PI * value) * this._meleeAttackDirection.z;
+			this._mesh.position.copy(this._meleeAttackOriginalPosition).add(this._meleeAttackOffset);
+
+			if (this._meleeAttackAnimationFrames === 0) {
+				if (this.canMeleeAttack()) {
+					console.log("melee hit");
+				}
+			}
+		} else {
+			if (this.canMeleeAttack()) {
+				this._meleeAttackOriginalPosition.copy(this._movementEngine.position);
+				this._meleeAttackAnimationFrames = MeleeAttackAnimationTotalFrames;
+			} else {
+				this.chase();
+				this._movementEngine.move();
+			}
+		}
 	}
 
 	damage() {
 		if (this.dead) {
+			this.updateMeshPosition();
 			return;
 		}
 
 		this.dead = true;
 		this._movementEngine.clearCells();
+	}
+
+	private canMeleeAttack() {
+		const meleeRange = (this.size / 2 + this._player.size / 2) * 2;
+
+		return this._movementEngine.position.distanceTo(this._player.position) <= meleeRange;
 	}
 
 	private chase() {

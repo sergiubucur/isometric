@@ -5,6 +5,7 @@ import IComponent from "../../common/IComponent";
 export default interface IMonster extends IComponent {
 	readonly id: number;
 	readonly dead: boolean;
+	readonly size: number;
 
 	init(position: THREE.Vector3): void;
 	damage(): void;

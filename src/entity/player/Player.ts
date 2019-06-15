@@ -29,6 +29,7 @@ export default class Player implements IPlayer {
 
 	id: number;
 	invisible: boolean;
+	readonly size: number;
 
 	private _spellCooldown: number;
 	private _mesh: THREE.Mesh;
@@ -44,6 +45,7 @@ export default class Player implements IPlayer {
 
 		this.id = this._entityId.getNewId();
 		this.invisible = false;
+		this.size = Size;
 		this._spellCooldown = 0;
 		this._mouseOverTarget = null;
 
