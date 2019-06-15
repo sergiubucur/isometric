@@ -20,9 +20,10 @@ export default class Core implements ICore {
 	private _world: IWorld & IWorldComponent | null;
 	private _renderer: IRenderer | null;
 	private _uiRoot: IUIRoot | null;
+	private _assetService: IAssetService;
 
 	constructor(private _logger: ILogger,
-		private _assetService: IAssetService,
+		private _assetServiceFactory: () => IAssetService,
 		private _inputTracker: IInputTracker,
 		private _cameraFactory: () => ICamera,
 		private _rendererFactory: () => IRenderer,
@@ -36,6 +37,7 @@ export default class Core implements ICore {
 		this._camera = null;
 		this._world = null;
 		this._renderer = null;
+		this._assetService = null;
 
 		this.run();
 		this._nextState = CoreState.Load;
@@ -107,6 +109,8 @@ export default class Core implements ICore {
 			return;
 		}
 
+		this._logger.clear();
+
 		if (this._nextState === CoreState.Load) {
 			this.load();
 
@@ -139,6 +143,8 @@ export default class Core implements ICore {
 	}
 
 	private load() {
+		this._assetService = this._assetServiceFactory();
+
 		this._assetService.loadAssets().then(() => {
 			this._nextState = CoreState.Init;
 		});
@@ -160,12 +166,12 @@ export default class Core implements ICore {
 	}
 
 	private restart() {
-		this._logger.clear();
 		this.onRestart();
 
 		this._uiRoot.dispose();
 		this._uiRoot = null;
 
+		this._camera.dispose();
 		this._camera = null;
 
 		this._renderer.dispose();
@@ -174,6 +180,9 @@ export default class Core implements ICore {
 		this._world.dispose();
 		this._world = null;
 
-		this._nextState = CoreState.Init;
+		this._assetService.dispose();
+		this._assetService = null;
+
+		this._nextState = CoreState.Load;
 	}
 }

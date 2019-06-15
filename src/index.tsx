@@ -31,7 +31,7 @@ container.registerSingleton(Types.IAssetService, AssetService);
 container.registerSingleton(Types.IInputTracker, InputTracker);
 
 container.registerSingleton(Types.ICore, Core,
-	Types.ILogger, Types.IAssetService, Types.IInputTracker, Factory(Types.ICamera), Factory(Types.IRenderer), Factory(Types.IWorld),
+	Types.ILogger, Factory(Types.IAssetService), Types.IInputTracker, Factory(Types.ICamera), Factory(Types.IRenderer), Factory(Types.IWorld),
 	Factory(Types.IPlayer), Factory(Types.IUIRoot));
 
 container.registerSingleton(Types.ICamera, Camera);
@@ -79,4 +79,5 @@ core.onRestart = () => {
 	container.disposeSingleton(Types.IUIRoot);
 	container.disposeSingleton(Types.IPointLightCache);
 	container.disposeSingleton(Types.IPrimitiveCache);
+	container.disposeSingleton(Types.IAssetService);
 };

@@ -4,6 +4,7 @@ import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 import IAssetService from "./IAssetService";
 import manifest, { AssetDictionary, Asset } from "./AssetManifest";
 import AssetType from "./AssetType";
+import DisposalHelper from "../common/DisposalHelper";
 
 const Paths = {
 	[AssetType.Map]: "assets/maps/",
@@ -18,9 +19,12 @@ export default class AssetService implements IAssetService {
 	private _totalAssets: number;
 	private _loadedAssets: number;
 
+	constructor() {
+		this._totalAssets = manifest.length;
+	}
+
 	loadAssets() : Promise<void> {
 		return new Promise((resolve) => {
-			this._totalAssets = manifest.length;
 			this._loadedAssets = 0;
 			this.assets = {};
 			this._resolve = resolve;
@@ -93,5 +97,24 @@ export default class AssetService implements IAssetService {
 		if (this._loadedAssets === this._totalAssets) {
 			this._resolve(this.assets);
 		}
+	}
+
+	dispose() {
+		Object.keys(this.assets).forEach(key => {
+			const asset = this.assets[key];
+
+			switch (asset.type) {
+				case AssetType.Mesh:
+					DisposalHelper.disposeMesh(asset.content as THREE.Mesh);
+					break;
+
+				case AssetType.Texture:
+					const texture = asset.content as THREE.Texture;
+					texture.dispose();
+					break;
+			}
+		});
+
+		this.assets = null;
 	}
 }

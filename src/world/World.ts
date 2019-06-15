@@ -13,6 +13,7 @@ import ILogger from "../common/logger/ILogger";
 import IPlayer from "../entity/player/IPlayer";
 import IPointLightCache from "./point-light-cache/IPointLightCache";
 import IPrimitiveCache from "./primitive-cache/IPrimitiveCache";
+import DisposalHelper from "../common/DisposalHelper";
 
 const MapName = "testMap";
 
@@ -151,25 +152,9 @@ export default class World implements IWorld, IWorldComponent {
 
 	dispose() {
 		this._primitiveCache.dispose();
+		this._worldMeshBuilder.dispose();
 
-		this.scene.traverse((object) => {
-			if (object.type === "Mesh") {
-				const mesh = object as THREE.Mesh;
-				mesh.geometry.dispose();
-
-				if (Array.isArray(mesh.material)) {
-					const materials = mesh.material as THREE.Material[];
-					materials.forEach(x => x.dispose());
-				} else {
-					mesh.material.dispose();
-				}
-			}
-
-			if ((object as any).dispose) {
-				(object as any).dispose();
-			}
-		});
-
+		DisposalHelper.disposeObject3D(this.scene);
 		this.scene.dispose();
 	}
 }

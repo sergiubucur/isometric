@@ -31,9 +31,11 @@ export default class PrimitiveCache implements IPrimitiveCache {
 		Object.keys(this._geometry).forEach(key => {
 			this._geometry[key].dispose();
 		});
+		this._geometry = null;
 
 		Object.keys(this._material).forEach(key => {
 			this._material[key].dispose();
 		});
+		this._material = null;
 	}
 }

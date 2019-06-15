@@ -66,10 +66,10 @@ export default class Container {
 
 	disposeSingleton(id: number) {
 		if (!this._singletons[id]) {
-			return;
+			throw new Error("trying to dispose a singleton which doesn't exist");
 		}
 
-		this._singletons[id] = undefined;
+		this._singletons[id] = null;
 	}
 
 	private singleton(type: TypeInfo, callback: () => object) {
