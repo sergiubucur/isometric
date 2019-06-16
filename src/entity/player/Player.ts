@@ -173,7 +173,7 @@ export default class Player implements IPlayer {
 
 	private setInvisibility(value: boolean) {
 		this.invisible = value;
-		(this._mesh.material as THREE.MeshPhongMaterial).opacity = this.invisible ? 0.5 : 1;
+		(this._mesh.material as THREE.MeshPhongMaterial).opacity = this.invisible ? 0.33 : 1;
 	}
 
 	private nova() {
