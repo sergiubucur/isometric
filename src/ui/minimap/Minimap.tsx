@@ -17,9 +17,10 @@ type Color = {
 	b: number
 };
 
-const Size = 48;
-const CellSize = 6;
+const Size = 32;
+const CellSize = 8;
 const Zoom = 4;
+const Margin = 32;
 
 export default class Minimap extends Component<Props> {
 	private _animationFrameId: number;
@@ -46,7 +47,7 @@ export default class Minimap extends Component<Props> {
 
 		this.renderCells();
 
-		this.props.logger.logBounds("renderCells", performance.now() - time);
+		this.props.logger.logBounds("minimap draw time", performance.now() - time);
 	}
 
 	private renderCells() {
@@ -102,15 +103,14 @@ export default class Minimap extends Component<Props> {
 	render() {
 		const styles: any = {
 			position: "fixed",
-			right: 0,
-			top: 0,
+			right: Margin,
+			top: Margin,
 			width: CellSize * Size,
 			height: CellSize * Size,
 			display: "flex",
 			flexWrap: "wrap",
 			opacity: 0.75,
-			borderLeft: "1px solid #808080",
-			borderBottom: "1px solid #808080",
+			outline: "2px solid #808080",
 			userSelect: "none"
 		};
 
