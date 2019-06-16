@@ -110,7 +110,8 @@ export default class Minimap extends Component<Props> {
 			flexWrap: "wrap",
 			opacity: 0.75,
 			borderLeft: "1px solid #808080",
-			borderBottom: "1px solid #808080"
+			borderBottom: "1px solid #808080",
+			userSelect: "none"
 		};
 
 		const canvasStyles: any = {
