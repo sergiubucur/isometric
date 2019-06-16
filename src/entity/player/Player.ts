@@ -108,6 +108,7 @@ export default class Player implements IPlayer {
 			return;
 		}
 
+		this.uncloak();
 		this._pointLight.color.setHex(PointLightDeathColor);
 		this.updateMeshPosition();
 		this._deathAnimationEngine.startAnimation();
