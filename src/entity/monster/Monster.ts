@@ -67,7 +67,7 @@ export default class Monster implements IMonster {
 	private initAttackEngine() {
 		if (this._ranged) {
 			const rangedAttackEngine = this._rangedAttackEngineFactory();
-			rangedAttackEngine.init(() => this._player.position, this._mesh, this._movementEngine, this.size, ProjectileRange);
+			rangedAttackEngine.init(() => this._player.position, () => !this._player.invisible, ProjectileRange, this._mesh, this._movementEngine);
 			rangedAttackEngine.onHit = () => {
 				this.throwProjectile();
 			};

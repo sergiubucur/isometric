@@ -11,9 +11,9 @@ export default class EntityRangedAttackEngine implements IEntityRangedAttackEngi
 	onHit: () => void;
 
 	private _getTargetPosition: () => THREE.Vector3;
+	private _canAttack: () => boolean;
 	private _mesh: THREE.Mesh;
 	private _movementEngine: IEntityMovementEngine;
-	private _size: number;
 	private _range: number;
 	private _originalPosition: THREE.Vector3;
 	private _animationFrames: number;
@@ -31,12 +31,14 @@ export default class EntityRangedAttackEngine implements IEntityRangedAttackEngi
 		this._direction = new THREE.Vector3();
 	}
 
-	init(getTargetPosition: () => THREE.Vector3, mesh: THREE.Mesh, movementEngine: IEntityMovementEngine, size: number, range: number) {
+	init(getTargetPosition: () => THREE.Vector3, canAttack: () => boolean, range: number,
+		mesh: THREE.Mesh, movementEngine: IEntityMovementEngine, ) {
+
 		this._getTargetPosition = getTargetPosition;
+		this._canAttack = canAttack;
+		this._range = range;
 		this._mesh = mesh;
 		this._movementEngine = movementEngine;
-		this._size = size;
-		this._range = range;
 	}
 
 	update() {
@@ -76,7 +78,7 @@ export default class EntityRangedAttackEngine implements IEntityRangedAttackEngi
 		}
 
 		const distance = this._movementEngine.position.distanceTo(this._getTargetPosition());
-		return distance <= this._range;
+		return distance <= this._range && this._canAttack();
 	}
 
 	startAttacking() {

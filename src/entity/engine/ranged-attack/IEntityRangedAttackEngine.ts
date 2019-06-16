@@ -4,5 +4,6 @@ import IEntityMovementEngine from "../movement/IEntityMovementEngine";
 import IEntityAttackEngine from "../IEntityAttackEngine";
 
 export default interface IEntityRangedAttackEngine extends IEntityAttackEngine {
-	init(getTargetPosition: () => THREE.Vector3, mesh: THREE.Mesh, movementEngine: IEntityMovementEngine, size: number, range: number): void;
+	init(getTargetPosition: () => THREE.Vector3, canAttack: () => boolean, range: number,
+		mesh: THREE.Mesh, movementEngine: IEntityMovementEngine): void;
 }
