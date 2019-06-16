@@ -78,7 +78,6 @@ export default class AssetService implements IAssetService {
 		Object.assign(this.assets[asset.name], asset);
 
 		const loader = new THREE.TextureLoader();
-
 		loader.load(Paths[asset.type] + asset.filename, (texture) => {
 			if (asset.filename.indexOf("normal") === -1) {
 				texture.encoding = THREE.sRGBEncoding;
