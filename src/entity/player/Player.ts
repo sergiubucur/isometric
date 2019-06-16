@@ -112,9 +112,6 @@ export default class Player implements IPlayer {
 		if (this._inputTracker.keysPressed[Keybinds.D4]) {
 			this.teleport();
 		}
-
-		this._logger.logNumber("health", this.health, 0);
-		this._logger.logNumber("mana", this.mana, 0);
 	}
 
 	damage() {

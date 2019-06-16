@@ -3,8 +3,8 @@ import React, { PureComponent } from "react";
 import IPlayer from "../../entity/player/IPlayer";
 
 interface State {
-	health: number,
-	totalHealth: number
+	mana: number,
+	totalMana: number
 }
 
 interface Props {
@@ -15,13 +15,13 @@ const Margin = 32;
 const Width = 256;
 const Height = 32;
 const RefreshIntervalMs = 33;
-const ForegroundColor = "#c02020";
-const BackgroundColor = "#400000";
+const ForegroundColor = "#2080c0";
+const BackgroundColor = "#002040";
 
-export default class HealthBar extends PureComponent<Props, State> {
+export default class ManaBar extends PureComponent<Props, State> {
 	state = {
-		health: 100,
-		totalHealth: 100
+		mana: 100,
+		totalMana: 100
 	};
 
 	private _intervalId: NodeJS.Timeout;
@@ -31,8 +31,8 @@ export default class HealthBar extends PureComponent<Props, State> {
 			const { player } = this.props;
 
 			this.setState({
-				health: player.health,
-				totalHealth: player.totalHealth
+				mana: player.mana,
+				totalMana: player.totalMana
 			});
 		}, RefreshIntervalMs);
 	}
@@ -42,11 +42,11 @@ export default class HealthBar extends PureComponent<Props, State> {
 	}
 
 	render() {
-		const { health, totalHealth } = this.state;
+		const { mana, totalMana } = this.state;
 
 		const textStyles: any = {
 			position: "fixed",
-			left: Margin,
+			right: Margin,
 			bottom: Margin + Height + Margin / 2,
 			fontSize: 22,
 			color: "#fff",
@@ -56,7 +56,7 @@ export default class HealthBar extends PureComponent<Props, State> {
 
 		const containerStyles: any = {
 			position: "fixed",
-			left: Margin,
+			right: Margin,
 			bottom: Margin,
 			width: Width,
 			height: Height,
@@ -69,7 +69,7 @@ export default class HealthBar extends PureComponent<Props, State> {
 		};
 
 		const valueStyles: any = {
-			width: Math.floor((health / totalHealth) * Width),
+			width: Math.floor((mana / totalMana) * Width),
 			height: Height,
 			background: ForegroundColor
 		};
@@ -77,7 +77,7 @@ export default class HealthBar extends PureComponent<Props, State> {
 		return (
 			<React.Fragment>
 				<div style={textStyles}>
-					{health.toFixed(0)} / {totalHealth.toFixed(0)}
+					{mana.toFixed(0)} / {totalMana.toFixed(0)}
 				</div>
 				<div style={containerStyles}>
 					<div style={valueStyles}></div>
