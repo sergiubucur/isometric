@@ -113,8 +113,6 @@ export default class World implements IWorld, IWorldComponent {
 				}
 			}
 		}
-
-		console.log("monster count", this._monsters.length);
 	}
 
 	getMonsterAtPosition(position: THREE.Vector3, convertToMapPosition = true) {

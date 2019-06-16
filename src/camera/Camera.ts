@@ -26,10 +26,6 @@ export default class Camera implements ICamera {
 		this._camera.lookAt(0, 0, 0);
 	}
 
-	dispose() {
-		this._camera = null;
-	}
-
 	setPosition(v: THREE.Vector3 | number, y?: number, z?: number) {
 		if (v instanceof THREE.Vector3) {
 			this._camera.position.set(-this.zoom + v.x, this.zoom + v.y, this.zoom + v.z);

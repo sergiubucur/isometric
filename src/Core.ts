@@ -171,7 +171,6 @@ export default class Core implements ICore {
 		this._uiRoot.dispose();
 		this._uiRoot = null;
 
-		this._camera.dispose();
 		this._camera = null;
 
 		this._renderer.dispose();

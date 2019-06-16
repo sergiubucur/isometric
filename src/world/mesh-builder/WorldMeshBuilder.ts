@@ -3,9 +3,7 @@ import * as THREE from "three";
 import CellType from "../map/CellType";
 import { Rectangle, MapLoaderResult, Edge } from "../map/loader/IMapLoader";
 import IWorldMeshBuilder from "./IWorldMeshBuilder";
-import IMap from "../map/IMap";
 import IAssetService from "../../asset/IAssetService";
-import DisposalHelper from "../../common/DisposalHelper";
 
 const CellSize = 1;
 const WallHeight = 4;
@@ -14,27 +12,19 @@ const WallColor = new THREE.Color(0.35, 0.35, 0.35);
 const TexScale = 16;
 
 export default class WorldMeshBuilder implements IWorldMeshBuilder {
-	private _map: IMap;
-	private _rectangles: Rectangle[];
-	private _edges: Edge[];
-	private _rootMesh: THREE.Object3D;
-	private _geometry: { [key: string]: THREE.BufferGeometry };
 	private _material: { [key: string]: THREE.Material };
 
 	constructor(private _assetService: IAssetService) {
-		this._geometry = {};
 		this._material = {};
 
-		this.initGeometriesAndMaterials();
+		this.initPrimitives();
 	}
 
 	buildWorldMesh(mapLoaderResult: MapLoaderResult): THREE.Object3D {
-		this._map = mapLoaderResult.map;
-		this._rectangles = mapLoaderResult.rectangles;
-		this._edges = mapLoaderResult.edges;
-		this._rootMesh = new THREE.Object3D();
+		const { edges, rectangles } = mapLoaderResult;
+		const rootMesh = new THREE.Object3D();
 
-		this._rectangles.forEach(rectangle => {
+		rectangles.forEach(rectangle => {
 			if (rectangle.type === CellType.Void) {
 				return;
 			}
@@ -47,21 +37,19 @@ export default class WorldMeshBuilder implements IWorldMeshBuilder {
 				floorMesh.position.y = WallHeight;
 			}
 
-			this._rootMesh.add(floorMesh);
+			rootMesh.add(floorMesh);
 		});
 
-		this._edges.forEach(edge => {
+		edges.forEach(edge => {
 			const geometry = this.getWallGeometry(edge);
 			const material = this._material.wallConcrete;
 
 			const wallMesh = new THREE.Mesh(geometry, material);
 
-			this._rootMesh.add(wallMesh);
+			rootMesh.add(wallMesh);
 		});
 
-		console.log("world mesh count", this._rootMesh.children.length);
-
-		return this._rootMesh;
+		return rootMesh;
 	}
 
 	private getFloorGeometry(rectangle: Rectangle) {
@@ -143,7 +131,7 @@ export default class WorldMeshBuilder implements IWorldMeshBuilder {
 		return new THREE.BufferGeometry().fromGeometry(geometry);
 	}
 
-	private initGeometriesAndMaterials() {
+	private initPrimitives() {
 		this._material.floorConcrete = this.getMaterial("metal", "normalMetal", FloorColor);
 		this._material.ceilingConcrete = this.getMaterial("metal", "normalMetal", WallColor);
 		this._material.wallConcrete = this.getMaterial("metal", "normalMetal", WallColor);
@@ -163,16 +151,9 @@ export default class WorldMeshBuilder implements IWorldMeshBuilder {
 	}
 
 	dispose() {
-		Object.keys(this._geometry).forEach(key => {
-			this._geometry[key].dispose();
-		});
-		this._geometry = null;
-
 		Object.keys(this._material).forEach(key => {
 			this._material[key].dispose();
 		});
 		this._material = null;
-
-		DisposalHelper.disposeObject3D(this._rootMesh);
 	}
 }
