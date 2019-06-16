@@ -90,7 +90,7 @@ export default class Map implements IMap {
 		const id = this.occupiedCells[y][x];
 		const isOccupied = id !== 0 && ignoreIds.indexOf(id) === -1;
 
-		return !isOccupied && cell.type === CellType.EmptyFloor;
+		return !isOccupied && (cell.type === CellType.EmptyFloor || cell.type === CellType.Moving);
 	}
 
 	getEntityIdAt(x: number, y: number): number | null {

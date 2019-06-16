@@ -76,10 +76,16 @@ export default class Minimap extends Component<Props> {
 					color.g = 0;
 					color.b = 0;
 				} else {
-					if (cell.type === CellType.Concrete) {
-						color.r = 255;
-						color.g = 255;
+					if (cell.type === CellType.Moving) {
+						color.r = 0;
+						color.g = 128;
 						color.b = 255;
+					} else {
+						if (cell.type === CellType.Concrete) {
+							color.r = 255;
+							color.g = 255;
+							color.b = 255;
+						}
 					}
 				}
 

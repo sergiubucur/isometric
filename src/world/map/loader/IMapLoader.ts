@@ -6,7 +6,8 @@ export type Rectangle = {
 	y0: number,
 	x1: number,
 	y1: number,
-	type: CellType
+	type: CellType,
+	originalType?: CellType
 };
 
 export type Edge = Rectangle;

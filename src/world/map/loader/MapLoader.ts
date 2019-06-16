@@ -13,13 +13,15 @@ type Color = {
 const ColorCellTypeMapping: { [key: string]: CellType } = {
 	"0,0,0": CellType.Void,
 	"64,64,64": CellType.Concrete,
-	"255,255,255": CellType.EmptyFloor
+	"255,255,255": CellType.EmptyFloor,
+	"0,128,255": CellType.Moving
 };
 
 const CellTypeColorMapping: { [key: number]: Color } = {
 	[CellType.Void]: { r: 64, g: 0, b: 0, a: 255 },
 	[CellType.Concrete]: { r: 128, g: 0, b: 0, a: 255 },
 	[CellType.EmptyFloor]: { r: 192, g: 0, b: 0, a: 255 },
+	[CellType.Moving]: { r: 0, g: 128, b: 255, a: 255 }
 };
 
 type Point = {
@@ -49,6 +51,11 @@ export default class MapLoader implements IMapLoader {
 
 				const i = (y * size + x) * 4;
 				const colorStr = `${data[i]},${data[i + 1]},${data[i + 2]}`;
+
+				if (!ColorCellTypeMapping[colorStr]) {
+					throw new Error("undefined cell type");
+				}
+
 				cell.type = ColorCellTypeMapping[colorStr];
 
 				row.push(cell);
@@ -77,10 +84,27 @@ export default class MapLoader implements IMapLoader {
 		const data = imageData.data;
 
 		let rectangles = this.processCells(cells, data);
+
+		rectangles.forEach(x => {
+			if (x.type === CellType.Moving) {
+				x.type = CellType.EmptyFloor;
+				x.originalType = CellType.Moving;
+			}
+		});
+
 		let edges = this.getEdges(rectangles);
 
-		// this.debugDrawRectangles(ctx, imageData, size, rectangles, 20).then(() => {
-		// 	this.debugDrawEdges(ctx, imageData, size, edges, 20);
+		rectangles.forEach(x => {
+			if (x.originalType) {
+				x.type = x.originalType;
+				x.originalType = undefined;
+			}
+		});
+
+		// ctx.putImageData(imageData, 0, 0);
+
+		// this.debugDrawRectangles(ctx, imageData, size, rectangles, 0).then(() => {
+		// 	this.debugDrawEdges(ctx, imageData, size, edges, 0);
 		// });
 
 		return {
@@ -142,8 +166,8 @@ export default class MapLoader implements IMapLoader {
 		canvas.width = size;
 		canvas.height = size;
 		canvas.style.imageRendering = "pixelated";
-		canvas.style.width = `${size * 6}px`;
-		canvas.style.height = `${size * 6}px`;
+		canvas.style.width = `${size * 3}px`;
+		canvas.style.height = `${size * 3}px`;
 		canvas.style.border = "1px solid #404040";
 		canvas.style.margin = "8px";
 		canvas.style.zIndex = "100";
@@ -345,12 +369,12 @@ export default class MapLoader implements IMapLoader {
 		}
 	}
 
-	private processCells(cells: Cell[][], buffer: Uint8ClampedArray) {
+	private processCells(cells: Cell[][], buffer: Uint8ClampedArray): Rectangle[] {
 		const size = cells.length;
 		const corners = this.getCorners(cells);
 
 		// corners.forEach(corner => {
-		// 	this.putPixel(buffer, size, corner.x, corner.y, 0, 255, 0, 255);
+		// 	this.debugPutPixel(buffer, size, corner.x, corner.y, 0, 255, 0, 255);
 		// });
 		this.sortCorners(corners, size);
 
@@ -377,26 +401,23 @@ export default class MapLoader implements IMapLoader {
 
 		for (let y = 0; y < size; y++) {
 			for (let x = 0; x < size; x++) {
-				const c00 = this.getCellType(cells, x - 1, y - 1);
 				const c10 = this.getCellType(cells, x, y - 1);
-				const c20 = this.getCellType(cells, x + 1, y - 1);
 				const c01 = this.getCellType(cells, x - 1, y);
 				const c11 = this.getCellType(cells, x, y);
 				const c21 = this.getCellType(cells, x + 1, y);
-				const c02 = this.getCellType(cells, x - 1, y + 1);
 				const c12 = this.getCellType(cells, x, y + 1);
 				const c22 = this.getCellType(cells, x + 1, y + 1);
 
-				if (c00 === c10 && c00 === c01 && c00 !== c11) {
+				if (c10 !== c11 && c01 !== c11) {
 					corners.push({ x, y, type: c11 });
 				}
-				if (c21 && c20 === c10 && c20 === c21 && c20 !== c11) {
+				if (c21 && c21 !== c11 && c10 !== c11) {
 					corners.push({ x: x + 1, y, type: c21 });
 				}
-				if (c22 && c22 === c21 && c22 === c12 && c22 !== c11) {
+				if (c22 && c12 !== c11 && c21 !== c11) {
 					corners.push({ x: x + 1, y: y + 1, type: c22 });
 				}
-				if (c12 && c02 === c01 && c02 === c12 && c02 !== c11) {
+				if (c12 && c12 !== c11 && c01 !== c11) {
 					corners.push({ x, y: y + 1, type: c12 });
 				}
 			}
