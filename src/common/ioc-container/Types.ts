@@ -18,7 +18,8 @@ enum Types {
 	IPointLightCache,
 	IEntityMeleeAttackEngine,
 	IPrimitiveCache,
-	IEntityDeathAnimationEngine
+	IEntityDeathAnimationEngine,
+	IEntityRangedAttackEngine
 };
 
 export default Types;

@@ -19,6 +19,7 @@ const Speed = 0.25;
 const SpellCooldown = 17;
 const Color = 0xFFD8B2;
 const ProjectileColor = 0xbada55;
+const ProjectileSpeed = 0.5;
 const PointLightIntensity = 3;
 const PointLightDistance = 20;
 const PointLightYOffset = 4;
@@ -147,15 +148,19 @@ export default class Player implements IPlayer {
 			this._movementEngine.velocity.copy(this._mouseControls.mousePosition).sub(this._movementEngine.position);
 			this.updateMeshPosition();
 
-			this._world.addProjectile({
-				startPosition: this._movementEngine.position,
-				targetPosition: this._mouseControls.mousePosition,
-				speed: 0.5,
-				color: new THREE.Color(ProjectileColor),
-				originEntityId: this.id,
-				splashRadius: 3
-			});
+			this.throwProjectile();
 		}
+	}
+
+	private throwProjectile() {
+		this._world.addProjectile({
+			startPosition: this._movementEngine.position,
+			targetPosition: this._mouseControls.mousePosition,
+			speed: ProjectileSpeed,
+			color: new THREE.Color(ProjectileColor),
+			originEntityId: this.id,
+			splashRadius: 3
+		});
 	}
 
 	private cloak() {

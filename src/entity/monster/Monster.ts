@@ -9,14 +9,22 @@ import IAssetService from "../../asset/IAssetService";
 import IEntityMeleeAttackEngine from "../engine/melee-attack/IEntityMeleeAttackEngine";
 import IPrimitiveCache from "../../world/primitive-cache/IPrimitiveCache";
 import IEntityDeathAnimationEngine from "../engine/death-animation/IEntityDeathAnimationEngine";
+import IEntityRangedAttackEngine from "../engine/ranged-attack/IEntityRangedAttackEngine";
+import IEntityAttackEngine from "../engine/IEntityAttackEngine";
 
 const Size = 2;
-const Speed = 0.1;
-const Color = 0xff0000;
+const MeleeSpeed = 0.1;
+const RangedSpeed = 0.05;
+const MeleeColor = 0xff0000;
+const RangedColor = 0x0080ff;
 const ScatterTotalFrames = 60;
 const ScatterRange = 10;
 const MeshName = "human";
-const MaterialCacheKey = "Monster";
+const MeleeMaterialCacheKey = "MonsterMelee";
+const RangedMaterialCacheKey = "MonsterRanged";
+const ProjectileColor = 0x0080ff;
+const ProjectileRange = 30;
+const ProjectileSpeed = 0.33;
 
 export default class Monster implements IMonster {
 	id: number;
@@ -26,33 +34,55 @@ export default class Monster implements IMonster {
 	private _mesh: THREE.Mesh;
 	private _scatterFrames: number;
 	private _material: THREE.MeshPhongMaterial;
+	private _attackEngine: IEntityAttackEngine;
+	private _ranged: boolean;
 
 	constructor(private _world: IWorld, private _player: IPlayer, private _entityId: IEntityId,
 		private _movementEngine: IEntityMovementEngine, private _assetService: IAssetService,
-		private _meleeAttackEngine: IEntityMeleeAttackEngine, private _primitiveCache: IPrimitiveCache,
-		private _deathAnimationEngine: IEntityDeathAnimationEngine) {
+		private _meleeAttackEngineFactory: () => IEntityMeleeAttackEngine, private _rangedAttackEngineFactory: () => IEntityRangedAttackEngine,
+		private _primitiveCache: IPrimitiveCache, private _deathAnimationEngine: IEntityDeathAnimationEngine) {
 
 		this.id = this._entityId.getNewId();
 		this.dead = false;
 		this.size = Size;
+		this._ranged = Math.random() > 0.5;
 		this._scatterFrames = 0;
-		this._material = this._primitiveCache.getMaterial(MaterialCacheKey, () => new THREE.MeshPhongMaterial({ color: Color }));
+		this._material = this._ranged ?
+			this._primitiveCache.getMaterial(RangedMaterialCacheKey, () => new THREE.MeshPhongMaterial({ color: RangedColor })) :
+			this._primitiveCache.getMaterial(MeleeMaterialCacheKey, () => new THREE.MeshPhongMaterial({ color: MeleeColor }));
 	}
 
 	init(position: THREE.Vector3) {
-		this._movementEngine.init(this.id, position, Size, Speed);
+		this._movementEngine.init(this.id, position, Size, this._ranged ? RangedSpeed: MeleeSpeed);
 		this._movementEngine.afterPositionUpdate = () => {
 			this.updateMeshPosition();
 		};
 
 		this.initMesh();
+		this.initAttackEngine();
 
-		this._meleeAttackEngine.init(() => this._player.position, () => this._player.size, this._mesh, this._movementEngine, this.size);
-		this._meleeAttackEngine.onHit = () => {
+		this._deathAnimationEngine.init(this._mesh, this.size);
+	}
+
+	private initAttackEngine() {
+		if (this._ranged) {
+			const rangedAttackEngine = this._rangedAttackEngineFactory();
+			rangedAttackEngine.init(() => this._player.position, this._mesh, this._movementEngine, this.size, ProjectileRange);
+			rangedAttackEngine.onHit = () => {
+				this.throwProjectile();
+			};
+
+			this._attackEngine = rangedAttackEngine;
+			return;
+		}
+
+		const meleeAttackEngine = this._meleeAttackEngineFactory();
+		meleeAttackEngine.init(() => this._player.position, () => this._player.size, this._mesh, this._movementEngine, this.size);
+		meleeAttackEngine.onHit = () => {
 			this._player.damage();
 		};
 
-		this._deathAnimationEngine.init(this._mesh, this.size);
+		this._attackEngine = meleeAttackEngine;
 	}
 
 	update() {
@@ -61,11 +91,13 @@ export default class Monster implements IMonster {
 			return;
 		}
 
-		if (this._meleeAttackEngine.isAttacking()) {
-			this._meleeAttackEngine.performAttack();
+		this._attackEngine.update();
+
+		if (this._attackEngine.isAttacking()) {
+			this._attackEngine.performAttack();
 		} else {
-			if (!this._player.dead && this._meleeAttackEngine.canAttack()) {
-				this._meleeAttackEngine.startAttacking();
+			if (!this._player.dead && this._attackEngine.canAttack()) {
+				this._attackEngine.startAttacking();
 			} else {
 				if (this._scatterFrames > 0) {
 					this._scatterFrames--;
@@ -92,6 +124,17 @@ export default class Monster implements IMonster {
 		this._movementEngine.clearCells();
 		this._movementEngine.stop();
 		this.dead = true;
+	}
+
+	private throwProjectile() {
+		this._world.addProjectile({
+			startPosition: this._movementEngine.position,
+			targetPosition: this._player.position,
+			speed: ProjectileSpeed,
+			color: new THREE.Color(ProjectileColor),
+			originEntityId: this.id,
+			splashRadius: 3
+		});
 	}
 
 	private chase() {

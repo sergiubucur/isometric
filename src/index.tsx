@@ -22,6 +22,7 @@ import EntityMeleeAttackEngine from "./entity/engine/melee-attack/EntityMeleeAtt
 import ICore from "./ICore";
 import PrimitiveCache from "./world/primitive-cache/PrimitiveCache";
 import EntityDeathAnimationEngine from "./entity/engine/death-animation/EntityDeathAnimationEngine";
+import EntityRangedAttackEngine from "./entity/engine/ranged-attack/EntityRangedAttackEngine";
 
 const container = new Container();
 
@@ -53,7 +54,7 @@ container.registerSingleton(Types.IPlayer, Player,
 	Types.IAssetService, Types.IEntityDeathAnimationEngine);
 
 container.register(Types.IMonster, Monster, Types.IWorld, Types.IPlayer, Types.IEntityId, Types.IEntityMovementEngine, Types.IAssetService,
-	Types.IEntityMeleeAttackEngine, Types.IPrimitiveCache, Types.IEntityDeathAnimationEngine);
+	Factory(Types.IEntityMeleeAttackEngine), Factory(Types.IEntityRangedAttackEngine), Types.IPrimitiveCache, Types.IEntityDeathAnimationEngine);
 
 container.registerSingleton(Types.IEntityId, EntityId);
 
@@ -71,6 +72,8 @@ container.register(Types.IEntityMeleeAttackEngine, EntityMeleeAttackEngine);
 container.registerSingleton(Types.IPrimitiveCache, PrimitiveCache);
 
 container.register(Types.IEntityDeathAnimationEngine, EntityDeathAnimationEngine);
+
+container.register(Types.IEntityRangedAttackEngine, EntityRangedAttackEngine);
 
 const core = container.resolve(Types.ICore) as ICore;
 core.onRestart = () => {

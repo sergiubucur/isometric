@@ -1,21 +1,23 @@
 import * as THREE from "three";
 
-import IEntityMeleeAttackEngine from "./IEntityMeleeAttackEngine";
+import IEntityRangedAttackEngine from "./IEntityRangedAttackEngine";
 import IEntityMovementEngine from "../movement/IEntityMovementEngine";
 
 const AttackAnimationTotalFrames = 30;
 const HalfTime = Math.floor(AttackAnimationTotalFrames / 2);
+const SpellCooldownTotalFrames = 120;
 
-export default class EntityMeleeAttackEngine implements IEntityMeleeAttackEngine {
+export default class EntityRangedAttackEngine implements IEntityRangedAttackEngine {
 	onHit: () => void;
 
 	private _getTargetPosition: () => THREE.Vector3;
-	private _getTargetSize: () => number;
 	private _mesh: THREE.Mesh;
 	private _movementEngine: IEntityMovementEngine;
 	private _size: number;
+	private _range: number;
 	private _originalPosition: THREE.Vector3;
 	private _animationFrames: number;
+	private _spellCooldownFrames: number;
 	private _offset: THREE.Vector3;
 	private _direction: THREE.Vector3;
 
@@ -24,21 +26,23 @@ export default class EntityMeleeAttackEngine implements IEntityMeleeAttackEngine
 
 		this._originalPosition = new THREE.Vector3();
 		this._animationFrames = 0;
+		this._spellCooldownFrames = 0;
 		this._offset = new THREE.Vector3();
 		this._direction = new THREE.Vector3();
 	}
 
-	init(getTargetPosition: () => THREE.Vector3, getTargetSize: () => number, mesh: THREE.Mesh,
-		movementEngine: IEntityMovementEngine, size: number) {
-
+	init(getTargetPosition: () => THREE.Vector3, mesh: THREE.Mesh, movementEngine: IEntityMovementEngine, size: number, range: number) {
 		this._getTargetPosition = getTargetPosition;
-		this._getTargetSize = getTargetSize;
 		this._mesh = mesh;
 		this._movementEngine = movementEngine;
 		this._size = size;
+		this._range = range;
 	}
 
 	update() {
+		if (this._spellCooldownFrames > 0) {
+			this._spellCooldownFrames--;
+		}
 	}
 
 	isAttacking() {
@@ -62,13 +66,18 @@ export default class EntityMeleeAttackEngine implements IEntityMeleeAttackEngine
 			if (this.canAttack()) {
 				this.onHit();
 			}
+
+			this._spellCooldownFrames = SpellCooldownTotalFrames;
 		}
 	}
 
 	canAttack() {
-		const meleeRange = (this._size / 2 + this._getTargetSize() / 2) * 2;
+		if (this._spellCooldownFrames > 0) {
+			return false;
+		}
 
-		return this._movementEngine.position.distanceTo(this._getTargetPosition()) <= meleeRange;
+		const distance = this._movementEngine.position.distanceTo(this._getTargetPosition());
+		return distance <= this._range;
 	}
 
 	startAttacking() {

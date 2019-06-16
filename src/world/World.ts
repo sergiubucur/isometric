@@ -79,13 +79,19 @@ export default class World implements IWorld, IWorldComponent {
 		const mapPosition = this.map.convertToMapPosition(position);
 		const entityIds = this.map.getAllEntityIdsInArea(mapPosition.x, mapPosition.z, radius);
 
-		entityIds.forEach(id => {
-			const monster = this._monsters.find(x => x.id === id);
+		if (originId === this._player.id) {
+			entityIds.forEach(id => {
+				const monster = this._monsters.find(x => x.id === id);
 
-			if (monster && monster.id !== originId) {
-				monster.damage();
+				if (monster && monster.id !== originId) {
+					monster.damage();
+				}
+			});
+		} else {
+			if (entityIds.indexOf(this._player.id) > -1) {
+				this._player.damage();
 			}
-		});
+		}
 	}
 
 	addProjectile(data: ProjectileData) {
