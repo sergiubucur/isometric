@@ -1,6 +1,6 @@
 import * as THREE from "three";
 
-import IWorld from "../../world/IWorld";
+import IWorld from "../../../world/IWorld";
 import IEntityMovementEngine from "./IEntityMovementEngine";
 
 export default class EntityMovementEngine implements IEntityMovementEngine {

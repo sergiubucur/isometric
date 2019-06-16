@@ -4,15 +4,15 @@ import IMonster from "./IMonster";
 import IWorld from "../../world/IWorld";
 import IPlayer from "../player/IPlayer";
 import IEntityId from "../entity-id/IEntityId";
-import IEntityMovementEngine from "../movement-engine/IEntityMovementEngine";
+import IEntityMovementEngine from "../engine/movement/IEntityMovementEngine";
 import IAssetService from "../../asset/IAssetService";
-import IEntityMeleeAttackEngine from "../melee-attack-engine/IEntityMeleeAttackEngine";
+import IEntityMeleeAttackEngine from "../engine/melee-attack/IEntityMeleeAttackEngine";
 import IPrimitiveCache from "../../world/primitive-cache/IPrimitiveCache";
+import IEntityDeathAnimationEngine from "../engine/death-animation/IEntityDeathAnimationEngine";
 
 const Size = 2;
 const Speed = 0.1;
 const Color = 0xff0000;
-const DeathAnimationTotalFrames = 30;
 const ScatterTotalFrames = 60;
 const ScatterRange = 10;
 const MeshName = "human";
@@ -24,18 +24,17 @@ export default class Monster implements IMonster {
 	readonly size: number;
 
 	private _mesh: THREE.Mesh;
-	private _deathAnimationFrames: number;
 	private _scatterFrames: number;
 	private _material: THREE.MeshPhongMaterial;
 
 	constructor(private _world: IWorld, private _player: IPlayer, private _entityId: IEntityId,
 		private _movementEngine: IEntityMovementEngine, private _assetService: IAssetService,
-		private _meleeAttackEngine: IEntityMeleeAttackEngine, private _primitiveCache: IPrimitiveCache) {
+		private _meleeAttackEngine: IEntityMeleeAttackEngine, private _primitiveCache: IPrimitiveCache,
+		private _deathAnimationEngine: IEntityDeathAnimationEngine) {
 
 		this.id = this._entityId.getNewId();
 		this.dead = false;
 		this.size = Size;
-		this._deathAnimationFrames = DeathAnimationTotalFrames;
 		this._scatterFrames = 0;
 		this._material = this._primitiveCache.getMaterial(MaterialCacheKey, () => new THREE.MeshPhongMaterial({ color: Color }));
 	}
@@ -52,18 +51,13 @@ export default class Monster implements IMonster {
 		this._meleeAttackEngine.onHit = () => {
 			this._player.damage();
 		};
+
+		this._deathAnimationEngine.init(this._mesh, this.size);
 	}
 
 	update() {
 		if (this.dead) {
-			if (this._deathAnimationFrames > 0) {
-				this._deathAnimationFrames--;
-
-				const value = this._deathAnimationFrames / DeathAnimationTotalFrames;
-				this._mesh.rotation.x = -(1 - value) * (Math.PI / 2);
-				this._mesh.position.y = (Size / 4) + Math.sin(Math.PI * value) * Size;
-			}
-
+			this._deathAnimationEngine.runAnimation();
 			return;
 		}
 
@@ -90,12 +84,14 @@ export default class Monster implements IMonster {
 
 	damage() {
 		if (this.dead) {
-			this.updateMeshPosition();
 			return;
 		}
 
-		this.dead = true;
+		this.updateMeshPosition();
+		this._deathAnimationEngine.startAnimation();
 		this._movementEngine.clearCells();
+		this._movementEngine.stop();
+		this.dead = true;
 	}
 
 	private chase() {

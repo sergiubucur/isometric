@@ -14,13 +14,14 @@ import Player from "./entity/player/Player";
 import Core from "./Core";
 import Monster from "./entity/monster/Monster";
 import EntityId from "./entity/entity-id/EntityId";
-import EntityMovementEngine from "./entity/movement-engine/EntityMovementEngine";
+import EntityMovementEngine from "./entity/engine/movement/EntityMovementEngine";
 import UIRoot from "./ui/UIRoot";
 import Projectile from "./entity/projectile/Projectile";
 import PointLightCache from "./world/point-light-cache/PointLightCache";
-import EntityMeleeAttackEngine from "./entity/melee-attack-engine/EntityMeleeAttackEngine";
+import EntityMeleeAttackEngine from "./entity/engine/melee-attack/EntityMeleeAttackEngine";
 import ICore from "./ICore";
 import PrimitiveCache from "./world/primitive-cache/PrimitiveCache";
+import EntityDeathAnimationEngine from "./entity/engine/death-animation/EntityDeathAnimationEngine";
 
 const container = new Container();
 
@@ -49,10 +50,10 @@ container.register(Types.IMouseControls, MouseControls, Types.ICamera, Types.IIn
 
 container.registerSingleton(Types.IPlayer, Player,
 	Types.IMouseControls, Types.ICamera, Types.IInputTracker, Types.IWorld, Types.ILogger, Types.IEntityId, Types.IEntityMovementEngine,
-	Types.IAssetService);
+	Types.IAssetService, Types.IEntityDeathAnimationEngine);
 
 container.register(Types.IMonster, Monster, Types.IWorld, Types.IPlayer, Types.IEntityId, Types.IEntityMovementEngine, Types.IAssetService,
-	Types.IEntityMeleeAttackEngine, Types.IPrimitiveCache);
+	Types.IEntityMeleeAttackEngine, Types.IPrimitiveCache, Types.IEntityDeathAnimationEngine);
 
 container.registerSingleton(Types.IEntityId, EntityId);
 
@@ -68,6 +69,8 @@ container.registerSingleton(Types.IPointLightCache, PointLightCache, Types.IWorl
 container.register(Types.IEntityMeleeAttackEngine, EntityMeleeAttackEngine);
 
 container.registerSingleton(Types.IPrimitiveCache, PrimitiveCache);
+
+container.register(Types.IEntityDeathAnimationEngine, EntityDeathAnimationEngine);
 
 const core = container.resolve(Types.ICore) as ICore;
 core.onRestart = () => {

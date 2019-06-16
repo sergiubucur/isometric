@@ -1,7 +1,7 @@
 import * as THREE from "three";
 
 import IEntityMeleeAttackEngine from "./IEntityMeleeAttackEngine";
-import IEntityMovementEngine from "../movement-engine/IEntityMovementEngine";
+import IEntityMovementEngine from "../movement/IEntityMovementEngine";
 
 const AttackAnimationTotalFrames = 30;
 const HalfTime = Math.floor(AttackAnimationTotalFrames / 2);

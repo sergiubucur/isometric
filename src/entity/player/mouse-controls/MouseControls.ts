@@ -31,6 +31,14 @@ export default class MouseControls implements IMouseControls {
 		this.updateZoomLevel();
 	}
 
+	show() {
+		this._pointerMesh.visible = true;
+	}
+
+	hide() {
+		this._pointerMesh.visible = false;
+	}
+
 	private updateMousePosition() {
 		const mouseX = (this._inputTracker.mouseX / window.innerWidth) * 2 - 1;
 		const mouseY = -(this._inputTracker.mouseY / window.innerHeight) * 2 + 1;

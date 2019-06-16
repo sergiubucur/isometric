@@ -1,6 +1,6 @@
 import * as THREE from "three";
 
-import IEntityMovementEngine from "../movement-engine/IEntityMovementEngine";
+import IEntityMovementEngine from "../movement/IEntityMovementEngine";
 
 export default interface IEntityMeleeAttackEngine {
 	onHit: () => void;

@@ -7,4 +7,6 @@ export default interface IMouseControls extends IComponent {
 
 	onLeftClick: () => void;
 	onRightClick: () => void;
+	show(): void;
+	hide(): void;
 }

@@ -1,7 +1,7 @@
 import * as THREE from "three";
 
 import IProjectile from "./IProjectile";
-import IEntityMovementEngine from "../movement-engine/IEntityMovementEngine";
+import IEntityMovementEngine from "../engine/movement/IEntityMovementEngine";
 import ProjectileData from "./ProjectileData";
 import IEntityId from "../entity-id/IEntityId";
 import IWorld from "../../world/IWorld";

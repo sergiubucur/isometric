@@ -7,10 +7,11 @@ import IInputTracker from "../../input-tracker/IInputTracker";
 import IWorld from "../../world/IWorld";
 import ILogger from "../../common/logger/ILogger";
 import IEntityId from "../entity-id/IEntityId";
-import IEntityMovementEngine from "../movement-engine/IEntityMovementEngine";
+import IEntityMovementEngine from "../engine/movement/IEntityMovementEngine";
 import Keybinds from "../../input-tracker/Keybinds";
 import IAssetService from "../../asset/IAssetService";
 import IMonster from "../monster/IMonster";
+import IEntityDeathAnimationEngine from "../engine/death-animation/IEntityDeathAnimationEngine";
 
 const StartPosition = new THREE.Vector3(16, 0, 16);
 const Size = 2;
@@ -21,6 +22,7 @@ const ProjectileColor = 0xbada55;
 const PointLightIntensity = 3;
 const PointLightDistance = 20;
 const PointLightYOffset = 4;
+const PointLightDeathColor = 0xff0000;
 const MeshName = "human";
 
 export default class Player implements IPlayer {
@@ -40,7 +42,7 @@ export default class Player implements IPlayer {
 
 	constructor(private _mouseControls: IMouseControls, private _camera: ICamera, private _inputTracker: IInputTracker,
 		private _world: IWorld, private _logger: ILogger, private _entityId: IEntityId, private _movementEngine: IEntityMovementEngine,
-		private _assetService: IAssetService) {
+		private _assetService: IAssetService, private _deathAnimationEngine: IEntityDeathAnimationEngine) {
 
 		this._mouseControls.onLeftClick = () => this.handleLeftClick();
 		this._mouseControls.onRightClick = () => this.handleRightClick();
@@ -60,10 +62,14 @@ export default class Player implements IPlayer {
 
 		this._camera.setPosition(StartPosition);
 		this.initMesh();
+
+		this._deathAnimationEngine.init(this._mesh, this.size);
 	}
 
 	update() {
 		if (this.dead) {
+			this._deathAnimationEngine.runAnimation();
+
 			if (this._inputTracker.keysPressed[Keybinds.Enter]) {
 				this.resurrect();
 			}
@@ -102,13 +108,21 @@ export default class Player implements IPlayer {
 			return;
 		}
 
+		this._pointLight.color.setHex(PointLightDeathColor);
+		this.updateMeshPosition();
+		this._deathAnimationEngine.startAnimation();
+		this._movementEngine.clearCells();
 		this._movementEngine.stop();
+		this._mouseControls.hide();
 		this.dead = true;
 	}
 
 	private resurrect() {
-		this.dead = false;
+		this._pointLight.color.setHex(Color);
+		this._deathAnimationEngine.cancelAnimation();
+		this._mouseControls.show();
 		this._movementEngine.moveTo(StartPosition);
+		this.dead = false;
 	}
 
 	private move() {
