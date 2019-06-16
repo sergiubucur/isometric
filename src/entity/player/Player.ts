@@ -25,6 +25,9 @@ const PointLightDistance = 20;
 const PointLightYOffset = 4;
 const PointLightDeathColor = 0xff0000;
 const MeshName = "human";
+const TotalHealth = 100;
+const TotalMana = 100;
+const ManaRegen = 0.1;
 
 export default class Player implements IPlayer {
 	get position() {
@@ -35,6 +38,11 @@ export default class Player implements IPlayer {
 	invisible: boolean;
 	readonly size: number;
 	dead: boolean;
+	health: number;
+	totalHealth: number;
+	mana: number;
+	totalMana: number;
+	manaRegen: number;
 
 	private _spellCooldown: number;
 	private _mesh: THREE.Mesh;
@@ -52,6 +60,11 @@ export default class Player implements IPlayer {
 		this.invisible = false;
 		this.size = Size;
 		this.dead = false;
+		this.totalHealth = TotalHealth;
+		this.health = this.totalHealth;
+		this.totalMana = TotalMana;
+		this.mana = this.totalMana;
+		this.manaRegen = ManaRegen;
 		this._spellCooldown = 0;
 		this._mouseOverTarget = null;
 
@@ -79,6 +92,7 @@ export default class Player implements IPlayer {
 			return;
 		}
 
+		this.updateManaRegen();
 		this._mouseControls.update();
 		this._mouseOverTarget = this._world.getMonsterAtPosition(this._mouseControls.mousePosition, false);
 		this.move();
@@ -99,9 +113,8 @@ export default class Player implements IPlayer {
 			this.teleport();
 		}
 
-		this._logger.logVector3("position", this._movementEngine.position);
-		this._logger.log(`mouseOverTarget: ${this._mouseOverTarget ? `monster id ${this._mouseOverTarget.id}` : null}`);
-		this._logger.logNumber("spell cooldown", this._spellCooldown);
+		this._logger.logNumber("health", this.health, 0);
+		this._logger.logNumber("mana", this.mana, 0);
 	}
 
 	damage() {
@@ -109,6 +122,19 @@ export default class Player implements IPlayer {
 			return;
 		}
 
+		this.health -= 25;
+		if (this.health <= 0) {
+			this.health = 0;
+			this.die();
+		}
+	}
+
+	private updateManaRegen() {
+		this.mana += this.manaRegen;
+		this.mana = THREE.Math.clamp(this.mana, 0, this.totalMana);
+	}
+
+	private die() {
 		this.uncloak();
 		this._pointLight.color.setHex(PointLightDeathColor);
 		this.updateMeshPosition();
@@ -124,6 +150,8 @@ export default class Player implements IPlayer {
 		this._deathAnimationEngine.cancelAnimation();
 		this._mouseControls.show();
 		this._movementEngine.moveTo(StartPosition);
+		this.health = this.totalHealth;
+		this.mana = this.totalMana;
 		this.dead = false;
 	}
 
@@ -140,10 +168,11 @@ export default class Player implements IPlayer {
 	}
 
 	private handleRightClick() {
-		if (this._spellCooldown === 0) {
+		if (this._spellCooldown === 0 && this.mana >= 10) {
 			this._movementEngine.stop();
 			this._spellCooldown = SpellCooldown;
 			this.uncloak();
+			this.mana -= 10;
 
 			this._movementEngine.velocity.copy(this._mouseControls.mousePosition).sub(this._movementEngine.position);
 			this.updateMeshPosition();
@@ -182,10 +211,11 @@ export default class Player implements IPlayer {
 	}
 
 	private nova() {
-		if (this._spellCooldown === 0) {
+		if (this._spellCooldown === 0 && this.mana >= 50) {
 			this._movementEngine.stop();
 			this._spellCooldown = SpellCooldown;
 			this.uncloak();
+			this.mana -= 50;
 
 			for (let i = 0; i < 10; i++) {
 				const targetPosition = new THREE.Vector3();
@@ -206,20 +236,22 @@ export default class Player implements IPlayer {
 	}
 
 	private touchOfDeath() {
-		if (this._spellCooldown === 0) {
+		if (this._spellCooldown === 0 && this.mana >= 100) {
 			this._movementEngine.stop();
 			this._spellCooldown = SpellCooldown;
 			this.uncloak();
+			this.mana -= 100;
 
 			this._mouseOverTarget.damage();
 		}
 	}
 
 	private teleport() {
-		if (this._spellCooldown === 0) {
+		if (this._spellCooldown === 0 && this.mana >= 5) {
 			this._movementEngine.stop();
 			this._spellCooldown = SpellCooldown;
 			this.uncloak();
+			this.mana -= 5;
 
 			if (this._movementEngine.canMoveTo(this._mouseControls.mousePosition)) {
 				this._movementEngine.velocity.copy(this._mouseControls.mousePosition).sub(this._movementEngine.position);
