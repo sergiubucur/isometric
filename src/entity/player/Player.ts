@@ -119,6 +119,8 @@ export default class Player implements IPlayer {
 			return;
 		}
 
+		this.uncloak();
+
 		this.health -= 25;
 		if (this.health <= 0) {
 			this.health = 0;

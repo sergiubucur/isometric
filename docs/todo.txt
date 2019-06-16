@@ -1,4 +1,6 @@
 spell UI
+doors
+moving floors/walls
 powerups
 spell cooldowns
 different types of monsters
@@ -8,9 +10,7 @@ monsters get tougher the further you progress
 experience
 overlay minimap
 player leveling
-doors
 bosses
-moving floors/walls
 lava/slime floors
 switches
 teleporters
