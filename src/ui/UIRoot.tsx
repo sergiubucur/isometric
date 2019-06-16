@@ -6,8 +6,8 @@ import IWorld from "../world/IWorld";
 import IPlayer from "../entity/player/IPlayer";
 import IUIRoot from "./IUIRoot";
 import ILogger from "../common/logger/ILogger";
-import HealthBar from "./health-bar/HealthBar";
-import ManaBar from "./mana-bar/ManaBar";
+import HealthBar from "./resource-bar/HealthBar";
+import ManaBar from "./resource-bar/ManaBar";
 
 export default class UIRoot implements IUIRoot {
 	constructor(private _world: IWorld, private _player: IPlayer, private _logger: ILogger) {
