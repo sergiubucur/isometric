@@ -13,7 +13,7 @@ import IAssetService from "../../asset/IAssetService";
 import IMonster from "../monster/IMonster";
 import IEntityDeathAnimationEngine from "../engine/death-animation/IEntityDeathAnimationEngine";
 
-const StartPosition = new THREE.Vector3(32, 0, 32);
+const StartPosition = new THREE.Vector3(16, 0, 16);
 const Size = 2;
 const Speed = 0.25;
 const SpellCooldown = 17;
