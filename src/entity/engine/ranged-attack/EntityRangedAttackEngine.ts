@@ -57,9 +57,8 @@ export default class EntityRangedAttackEngine implements IEntityRangedAttackEngi
 		this._mesh.rotation.y = this._movementEngine.rotationY;
 
 		const value = this._animationFrames / AttackAnimationTotalFrames;
-		this._offset.x = Math.sin(Math.PI * value) * this._direction.x;
-		this._offset.y = Math.sin(Math.PI * value) * this._size;
-		this._offset.z = Math.sin(Math.PI * value) * this._direction.z;
+		this._offset.x = -Math.sin(Math.PI * value) * this._direction.x;
+		this._offset.z = -Math.sin(Math.PI * value) * this._direction.z;
 		this._mesh.position.copy(this._originalPosition).add(this._offset);
 
 		if (this._animationFrames === HalfTime) {
