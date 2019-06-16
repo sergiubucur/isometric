@@ -10,5 +10,6 @@ export default {
 	D1: 49,
 	D2: 50,
 	D3: 51,
-	D4: 52
+	D4: 52,
+	Enter: 13
 };

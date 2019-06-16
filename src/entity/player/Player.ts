@@ -12,6 +12,7 @@ import Keybinds from "../../input-tracker/Keybinds";
 import IAssetService from "../../asset/IAssetService";
 import IMonster from "../monster/IMonster";
 
+const StartPosition = new THREE.Vector3(16, 0, 16);
 const Size = 2;
 const Speed = 0.25;
 const SpellCooldown = 17;
@@ -30,6 +31,7 @@ export default class Player implements IPlayer {
 	id: number;
 	invisible: boolean;
 	readonly size: number;
+	dead: boolean;
 
 	private _spellCooldown: number;
 	private _mesh: THREE.Mesh;
@@ -46,21 +48,30 @@ export default class Player implements IPlayer {
 		this.id = this._entityId.getNewId();
 		this.invisible = false;
 		this.size = Size;
+		this.dead = false;
 		this._spellCooldown = 0;
 		this._mouseOverTarget = null;
 
-		const startPosition = new THREE.Vector3(16, 0, 16);
-		this._movementEngine.init(this.id, startPosition, Size, Speed);
+		this._movementEngine.init(this.id, StartPosition, Size, Speed);
 		this._movementEngine.afterPositionUpdate = () => {
 			this._camera.setPosition(this._movementEngine.position);
 			this.updateMeshPosition();
 		};
 
-		this._camera.setPosition(startPosition);
+		this._camera.setPosition(StartPosition);
 		this.initMesh();
 	}
 
 	update() {
+		if (this.dead) {
+			if (this._inputTracker.keysPressed[Keybinds.Enter]) {
+				this.resurrect();
+			}
+
+			this._logger.log("player dead. press enter to resurrect");
+			return;
+		}
+
 		this._mouseControls.update();
 		this._mouseOverTarget = this._world.getMonsterAtPosition(this._mouseControls.mousePosition, false);
 		this.move();
@@ -84,6 +95,20 @@ export default class Player implements IPlayer {
 		this._logger.logVector3("position", this._movementEngine.position);
 		this._logger.log(`mouseOverTarget: ${this._mouseOverTarget ? `monster id ${this._mouseOverTarget.id}` : null}`);
 		this._logger.logNumber("spell cooldown", this._spellCooldown);
+	}
+
+	damage() {
+		if (this.dead) {
+			return;
+		}
+
+		this._movementEngine.stop();
+		this.dead = true;
+	}
+
+	private resurrect() {
+		this.dead = false;
+		this._movementEngine.moveTo(StartPosition);
 	}
 
 	private move() {

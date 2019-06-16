@@ -50,7 +50,7 @@ export default class Monster implements IMonster {
 
 		this._meleeAttackEngine.init(() => this._player.position, () => this._player.size, this._mesh, this._movementEngine, this.size);
 		this._meleeAttackEngine.onHit = () => {
-			console.log("melee hit");
+			this._player.damage();
 		};
 	}
 
@@ -70,7 +70,7 @@ export default class Monster implements IMonster {
 		if (this._meleeAttackEngine.isAttacking()) {
 			this._meleeAttackEngine.performAttack();
 		} else {
-			if (this._meleeAttackEngine.canAttack()) {
+			if (!this._player.dead && this._meleeAttackEngine.canAttack()) {
 				this._meleeAttackEngine.startAttacking();
 			} else {
 				if (this._scatterFrames > 0) {
@@ -99,7 +99,7 @@ export default class Monster implements IMonster {
 	}
 
 	private chase() {
-		if (!this._player.invisible) {
+		if (!this._player.dead && !this._player.invisible) {
 			this._movementEngine.startMovingTo(this._player.position);
 		}
 	}
