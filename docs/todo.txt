@@ -1,4 +1,3 @@
-health/mana UI
 spell UI
 powerups
 spell cooldowns
