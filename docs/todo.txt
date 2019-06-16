@@ -1,6 +1,5 @@
 health/mana UI
 spell UI
-monster ranged attack
 powerups
 spell cooldowns
 different types of monsters
