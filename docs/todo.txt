@@ -1,6 +1,5 @@
 spell UI
-doors
-moving floors/walls
+player environment interaction
 powerups
 spell cooldowns
 different types of monsters
