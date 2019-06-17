@@ -12,19 +12,21 @@ import Cloak from "./spells/Cloak";
 import TouchOfDeath from "./spells/TouchOfDeath";
 import Nova from "./spells/Nova";
 
-const SpellCooldown = 17;
+export const GlobalCooldown = 17;
 
 export default class PlayerSpellEngine implements IPlayerSpellEngine {
+	activeSpell: SpellKeybindAssignment | null;
 	spells: SpellKeybindAssignment[];
+	globalCooldown: number;
 
 	private _player: IPlayer;
 	private _movementEngine: IEntityMovementEngine;
 	private _mouseControls: IMouseControls;
-	private _spellCooldown: number;
 	private _rightMouseDown: boolean;
 
 	constructor(private _world: IWorld, private _inputTracker: IInputTracker) {
-		this._spellCooldown = 0;
+		this.activeSpell = null;
+		this.globalCooldown = 0;
 	}
 
 	init(player: IPlayer, movementEngine: IEntityMovementEngine, mouseControls: IMouseControls) {
@@ -52,9 +54,13 @@ export default class PlayerSpellEngine implements IPlayerSpellEngine {
 	}
 
 	update() {
-		if (this._spellCooldown > 0) {
-			this._spellCooldown--;
+		if (this.globalCooldown > 0) {
+			this.globalCooldown--;
 			this._rightMouseDown = false;
+
+			if (this.globalCooldown === 0) {
+				this.activeSpell = null;
+			}
 			return;
 		}
 
@@ -64,7 +70,7 @@ export default class PlayerSpellEngine implements IPlayerSpellEngine {
 			if ((keybind === Keybinds.RightMouseButton && this._rightMouseDown) || this._inputTracker.keysPressed[keybind]) {
 				if (this._player.mana >= spell.manaCost && spell.condition()) {
 					this._movementEngine.stop();
-					this._spellCooldown = SpellCooldown;
+					this.globalCooldown = GlobalCooldown;
 					this._player.spendMana(spell.manaCost);
 
 					if (spell.uncloakOnCast) {
@@ -72,6 +78,7 @@ export default class PlayerSpellEngine implements IPlayerSpellEngine {
 					}
 
 					spell.cast();
+					this.activeSpell = this.spells[i];
 				}
 
 				break;
