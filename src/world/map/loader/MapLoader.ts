@@ -101,6 +101,8 @@ export default class MapLoader implements IMapLoader {
 			}
 		});
 
+		this.removeDuplicateRectangles(rectangles);
+
 		// ctx.putImageData(imageData, 0, 0);
 
 		// this.debugDrawRectangles(ctx, imageData, size, rectangles, 0).then(() => {
@@ -111,6 +113,19 @@ export default class MapLoader implements IMapLoader {
 			rectangles,
 			edges
 		};
+	}
+
+	private removeDuplicateRectangles(rectangles: Rectangle[]) {
+		let i = 0;
+		while (i < rectangles.length) {
+			const r0 = rectangles[i];
+
+			if (rectangles.find(r1 => r0 !== r1 && r0.x0 === r1.x0 && r0.y0 === r1.y0 && r0.x1 === r1.x1 && r0.y1 === r1.y1)) {
+				rectangles.splice(i, 1);
+			} else {
+				i++;
+			}
+		}
 	}
 
 	private debugDrawRectangles(ctx: CanvasRenderingContext2D, imageData: ImageData, size: number, rectangles: Rectangle[], delay = 0) {
