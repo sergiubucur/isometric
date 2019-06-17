@@ -2,23 +2,29 @@
   "name": "isometric",
   "version": "0.1.0",
   "private": true,
+  "homepage": ".",
   "dependencies": {
     "@types/jest": "24.0.13",
     "@types/node": "12.0.4",
     "@types/react": "16.8.19",
     "@types/react-dom": "16.8.4",
+    "gh-pages": "^2.0.1",
     "node-sass": "^4.12.0",
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
     "react-scripts": "3.0.1",
+    "staticrypt": "^1.2.0",
     "three": "^0.105.1",
     "typescript": "3.5.1"
   },
   "scripts": {
+    "predeploy": "npm run build && cd build && staticrypt index.html iamthewalrus -o index.html",
+    "deploy": "gh-pages -b master -d build -r https://github.com/sergiubucur/airstrip-one.git",
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "test2": "gh-pages --help"
   },
   "eslintConfig": {
     "extends": "react-app"
