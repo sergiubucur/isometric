@@ -19,12 +19,12 @@
   },
   "scripts": {
     "predeploy": "npm run build && cd build && staticrypt index.html iamthewalrus -o index.html",
-    "deploy": "gh-pages -b master -d build -r https://github.com/sergiubucur/airstrip-one.git",
+    "deploy": "gh-pages-clean && gh-pages -b master -d build -r https://github.com/sergiubucur/airstrip-one.git",
+    "deploy-ci": "npm run predeploy && gh-pages-clean && gh-pages -b master -d build",
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject",
-    "test2": "gh-pages --help"
+    "eject": "react-scripts eject"
   },
   "eslintConfig": {
     "extends": "react-app"
