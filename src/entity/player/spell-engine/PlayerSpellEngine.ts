@@ -5,12 +5,8 @@ import IEntityMovementEngine from "../../engine/movement/IEntityMovementEngine";
 import IWorld from "../../../world/IWorld";
 import IInputTracker from "../../../input-tracker/IInputTracker";
 import Keybinds from "../../../input-tracker/Keybinds";
-import Fireball from "./spells/Fireball";
 import SpellKeybindAssignment from "./SpellKeybindAssignment";
-import Teleport from "./spells/Teleport";
-import Cloak from "./spells/Cloak";
-import TouchOfDeath from "./spells/TouchOfDeath";
-import Nova from "./spells/Nova";
+import getSpells from "./SpellBook";
 
 export const GlobalCooldown = 17;
 
@@ -40,13 +36,7 @@ export default class PlayerSpellEngine implements IPlayerSpellEngine {
 	}
 
 	initSpells() {
-		this.spells = [
-			{ keybind: Keybinds.RightMouseButton, spell: new Fireball() },
-			{ keybind: Keybinds.D1, spell: new Cloak() },
-			{ keybind: Keybinds.D2, spell: new TouchOfDeath() },
-			{ keybind: Keybinds.D3, spell: new Nova() },
-			{ keybind: Keybinds.D4, spell: new Teleport() }
-		];
+		this.spells = getSpells();
 
 		this.spells.forEach(x => {
 			x.spell.init(this._world, this._player, this._movementEngine, this._mouseControls);
