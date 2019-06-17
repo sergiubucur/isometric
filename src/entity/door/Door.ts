@@ -50,6 +50,18 @@ export default class Door implements IDoor {
 					}
 				}
 			}
+
+			return;
+		}
+
+		if (Math.random() < 0.005) {
+			if (this._state === DoorState.Open) {
+				this.close();
+			} else {
+				if (this._state === DoorState.Closed) {
+					this.open();
+				}
+			}
 		}
 	}
 
