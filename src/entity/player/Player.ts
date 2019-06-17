@@ -12,14 +12,12 @@ import Keybinds from "../../input-tracker/Keybinds";
 import IAssetService from "../../asset/IAssetService";
 import IMonster from "../monster/IMonster";
 import IEntityDeathAnimationEngine from "../engine/death-animation/IEntityDeathAnimationEngine";
+import IPlayerSpellEngine from "./spell-engine/IPlayerSpellEngine";
 
 const StartPosition = new THREE.Vector3(16, 0, 16);
 const Size = 2;
 const Speed = 0.25;
-const SpellCooldown = 17;
 const Color = 0xFFD8B2;
-const ProjectileColor = 0xbada55;
-const ProjectileSpeed = 0.5;
 const PointLightIntensity = 3;
 const PointLightDistance = 20;
 const PointLightYOffset = 4;
@@ -43,18 +41,17 @@ export default class Player implements IPlayer {
 	mana: number;
 	totalMana: number;
 	manaRegen: number;
+	mouseOverTarget: IMonster | null;
 
-	private _spellCooldown: number;
 	private _mesh: THREE.Mesh;
 	private _pointLight: THREE.PointLight;
-	private _mouseOverTarget: IMonster | null;
 
 	constructor(private _mouseControls: IMouseControls, private _camera: ICamera, private _inputTracker: IInputTracker,
 		private _world: IWorld, private _logger: ILogger, private _entityId: IEntityId, private _movementEngine: IEntityMovementEngine,
-		private _assetService: IAssetService, private _deathAnimationEngine: IEntityDeathAnimationEngine) {
+		private _assetService: IAssetService, private _deathAnimationEngine: IEntityDeathAnimationEngine,
+		private _spellEngine: IPlayerSpellEngine) {
 
 		this._mouseControls.onLeftClick = () => this.handleLeftClick();
-		this._mouseControls.onRightClick = () => this.handleRightClick();
 
 		this.id = this._entityId.getNewId();
 		this.invisible = false;
@@ -65,8 +62,7 @@ export default class Player implements IPlayer {
 		this.totalMana = TotalMana;
 		this.mana = this.totalMana;
 		this.manaRegen = ManaRegen;
-		this._spellCooldown = 0;
-		this._mouseOverTarget = null;
+		this.mouseOverTarget = null;
 
 		this._movementEngine.init(this.id, StartPosition, Size, Speed);
 		this._movementEngine.afterPositionUpdate = () => {
@@ -78,6 +74,7 @@ export default class Player implements IPlayer {
 		this.initMesh();
 
 		this._deathAnimationEngine.init(this._mesh, this.size);
+		this._spellEngine.init(this, this._movementEngine, this._mouseControls);
 	}
 
 	update() {
@@ -94,24 +91,9 @@ export default class Player implements IPlayer {
 
 		this.updateManaRegen();
 		this._mouseControls.update();
-		this._mouseOverTarget = this._world.getMonsterAtPosition(this._mouseControls.mousePosition, false);
-		this.move();
-
-		if (this._inputTracker.keysPressed[Keybinds.D1]) {
-			this.cloak();
-		}
-
-		if (this._inputTracker.keysPressed[Keybinds.D3]) {
-			this.nova();
-		}
-
-		if (this._mouseOverTarget && !this._mouseOverTarget.dead && this._inputTracker.keysPressed[Keybinds.D2]) {
-			this.touchOfDeath();
-		}
-
-		if (this._inputTracker.keysPressed[Keybinds.D4]) {
-			this.teleport();
-		}
+		this.mouseOverTarget = this._world.getMonsterAtPosition(this._mouseControls.mousePosition, false);
+		this._movementEngine.move();
+		this._spellEngine.update();
 	}
 
 	damage() {
@@ -154,109 +136,21 @@ export default class Player implements IPlayer {
 		this.dead = false;
 	}
 
-	private move() {
-		this._movementEngine.move();
-
-		if (this._spellCooldown > 0) {
-			this._spellCooldown--;
-		}
-	}
-
 	private handleLeftClick() {
 		this._movementEngine.startMovingTo(this._mouseControls.mousePosition);
-	}
-
-	private handleRightClick() {
-		if (this._spellCooldown === 0 && this.mana >= 10) {
-			this._movementEngine.stop();
-			this._spellCooldown = SpellCooldown;
-			this.uncloak();
-			this.mana -= 10;
-
-			this._movementEngine.velocity.copy(this._mouseControls.mousePosition).sub(this._movementEngine.position);
-			this.updateMeshPosition();
-
-			this.throwProjectile();
-		}
-	}
-
-	private throwProjectile() {
-		this._world.addProjectile({
-			startPosition: this._movementEngine.position,
-			targetPosition: this._mouseControls.mousePosition,
-			speed: ProjectileSpeed,
-			color: new THREE.Color(ProjectileColor),
-			originEntityId: this.id,
-			splashRadius: 3
-		});
-	}
-
-	private cloak() {
-		if (this._spellCooldown === 0) {
-			this._movementEngine.stop();
-			this._spellCooldown = SpellCooldown;
-
-			this.setInvisibility(!this.invisible);
-		}
 	}
 
 	private uncloak() {
 		this.setInvisibility(false);
 	}
 
-	private setInvisibility(value: boolean) {
+	setInvisibility(value: boolean) {
 		this.invisible = value;
 		(this._mesh.material as THREE.MeshPhongMaterial).opacity = this.invisible ? 0.33 : 1;
 	}
 
-	private nova() {
-		if (this._spellCooldown === 0 && this.mana >= 50) {
-			this._movementEngine.stop();
-			this._spellCooldown = SpellCooldown;
-			this.uncloak();
-			this.mana -= 50;
-
-			for (let i = 0; i < 10; i++) {
-				const targetPosition = new THREE.Vector3();
-				targetPosition.x = Math.cos(Math.PI / 180 * i * 36);
-				targetPosition.z = Math.sin(Math.PI / 180 * i * 36);
-				targetPosition.add(this._movementEngine.position);
-
-				this._world.addProjectile({
-					startPosition: this._movementEngine.position,
-					targetPosition,
-					speed: 0.5,
-					color: new THREE.Color(ProjectileColor),
-					originEntityId: this.id,
-					splashRadius: 3
-				});
-			}
-		}
-	}
-
-	private touchOfDeath() {
-		if (this._spellCooldown === 0 && this.mana >= 100) {
-			this._movementEngine.stop();
-			this._spellCooldown = SpellCooldown;
-			this.uncloak();
-			this.mana -= 100;
-
-			this._mouseOverTarget.damage();
-		}
-	}
-
-	private teleport() {
-		if (this._spellCooldown === 0 && this.mana >= 5) {
-			this._movementEngine.stop();
-			this._spellCooldown = SpellCooldown;
-			this.uncloak();
-			this.mana -= 5;
-
-			if (this._movementEngine.canMoveTo(this._mouseControls.mousePosition)) {
-				this._movementEngine.velocity.copy(this._mouseControls.mousePosition).sub(this._movementEngine.position);
-				this._movementEngine.moveTo(this._mouseControls.mousePosition);
-			}
-		}
+	spendMana(value: number) {
+		this.mana -= value;
 	}
 
 	private initMesh() {
@@ -279,7 +173,7 @@ export default class Player implements IPlayer {
 		this._world.addMesh(this._mesh);
 	}
 
-	private updateMeshPosition() {
+	updateMeshPosition() {
 		this._mesh.position.copy(this._movementEngine.position);
 		this._mesh.rotation.y = this._movementEngine.rotationY;
 	}

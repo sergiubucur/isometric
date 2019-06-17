@@ -24,6 +24,7 @@ import PrimitiveCache from "./world/primitive-cache/PrimitiveCache";
 import EntityDeathAnimationEngine from "./entity/engine/death-animation/EntityDeathAnimationEngine";
 import EntityRangedAttackEngine from "./entity/engine/ranged-attack/EntityRangedAttackEngine";
 import Door from "./entity/door/Door";
+import PlayerSpellEngine from "./entity/player/spell-engine/PlayerSpellEngine";
 
 const container = new Container();
 
@@ -52,7 +53,7 @@ container.register(Types.IMouseControls, MouseControls, Types.ICamera, Types.IIn
 
 container.registerSingleton(Types.IPlayer, Player,
 	Types.IMouseControls, Types.ICamera, Types.IInputTracker, Types.IWorld, Types.ILogger, Types.IEntityId, Types.IEntityMovementEngine,
-	Types.IAssetService, Types.IEntityDeathAnimationEngine);
+	Types.IAssetService, Types.IEntityDeathAnimationEngine, Types.IPlayerSpellEngine);
 
 container.register(Types.IMonster, Monster, Types.IWorld, Types.IPlayer, Types.IEntityId, Types.IEntityMovementEngine, Types.IAssetService,
 	Factory(Types.IEntityMeleeAttackEngine), Factory(Types.IEntityRangedAttackEngine), Types.IPrimitiveCache, Types.IEntityDeathAnimationEngine);
@@ -77,6 +78,8 @@ container.register(Types.IEntityDeathAnimationEngine, EntityDeathAnimationEngine
 container.register(Types.IEntityRangedAttackEngine, EntityRangedAttackEngine);
 
 container.register(Types.IDoor, Door, Types.IWorld, Types.IEntityId);
+
+container.register(Types.IPlayerSpellEngine, PlayerSpellEngine, Types.IWorld, Types.IInputTracker);
 
 const core = container.resolve(Types.ICore) as ICore;
 core.onRestart = () => {

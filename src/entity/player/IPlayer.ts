@@ -1,4 +1,5 @@
 import IComponent from "../../common/IComponent";
+import IMonster from "../monster/IMonster";
 
 export default interface IPlayer extends IComponent {
 	readonly id: number;
@@ -10,6 +11,10 @@ export default interface IPlayer extends IComponent {
 	readonly mana: number;
 	readonly totalMana: number;
 	readonly dead: boolean;
+	readonly mouseOverTarget: IMonster | null;
 
 	damage(): void;
+	setInvisibility(value: boolean): void;
+	spendMana(value: number): void;
+	updateMeshPosition(): void;
 }

@@ -11,5 +11,6 @@ export default {
 	D2: 50,
 	D3: 51,
 	D4: 52,
-	Enter: 13
+	Enter: 13,
+	RightMouseButton: 1000
 };

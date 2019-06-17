@@ -20,7 +20,8 @@ enum Types {
 	IPrimitiveCache,
 	IEntityDeathAnimationEngine,
 	IEntityRangedAttackEngine,
-	IDoor
+	IDoor,
+	IPlayerSpellEngine
 };
 
 export default Types;
