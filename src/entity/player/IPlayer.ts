@@ -1,5 +1,6 @@
 import IComponent from "../../common/IComponent";
 import IMonster from "../monster/IMonster";
+import IPlayerSpellEngine from "./spell-engine/IPlayerSpellEngine";
 
 export default interface IPlayer extends IComponent {
 	readonly id: number;
@@ -12,6 +13,7 @@ export default interface IPlayer extends IComponent {
 	readonly totalMana: number;
 	readonly dead: boolean;
 	readonly mouseOverTarget: IMonster | null;
+	readonly spellEngine: IPlayerSpellEngine;
 
 	damage(): void;
 	setInvisibility(value: boolean): void;

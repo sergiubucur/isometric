@@ -8,7 +8,7 @@ import Keybinds from "../../../input-tracker/Keybinds";
 import SpellKeybindAssignment from "./SpellKeybindAssignment";
 import getSpells from "./SpellBook";
 
-export const GlobalCooldown = 17;
+export const GlobalCooldownTotalFrames = 17;
 
 export default class PlayerSpellEngine implements IPlayerSpellEngine {
 	activeSpell: SpellKeybindAssignment | null;
@@ -60,7 +60,7 @@ export default class PlayerSpellEngine implements IPlayerSpellEngine {
 			if ((keybind === Keybinds.RightMouseButton && this._rightMouseDown) || this._inputTracker.keysPressed[keybind]) {
 				if (this._player.mana >= spell.manaCost && spell.condition()) {
 					this._movementEngine.stop();
-					this.globalCooldown = GlobalCooldown;
+					this.globalCooldown = GlobalCooldownTotalFrames;
 					this._player.spendMana(spell.manaCost);
 
 					if (spell.uncloakOnCast) {

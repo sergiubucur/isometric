@@ -1,4 +1,4 @@
-export default {
+const Keybinds = {
 	W: 87,
 	S: 83,
 	A: 65,
@@ -13,4 +13,14 @@ export default {
 	D4: 52,
 	Enter: 13,
 	RightMouseButton: 1000
+};
+
+export default Keybinds;
+
+export const KeybindNames = {
+	[Keybinds.D1]: "1",
+	[Keybinds.D2]: "2",
+	[Keybinds.D3]: "3",
+	[Keybinds.D4]: "4",
+	[Keybinds.RightMouseButton]: "RMB",
 };

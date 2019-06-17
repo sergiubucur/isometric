@@ -32,6 +32,10 @@ export default class Player implements IPlayer {
 		return this._movementEngine.position;
 	}
 
+	get spellEngine() {
+		return this._spellEngine;
+	}
+
 	id: number;
 	invisible: boolean;
 	readonly size: number;

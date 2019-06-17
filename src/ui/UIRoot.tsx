@@ -8,6 +8,7 @@ import IUIRoot from "./IUIRoot";
 import ILogger from "../common/logger/ILogger";
 import HealthBar from "./resource-bar/HealthBar";
 import ManaBar from "./resource-bar/ManaBar";
+import SpellBar from "./spell-bar/SpellBar";
 
 export default class UIRoot implements IUIRoot {
 	constructor(private _world: IWorld, private _player: IPlayer, private _logger: ILogger) {
@@ -24,6 +25,9 @@ export default class UIRoot implements IUIRoot {
 				<ManaBar
 					player={this._player}>
 				</ManaBar>
+				<SpellBar
+					player={this._player}>
+				</SpellBar>
 			</React.Fragment>, document.getElementById("root"));
 	}
 
