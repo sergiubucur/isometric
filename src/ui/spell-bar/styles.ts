@@ -1,6 +1,6 @@
 import { GlobalCooldownTotalFrames } from "../../entity/player/spell-engine/PlayerSpellEngine";
 
-const Margin = 32;
+const Margin = 28;
 const ButtonSize = 48;
 const BackgroundColor = "#002040";
 const ForegroundColor = "#2080C0";
@@ -16,7 +16,7 @@ export const containerStyles: any = {
 	display: "flex"
 };
 
-export const iconStyles: any = (active: boolean, translucent: boolean) => ({
+export const iconStyles: any = (active: boolean, unusable: boolean) => ({
 	margin: 4,
 	width: ButtonSize,
 	height: ButtonSize,
@@ -25,7 +25,7 @@ export const iconStyles: any = (active: boolean, translucent: boolean) => ({
 	background: BackgroundColor,
 	fontSize: 22,
 	position: "relative",
-	opacity: translucent ? 0.25 : 1
+	filter: unusable ? "brightness(0.25)" : "none"
 });
 
 export const iconInnerStyles: any = {

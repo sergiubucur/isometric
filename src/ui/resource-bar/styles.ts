@@ -28,7 +28,7 @@ export const containerStyles = (foregroundColor: string, backgroundColor: string
 
 export const valueStyles = (value: number, total: number, foregroundColor: string) => ({
 	margin: "3px",
-	width: Math.floor((value / total) * Width) - 10,
+	width: Math.max(Math.floor((value / total) * Width) - 10, 0),
 	height: Height - 10,
 	background: foregroundColor
 } as any);
