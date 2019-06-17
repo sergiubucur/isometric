@@ -25,6 +25,10 @@ export default class WorldMeshBuilder implements IWorldMeshBuilder {
 		const { edges, rectangles } = mapLoaderResult;
 		const rootMesh = new THREE.Object3D();
 
+		let floorCount = 0;
+		let wallCount = 0;
+		let doorCount = 0;
+
 		rectangles.forEach(rectangle => {
 			if (rectangle.type === CellType.Void) {
 				return;
@@ -35,6 +39,7 @@ export default class WorldMeshBuilder implements IWorldMeshBuilder {
 				mesh.position.y -= WallHeight;
 
 				rootMesh.add(mesh);
+				doorCount++;
 				return;
 			}
 
@@ -45,6 +50,7 @@ export default class WorldMeshBuilder implements IWorldMeshBuilder {
 			const floorMesh = new THREE.Mesh(bufferGeometry, material);
 
 			rootMesh.add(floorMesh);
+			floorCount++;
 		});
 
 		edges.forEach(edge => {
@@ -55,7 +61,12 @@ export default class WorldMeshBuilder implements IWorldMeshBuilder {
 			const wallMesh = new THREE.Mesh(bufferGeometry, material);
 
 			rootMesh.add(wallMesh);
+			wallCount++;
 		});
+
+		console.log("floors", floorCount);
+		console.log("walls", wallCount);
+		console.log("doors", doorCount);
 
 		return rootMesh;
 	}
