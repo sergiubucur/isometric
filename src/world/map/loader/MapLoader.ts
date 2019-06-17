@@ -297,6 +297,10 @@ export default class MapLoader implements IMapLoader {
 				|| (e0.x0 === e1.x1 && e0.y0 === e1.y1 && e0.x1 === e1.x0 && e0.y1 === e1.y0);
 		};
 
+		const edgeEqualsReverseDirection = (e0: Edge, e1: Edge) => {
+			return e0.type === e1.type && e0.x0 === e1.x1 && e0.y0 === e1.y1 && e0.x1 === e1.x0 && e0.y1 === e1.y0;
+		}
+
 		const reduceToCommonEdges = () => {
 			const commonEdges: Edge[] = [];
 
@@ -333,6 +337,33 @@ export default class MapLoader implements IMapLoader {
 			edges = commonEdges;
 		};
 
+		const constructEdge = (x0: number, y0: number, x1: number, y1: number, type: CellType) => {
+			return { x0, y0, x1, y1, type };
+		};
+
+		const removeOccludedEdges = () => {
+			const toKeep: Edge[] = [];
+
+			edges.forEach(edge => {
+				if (edge.type !== CellType.Concrete) {
+					return;
+				}
+
+				for (let i = 0; i < rectangles.length; i++) {
+					const r = rectangles[i];
+
+					if (edgeEqualsReverseDirection(edge, constructEdge(r.x1, r.y1, r.x0, r.y1, r.type))
+						|| edgeEqualsReverseDirection(edge, constructEdge(r.x0, r.y1, r.x0, r.y0, r.type))) {
+
+						toKeep.push(edge);
+						break;
+					}
+				}
+			});
+
+			edges = edges.filter(x => x.type !== CellType.Concrete || toKeep.find(y => y === x));
+		};
+
 		rectangles.forEach(r => {
 			addEdge(r.x0, r.y0, r.x1, r.y0, r.type, edges);
 			addEdge(r.x1, r.y0, r.x1, r.y1, r.type, edges);
@@ -342,6 +373,7 @@ export default class MapLoader implements IMapLoader {
 
 		splitIntersectingEdges();
 		reduceToCommonEdges();
+		removeOccludedEdges();
 
 		return edges;
 	}

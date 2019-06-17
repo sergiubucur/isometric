@@ -47,7 +47,6 @@ export default class WorldMeshBuilder implements IWorldMeshBuilder {
 			rootMesh.add(floorMesh);
 		});
 
-		// TODO: remove occluded walls
 		edges.forEach(edge => {
 			const geometry = this.getWallGeometry(edge);
 			const bufferGeometry = new THREE.BufferGeometry().fromGeometry(geometry);
