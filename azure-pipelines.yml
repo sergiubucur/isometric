@@ -9,5 +9,5 @@ steps:
     git config --global user.email "sergiu.bucur@outlook.com"
     git config --global user.name "Sergiu Bucur"
     npm install
-    npm run deploy
+    npm run deploy-ci -- -r https://$(github_pat)@github.com/sergiubucur/airstrip-one.git
   displayName: 'npm install, build and deploy'
