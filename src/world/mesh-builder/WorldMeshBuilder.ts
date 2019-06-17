@@ -27,19 +27,9 @@ export default class WorldMeshBuilder implements IWorldMeshBuilder {
 
 		let floorCount = 0;
 		let wallCount = 0;
-		let doorCount = 0;
 
 		rectangles.forEach(rectangle => {
-			if (rectangle.type === CellType.Void) {
-				return;
-			}
-
-			if (rectangle.type === CellType.Moving) {
-				const mesh = this.getMovingMesh(rectangle);
-				mesh.position.y -= WallHeight;
-
-				rootMesh.add(mesh);
-				doorCount++;
+			if (rectangle.type === CellType.Void || rectangle.type === CellType.Moving) {
 				return;
 			}
 
@@ -66,12 +56,11 @@ export default class WorldMeshBuilder implements IWorldMeshBuilder {
 
 		console.log("floors", floorCount);
 		console.log("walls", wallCount);
-		console.log("doors", doorCount);
 
 		return rootMesh;
 	}
 
-	private getMovingMesh(rectangle: Rectangle) {
+	getMovingMesh(rectangle: Rectangle) {
 		let geometry = new THREE.Geometry();
 
 		const floorGeometry = this.getFloorGeometry(rectangle, WallHeight);

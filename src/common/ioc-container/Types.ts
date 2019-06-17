@@ -19,7 +19,8 @@ enum Types {
 	IEntityMeleeAttackEngine,
 	IPrimitiveCache,
 	IEntityDeathAnimationEngine,
-	IEntityRangedAttackEngine
+	IEntityRangedAttackEngine,
+	IDoor
 };
 
 export default Types;

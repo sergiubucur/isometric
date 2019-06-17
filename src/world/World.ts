@@ -14,6 +14,8 @@ import IPlayer from "../entity/player/IPlayer";
 import IPointLightCache from "./point-light-cache/IPointLightCache";
 import IPrimitiveCache from "./primitive-cache/IPrimitiveCache";
 import DisposalHelper from "../common/DisposalHelper";
+import IDoor from "../entity/door/IDoor";
+import CellType from "./map/CellType";
 
 const MapName = "testMap";
 
@@ -23,16 +25,19 @@ export default class World implements IWorld, IWorldComponent {
 
 	private _monsters: IMonster[];
 	private _projectiles: IProjectile[];
+	private _doors: IDoor[];
 	private _player: IPlayer | null;
 	private _pointLightCache: IPointLightCache;
 
 	constructor(private _assetService: IAssetService, private _mapLoader: IMapLoader, private _worldMeshBuilder: IWorldMeshBuilder,
 		private _monsterFactory: () => IMonster, private _projectileFactory: () => IProjectile, private _logger: ILogger,
-		private _pointLightCacheFactory: () => IPointLightCache, private _primitiveCache: IPrimitiveCache) {
+		private _pointLightCacheFactory: () => IPointLightCache, private _primitiveCache: IPrimitiveCache,
+		private _doorFactory: () => IDoor) {
 
 		this.scene = new THREE.Scene();
 		this._monsters = [];
 		this._projectiles = [];
+		this._doors = [];
 		this._player = null;
 	}
 
@@ -46,6 +51,7 @@ export default class World implements IWorld, IWorldComponent {
 	}
 
 	update() {
+		this._doors.forEach(x => x.update());
 		this._monsters.forEach(x => x.update());
 
 		this._projectiles.forEach(x => {
@@ -134,6 +140,15 @@ export default class World implements IWorld, IWorldComponent {
 
 		const worldMesh = this._worldMeshBuilder.buildWorldMesh(result);
 		this.scene.add(worldMesh);
+
+		result.rectangles.filter(x => x.type === CellType.Moving).forEach(x => {
+			const door = this._doorFactory();
+			door.init(x, this._worldMeshBuilder.getMovingMesh(x));
+
+			this._doors.push(door);
+		});
+
+		console.log("doors", this._doors.length);
 	}
 
 	private initLights() {

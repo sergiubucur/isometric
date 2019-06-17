@@ -23,6 +23,7 @@ import ICore from "./ICore";
 import PrimitiveCache from "./world/primitive-cache/PrimitiveCache";
 import EntityDeathAnimationEngine from "./entity/engine/death-animation/EntityDeathAnimationEngine";
 import EntityRangedAttackEngine from "./entity/engine/ranged-attack/EntityRangedAttackEngine";
+import Door from "./entity/door/Door";
 
 const container = new Container();
 
@@ -45,7 +46,7 @@ container.register(Types.IWorldMeshBuilder, WorldMeshBuilder, Types.IAssetServic
 container.register(Types.IMapLoader, MapLoader);
 
 container.registerSingleton(Types.IWorld, World, Types.IAssetService, Types.IMapLoader, Types.IWorldMeshBuilder, Factory(Types.IMonster),
-	Factory(Types.IProjectile), Types.ILogger, Factory(Types.IPointLightCache), Types.IPrimitiveCache);
+	Factory(Types.IProjectile), Types.ILogger, Factory(Types.IPointLightCache), Types.IPrimitiveCache, Factory(Types.IDoor));
 
 container.register(Types.IMouseControls, MouseControls, Types.ICamera, Types.IInputTracker, Types.IWorld, Types.ILogger);
 
@@ -74,6 +75,8 @@ container.registerSingleton(Types.IPrimitiveCache, PrimitiveCache);
 container.register(Types.IEntityDeathAnimationEngine, EntityDeathAnimationEngine);
 
 container.register(Types.IEntityRangedAttackEngine, EntityRangedAttackEngine);
+
+container.register(Types.IDoor, Door, Types.IWorld, Types.IEntityId);
 
 const core = container.resolve(Types.ICore) as ICore;
 core.onRestart = () => {
