@@ -6,6 +6,7 @@ export default class TouchOfDeath extends BaseSpell {
 
 		this.name = "Touch of Death";
 		this.manaCost = 100;
+		this.iconName = "ra-hand";
 	}
 
 	cast() {

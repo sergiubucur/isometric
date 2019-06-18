@@ -11,6 +11,7 @@ export default class Nova extends BaseSpell {
 
 		this.name = "Nova";
 		this.manaCost = 50;
+		this.iconName = "ra-sun-symbol";
 	}
 
 	cast() {

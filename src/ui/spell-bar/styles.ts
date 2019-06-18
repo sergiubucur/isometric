@@ -23,7 +23,7 @@ export const iconStyles: any = (active: boolean, unusable: boolean) => ({
 	boxSizing: "border-box",
 	outline: active ? "2px solid #fff" : "2px solid #000",
 	background: BackgroundColor,
-	fontSize: 22,
+	fontSize: 26,
 	position: "relative",
 	filter: unusable ? "brightness(0.25)" : "none"
 });

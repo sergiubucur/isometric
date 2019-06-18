@@ -7,6 +7,8 @@ export default interface ISpell {
 	readonly name: string;
 	readonly manaCost: number;
 	readonly uncloakOnCast: boolean;
+	readonly iconName: string;
+	readonly flipIcon: boolean;
 
 	init(world: IWorld, player: IPlayer, movementEngine: IEntityMovementEngine, mouseControls: IMouseControls): void;
 	cast(): void;

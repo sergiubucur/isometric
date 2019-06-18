@@ -8,6 +8,8 @@ export default abstract class BaseSpell implements ISpell {
 	name: string;
 	manaCost: number;
 	uncloakOnCast: boolean;
+	iconName: string;
+	flipIcon: boolean;
 
 	protected _world: IWorld;
 	protected _player: IPlayer;
@@ -18,6 +20,8 @@ export default abstract class BaseSpell implements ISpell {
 		this.name = "BaseSpell";
 		this.manaCost = 0;
 		this.uncloakOnCast = true;
+		this.iconName = "ra-sword";
+		this.flipIcon = false;
 	}
 
 	init(world: IWorld, player: IPlayer, movementEngine: IEntityMovementEngine, mouseControls: IMouseControls) {

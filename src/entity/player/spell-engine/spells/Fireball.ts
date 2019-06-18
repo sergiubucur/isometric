@@ -11,6 +11,8 @@ export default class Fireball extends BaseSpell {
 
 		this.name = "Fireball";
 		this.manaCost = 10;
+		this.iconName = "ra-burning-meteor";
+		this.flipIcon = true;
 	}
 
 	cast() {

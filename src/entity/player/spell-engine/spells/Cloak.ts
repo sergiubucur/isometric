@@ -6,6 +6,7 @@ export default class Cloak extends BaseSpell {
 
 		this.name = "Cloak";
 		this.uncloakOnCast = false;
+		this.iconName = "ra-hood";
 	}
 
 	cast() {

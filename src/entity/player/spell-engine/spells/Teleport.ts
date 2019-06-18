@@ -6,6 +6,7 @@ export default class Teleport extends BaseSpell {
 
 		this.name = "Teleport";
 		this.manaCost = 5;
+		this.iconName = "ra-player-teleport";
 	}
 
 	cast() {
