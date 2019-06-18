@@ -1,5 +1,6 @@
 player environment interaction
 powerups
+fix laptop zoom bug
 spell aura system
 different types of monsters
 multiple levels
