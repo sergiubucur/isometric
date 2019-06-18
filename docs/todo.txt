@@ -1,6 +1,7 @@
 spell UI
 player environment interaction
 powerups
+spell aura system
 spell cooldowns
 different types of monsters
 multiple levels
