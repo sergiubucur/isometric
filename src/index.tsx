@@ -27,6 +27,7 @@ import Door from "./entity/door/Door";
 import PlayerSpellEngine from "./entity/player/spell-engine/PlayerSpellEngine";
 import FpsDisplay from "./common/fps-display/FpsDisplay";
 import TooltipService from "./ui/tooltip/service/TooltipService";
+import PlayerUseEngine from "./entity/player/use-engine/PlayerUseEngine";
 
 const container = new Container();
 
@@ -55,7 +56,7 @@ container.register(Types.IMouseControls, MouseControls, Types.ICamera, Types.IIn
 
 container.registerSingleton(Types.IPlayer, Player,
 	Types.IMouseControls, Types.ICamera, Types.IInputTracker, Types.IWorld, Types.ILogger, Types.IEntityId, Types.IEntityMovementEngine,
-	Types.IAssetService, Types.IEntityDeathAnimationEngine, Types.IPlayerSpellEngine);
+	Types.IAssetService, Types.IEntityDeathAnimationEngine, Types.IPlayerSpellEngine, Types.IPlayerUseEngine);
 
 container.register(Types.IMonster, Monster, Types.IWorld, Types.IPlayer, Types.IEntityId, Types.IEntityMovementEngine, Types.IAssetService,
 	Factory(Types.IEntityMeleeAttackEngine), Factory(Types.IEntityRangedAttackEngine), Types.IPrimitiveCache, Types.IEntityDeathAnimationEngine);
@@ -86,6 +87,8 @@ container.register(Types.IPlayerSpellEngine, PlayerSpellEngine, Types.IWorld, Ty
 container.register(Types.IFpsDisplay, FpsDisplay);
 
 container.registerSingleton(Types.ITooltipService, TooltipService);
+
+container.register(Types.IPlayerUseEngine, PlayerUseEngine);
 
 const core = container.resolve(Types.ICore) as ICore;
 core.onRestart = () => {

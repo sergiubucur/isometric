@@ -14,7 +14,7 @@ import IMonster from "../monster/IMonster";
 import IEntityDeathAnimationEngine from "../engine/death-animation/IEntityDeathAnimationEngine";
 import IPlayerSpellEngine from "./spell-engine/IPlayerSpellEngine";
 import IDoor from "../door/IDoor";
-import IUsable, { isUsable } from "../IUsable";
+import IPlayerUseEngine from "./use-engine/IPlayerUseEngine";
 
 const StartPosition = new THREE.Vector3(16, 0, 16);
 const Size = 2;
@@ -51,13 +51,11 @@ export default class Player implements IPlayer {
 
 	private _mesh: THREE.Mesh;
 	private _pointLight: THREE.PointLight;
-	private _highlightTarget: IUsable | null;
-	private _willUse: IUsable | null;
 
 	constructor(private _mouseControls: IMouseControls, private _camera: ICamera, private _inputTracker: IInputTracker,
 		private _world: IWorld, private _logger: ILogger, private _entityId: IEntityId, private _movementEngine: IEntityMovementEngine,
 		private _assetService: IAssetService, private _deathAnimationEngine: IEntityDeathAnimationEngine,
-		private _spellEngine: IPlayerSpellEngine) {
+		private _spellEngine: IPlayerSpellEngine, private _useEngine: IPlayerUseEngine) {
 
 		this._mouseControls.onLeftClick = () => this.handleLeftClick();
 
@@ -71,26 +69,26 @@ export default class Player implements IPlayer {
 		this.mana = this.totalMana;
 		this.manaRegen = ManaRegen;
 		this.mouseOverTarget = null;
-		this._highlightTarget = null;
-		this._willUse = null;
 
+		this.initMovementEngine();
+		this._camera.setPosition(StartPosition);
+		this.initMesh();
+		this.initOtherEngines();
+	}
+
+	private initMovementEngine() {
 		this._movementEngine.init(this.id, StartPosition, Size, Speed);
 		this._movementEngine.afterPositionUpdate = () => {
 			this._camera.setPosition(this._movementEngine.position);
 			this.updateMeshPosition();
-
-			if (this._willUse && this._willUse.canUse(this._movementEngine.position)) {
-				this._willUse.use();
-				this._willUse = null;
-				this._movementEngine.stop();
-			}
+			this._useEngine.afterPositionUpdate();
 		};
+	}
 
-		this._camera.setPosition(StartPosition);
-		this.initMesh();
-
+	private initOtherEngines() {
 		this._deathAnimationEngine.init(this._mesh, this.size);
 		this._spellEngine.init(this, this._movementEngine, this._mouseControls);
+		this._useEngine.init(this._movementEngine);
 	}
 
 	update() {
@@ -110,36 +108,9 @@ export default class Player implements IPlayer {
 		this._spellEngine.update();
 	}
 
-	// TODO: refactor into separate class
 	private updateMouseOverTarget() {
 		this.mouseOverTarget = this._world.getEntityAtPosition(this._mouseControls.mousePosition, false);
-
-		if (!this.mouseOverTarget) {
-			if (this._highlightTarget) {
-				this._highlightTarget.setHighlight(false);
-				this._highlightTarget = null;
-			}
-
-			return;
-		}
-
-		if (this._highlightTarget === (this.mouseOverTarget as any)) {
-			if (!this._highlightTarget.canHighlight()) {
-				this._highlightTarget.setHighlight(false);
-				this._highlightTarget = null;
-			}
-
-			return;
-		}
-
-		if (isUsable(this.mouseOverTarget) && this.mouseOverTarget.canHighlight()) {
-			if (this._highlightTarget) {
-				this._highlightTarget.setHighlight(false);
-			} else {
-				this._highlightTarget = this.mouseOverTarget;
-				this._highlightTarget.setHighlight(true);
-			}
-		}
+		this._useEngine.afterMouseOverTargetUpdate(this.mouseOverTarget);
 	}
 
 	damage() {
@@ -183,12 +154,7 @@ export default class Player implements IPlayer {
 	}
 
 	private handleLeftClick() {
-		if (this.mouseOverTarget && isUsable(this.mouseOverTarget)) {
-			this._willUse = this.mouseOverTarget;
-		} else {
-			this._willUse = null;
-		}
-
+		this._useEngine.onLeftClick(this.mouseOverTarget);
 		this._movementEngine.startMovingTo(this._mouseControls.mousePosition);
 	}
 

@@ -23,7 +23,8 @@ enum Types {
 	IDoor,
 	IPlayerSpellEngine,
 	IFpsDisplay,
-	ITooltipService
+	ITooltipService,
+	IPlayerUseEngine
 };
 
 export default Types;
