@@ -1,3 +1,4 @@
+mock experience bar
 powerups
 monster health bar
 fix laptop zoom bug
