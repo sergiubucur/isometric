@@ -1,4 +1,3 @@
-player environment interaction
 powerups
 monster health bar
 fix laptop zoom bug
