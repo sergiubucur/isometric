@@ -25,8 +25,6 @@ export default class Door implements IDoor {
 		this._yDelta = 0;
 		this._animationFrames = 0;
 		this._state = DoorState.Closed;
-
-		(window as any).door = this;
 	}
 
 	init(rectangle: Rectangle, mesh: THREE.Mesh) {
