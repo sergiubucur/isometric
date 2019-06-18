@@ -11,6 +11,6 @@ export default interface IMonster extends IComponent {
 	damage(): void;
 }
 
-export function isMonster(entity: IComponent): entity is IMonster {
+export function isMonster(entity: object): entity is IMonster {
 	return (entity as IMonster).damage !== undefined;
 }

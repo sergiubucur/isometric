@@ -19,6 +19,8 @@ export default class Door implements IDoor {
 	private _animationFrames: number;
 	private _state: DoorState;
 	private _collisionBox: THREE.Box2;
+	private _defaultColor: THREE.Color;
+	private _highlightColor: THREE.Color;
 
 	constructor(private _world: IWorld, private _entityId: IEntityId) {
 		this.id = this._entityId.getNewId();
@@ -31,9 +33,17 @@ export default class Door implements IDoor {
 		this._rectangle = rectangle;
 		this._mesh = mesh;
 
+		const material = this._mesh.material as THREE.MeshPhongMaterial;
+		this._defaultColor = material.color.clone();
+		this._highlightColor = material.color.clone().multiplyScalar(10);
+
 		this._world.addMesh(mesh);
 		this.modifyCells(true);
 		this.initCollisionBox();
+	}
+
+	setHighlight(value: boolean) {
+		(this._mesh.material as THREE.MeshPhongMaterial).color.copy(value ? this._highlightColor : this._defaultColor);
 	}
 
 	private initCollisionBox() {
@@ -67,10 +77,6 @@ export default class Door implements IDoor {
 		if (Math.random() < 0.005) {
 			if (this._state === DoorState.Open) {
 				this.close();
-			} else {
-				if (this._state === DoorState.Closed) {
-					this.open();
-				}
 			}
 		}
 	}
@@ -97,7 +103,19 @@ export default class Door implements IDoor {
 		this.modifyCells(true);
 	}
 
-	isInRange(position: THREE.Vector3) {
+	use() {
+		this.open();
+	}
+
+	canUse(position: THREE.Vector3) {
+		return this._state === DoorState.Closed && this.isInRange(position);
+	}
+
+	canHighlight() {
+		return this._state === DoorState.Closed;
+	}
+
+	private isInRange(position: THREE.Vector3) {
 		const mapPosition = this._world.map.convertToMapPosition(position);
 
 		return this._collisionBox.containsPoint(new THREE.Vector2(mapPosition.x, mapPosition.z));
