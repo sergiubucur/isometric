@@ -1,4 +1,4 @@
-spell UI
+spell tooltips
 player environment interaction
 powerups
 spell aura system
