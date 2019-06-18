@@ -1,8 +1,6 @@
-spell tooltips
 player environment interaction
 powerups
 spell aura system
-spell cooldowns
 different types of monsters
 multiple levels
 procedurally generated levels
