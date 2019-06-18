@@ -19,7 +19,7 @@ export default class SpellIcon extends Component<Props> {
 	handleMouseEnter = () => {
 		const { tooltipService, data } = this.props;
 
-		tooltipService.show(data.spell);
+		tooltipService.show(data.spell.tooltip);
 	};
 
 	handleMouseLeave = () => {

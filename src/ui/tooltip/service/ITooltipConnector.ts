@@ -1,6 +1,6 @@
-import ISpell from "../../../entity/player/spell-engine/ISpell";
+import React from "react";
 
 export default interface ITooltipConnector {
-	onShow: (spell: ISpell) => void;
+	onShow: (content: React.FunctionComponent) => void;
 	onHide: () => void;
 }

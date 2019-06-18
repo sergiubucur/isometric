@@ -2,28 +2,27 @@ import React, { PureComponent } from "react";
 
 import { Container } from "./styles";
 import ITooltipConnector from "./service/ITooltipConnector";
-import ISpell from "../../entity/player/spell-engine/ISpell";
 
 type Props = {
 	connector: ITooltipConnector
 };
 
 type State = {
-	spell: ISpell | null
+	content: React.FunctionComponent | null
 };
 
 export default class Tooltip extends PureComponent<Props, State> {
 	state: State = {
-		spell: null
+		content: null
 	};
 
 	componentDidMount() {
-		this.props.connector.onShow = (spell: ISpell) => {
-			this.setState({ spell });
+		this.props.connector.onShow = (content: React.FunctionComponent) => {
+			this.setState({ content });
 		};
 
 		this.props.connector.onHide = () => {
-			this.setState({ spell: null });
+			this.setState({ content: null });
 		};
 	}
 
@@ -33,15 +32,13 @@ export default class Tooltip extends PureComponent<Props, State> {
 	}
 
 	render() {
-		const { spell } = this.state;
-
-		if (!spell) {
+		if (!this.state.content) {
 			return null;
 		}
 
 		return (
 			<Container>
-				<spell.tooltip />
+				<this.state.content />
 			</Container>
 		);
 	}

@@ -1,9 +1,8 @@
 import ITooltipService from "./ITooltipService";
 import ITooltipConnector from "./ITooltipConnector";
-import ISpell from "../../../entity/player/spell-engine/ISpell";
 
 export default class TooltipService implements ITooltipService, ITooltipConnector {
-	onShow: (spell: ISpell) => void;
+	onShow: (content: React.FunctionComponent) => void;
 	onHide: () => void;
 
 	constructor() {
@@ -11,8 +10,8 @@ export default class TooltipService implements ITooltipService, ITooltipConnecto
 		this.onHide = () => {};
 	}
 
-	show(spell: ISpell) {
-		this.onShow(spell);
+	show(content: React.FunctionComponent) {
+		this.onShow(content);
 	}
 
 	hide() {
