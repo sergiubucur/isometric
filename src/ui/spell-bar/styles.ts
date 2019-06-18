@@ -16,6 +16,10 @@ export const SpellBarContainer = styled.div`
 	display: flex;
 `;
 
+export const IconOuter = styled.div`
+	position: relative;
+`;
+
 export const IconContainer = styled.div`
 	margin: 4px;
 	width: ${ButtonSize}px;
