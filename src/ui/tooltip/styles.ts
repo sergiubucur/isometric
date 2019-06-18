@@ -1,8 +1,8 @@
 import styled from "styled-components/macro";
+import { HighlightColor } from "../common/Highlight";
 
-const Margin = 32;
-const HighlightColor = "#bada55";
-const Padding = 16;
+export const Margin = 32;
+export const Padding = 16;
 
 export const Container = styled.div`
 	display: block;
@@ -27,9 +27,4 @@ export const Header = styled.div`
 
 export const Separator = styled.div`
 	margin-bottom: 10px;
-`;
-
-export const Highlight = styled.span`
-	font-weight: bold;
-	color: ${HighlightColor};
 `;

@@ -2,7 +2,8 @@ import * as THREE from "three";
 import React from "react";
 
 import BaseSpell from "../BaseSpell";
-import { Header, Separator, Highlight } from "../../../../ui/tooltip/styles";
+import { Header, Separator } from "../../../../ui/tooltip/styles";
+import { Highlight } from "../../../../ui/common/Highlight";
 
 const ProjectileColor = 0xbada55;
 const ProjectileSpeed = 0.5;

@@ -1,7 +1,8 @@
 import React from "react";
 
 import BaseSpell from "../BaseSpell";
-import { Header, Highlight, Separator } from "../../../../ui/tooltip/styles";
+import { Header, Separator } from "../../../../ui/tooltip/styles";
+import { Highlight } from "../../../../ui/common/Highlight";
 
 export default class Teleport extends BaseSpell {
 	constructor() {

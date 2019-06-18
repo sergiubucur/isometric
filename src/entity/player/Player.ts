@@ -88,8 +88,6 @@ export default class Player implements IPlayer {
 			if (this._inputTracker.keysPressed[Keybinds.Enter]) {
 				this.resurrect();
 			}
-
-			this._logger.log("player dead. press enter to resurrect");
 			return;
 		}
 

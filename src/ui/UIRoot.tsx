@@ -10,6 +10,7 @@ import HealthBar from "./resource-bar/HealthBar";
 import ManaBar from "./resource-bar/ManaBar";
 import SpellBar from "./spell-bar/SpellBar";
 import Tooltip from "./tooltip/Tooltip";
+import DeathMessage from "./death-message/DeathMessage";
 import ITooltipService from "./tooltip/service/ITooltipService";
 import ITooltipConnector from "./tooltip/service/ITooltipConnector";
 
@@ -39,6 +40,10 @@ export default class UIRoot implements IUIRoot {
 
 				<Tooltip
 					connector={this._tooltipService as unknown as ITooltipConnector}></Tooltip>
+
+				<DeathMessage
+					player={this._player}>
+				</DeathMessage>
 
 			</React.Fragment>, document.getElementById("root"));
 	}

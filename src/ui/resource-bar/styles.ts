@@ -9,7 +9,7 @@ export const Text = styled.div`
 	bottom: ${Margin + Height + Margin / 2}px;
 	font-size: 22px;
 	color: #fff;
-	text-shadow: "2px 2px 0px #000";
+	text-shadow: 2px 2px 0px #000;
 	user-select: none;
 `;
 
