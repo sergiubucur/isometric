@@ -1,7 +1,7 @@
 import React, { PureComponent } from "react";
 
 import IPlayer from "../../entity/player/IPlayer";
-import { containerStyles, valueStyles, textStyles } from "./styles";
+import { Container, Text, Value } from "./styles";
 
 interface State {
 	mana: number,
@@ -22,7 +22,7 @@ export default class ManaBar extends PureComponent<Props, State> {
 		totalMana: 100
 	};
 
-	private _intervalId: NodeJS.Timeout;
+	private _intervalId: number;
 
 	componentDidMount() {
 		this._intervalId = setInterval(() => {
@@ -44,12 +44,12 @@ export default class ManaBar extends PureComponent<Props, State> {
 
 		return (
 			<React.Fragment>
-				<div style={textStyles("right")}>
+				<Text side="right">
 					{mana.toFixed(0)} / {totalMana.toFixed(0)}
-				</div>
-				<div style={containerStyles(ForegroundColor, BackgroundColor, "right")}>
-					<div style={valueStyles(mana, totalMana, ForegroundColor)}></div>
-				</div>
+				</Text>
+				<Container foregroundColor={ForegroundColor} backgroundColor={BackgroundColor} side="right">
+					<Value value={mana} total={totalMana} foregroundColor={ForegroundColor} />
+				</Container>
 			</React.Fragment>
 		);
 	}

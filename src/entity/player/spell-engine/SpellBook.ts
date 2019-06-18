@@ -8,8 +8,8 @@ import Fireball from "./spells/Fireball";
 export default function getSpells() {
 	return [
 		{ keybind: Keybinds.D1, spell: new Cloak() },
-		{ keybind: Keybinds.D2, spell: new TouchOfDeath() },
-		{ keybind: Keybinds.D3, spell: new Nova() },
+		{ keybind: Keybinds.D2, spell: new Nova() },
+		{ keybind: Keybinds.D3, spell: new TouchOfDeath() },
 		{ keybind: Keybinds.D4, spell: new Teleport() },
 		{ keybind: Keybinds.RightMouseButton, spell: new Fireball() }
 	];

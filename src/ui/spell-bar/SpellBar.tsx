@@ -1,7 +1,7 @@
 import React, { PureComponent } from "react";
 
 import IPlayer from "../../entity/player/IPlayer";
-import { containerStyles } from "./styles";
+import { SpellBarContainer } from "./styles";
 import SpellIcon from "./SpellIcon";
 import SpellKeybindAssignment from "../../entity/player/spell-engine/SpellKeybindAssignment";
 
@@ -26,7 +26,7 @@ export default class SpellBar extends PureComponent<Props, State> {
 		mana: 0
 	};
 
-	private _intervalId: NodeJS.Timeout;
+	private _intervalId: number;
 
 	componentDidMount() {
 		this._intervalId = setInterval(() => {
@@ -50,16 +50,16 @@ export default class SpellBar extends PureComponent<Props, State> {
 		const { spells, activeSpell, globalCooldown, mana } = this.state;
 
 		return (
-			<div style={containerStyles}>
+			<SpellBarContainer>
 				{spells.map((x, i) => (
 					<SpellIcon
 						key={i}
 						data={x}
 						active={x === activeSpell}
 						cooldown={globalCooldown}
-						translucent={x.spell.manaCost > mana} />
+						unusable={x.spell.manaCost > mana} />
 				))}
-			</div>
+			</SpellBarContainer>
 		);
 	}
 }

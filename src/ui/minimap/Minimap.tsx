@@ -4,6 +4,7 @@ import IWorld from "../../world/IWorld";
 import IPlayer from "../../entity/player/IPlayer";
 import CellType from "../../world/map/CellType";
 import ILogger from "../../common/logger/ILogger";
+import { Size, Zoom, Container, Canvas, PlayerDot } from "./styles";
 
 interface Props {
 	world: IWorld,
@@ -16,11 +17,6 @@ type Color = {
 	g: number,
 	b: number
 };
-
-const Size = 32;
-const CellSize = 8;
-const Zoom = 4;
-const Margin = 32;
 
 export default class Minimap extends Component<Props> {
 	private _animationFrameId: number;
@@ -107,45 +103,15 @@ export default class Minimap extends Component<Props> {
 	}
 
 	render() {
-		const styles: any = {
-			position: "fixed",
-			right: Margin,
-			top: Margin,
-			width: CellSize * Size,
-			height: CellSize * Size,
-			display: "flex",
-			flexWrap: "wrap",
-			opacity: 0.75,
-			outline: "2px solid #808080",
-			userSelect: "none"
-		};
-
-		const canvasStyles: any = {
-			width: Size * CellSize,
-			height: Size * CellSize,
-			imageRendering: "pixelated"
-		};
-
-		const playerStyles: any = {
-			position: "absolute",
-			left: Size * CellSize / 2 - 4,
-			top: Size * CellSize / 2 - 4,
-			width: 8,
-			height: 8,
-			background: "#bada55",
-			borderRadius: 4
-		};
-
 		return(
-			<div style={styles}>
-				<canvas
+			<Container>
+				<Canvas
 					ref={this._canvasRef}
 					width={Size}
-					height={Size}
-					style={canvasStyles}></canvas>
+					height={Size}/>
 
-				<div style={playerStyles}></div>
-			</div>
+				<PlayerDot />
+			</Container>
 		);
 	}
 }

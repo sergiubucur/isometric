@@ -1,4 +1,4 @@
-import "./index.scss";
+import "./index.css";
 import Container, { Factory } from "./common/ioc-container/Container";
 import Types from "./common/ioc-container/Types";
 import Logger from "./common/logger/Logger";

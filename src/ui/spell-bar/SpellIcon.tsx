@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 
 import SpellKeybindAssignment from "../../entity/player/spell-engine/SpellKeybindAssignment";
-import { iconStyles, iconCooldownOverlayStyles, iconInnerStyles, iconBadgeStyles } from "./styles";
+import { IconContainer, IconInner, IconBadge, IconCooldownOverlay } from "./styles";
 import { KeybindNames } from "../../input-tracker/Keybinds";
 import Icon from "../common/Icon";
 
@@ -9,23 +9,23 @@ type Props = {
 	data: SpellKeybindAssignment,
 	active: boolean,
 	cooldown: number,
-	translucent: boolean
+	unusable: boolean
 };
 
 export default class SpellIcon extends Component<Props> {
 	render() {
-		const { data, active, cooldown, translucent } = this.props;
+		const { data, active, cooldown, unusable } = this.props;
 
 		return (
-			<div style={iconStyles(active, translucent)}>
-				<div style={iconBadgeStyles}>
+			<IconContainer active={active} unusable={unusable}>
+				<IconBadge>
 					{KeybindNames[data.keybind]}
-				</div>
-				<div style={iconInnerStyles}>
+				</IconBadge>
+				<IconInner>
 					<Icon name={data.spell.iconName} flip={data.spell.flipIcon}></Icon>
-				</div>
-				{cooldown > 0 && <div style={iconCooldownOverlayStyles(cooldown)}></div>}
-			</div>
+				</IconInner>
+				{cooldown > 0 && <IconCooldownOverlay cooldown={cooldown}/>}
+			</IconContainer>
 		);
 	}
 }

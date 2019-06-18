@@ -1,7 +1,7 @@
 import React, { PureComponent } from "react";
 
 import IPlayer from "../../entity/player/IPlayer";
-import { containerStyles, valueStyles, textStyles } from "./styles";
+import { Container, Text, Value } from "./styles";
 
 interface State {
 	health: number,
@@ -22,7 +22,7 @@ export default class HealthBar extends PureComponent<Props, State> {
 		totalHealth: 100
 	};
 
-	private _intervalId: NodeJS.Timeout;
+	private _intervalId: number;
 
 	componentDidMount() {
 		this._intervalId = setInterval(() => {
@@ -44,12 +44,12 @@ export default class HealthBar extends PureComponent<Props, State> {
 
 		return (
 			<React.Fragment>
-				<div style={textStyles("left")}>
+				<Text side="left">
 					{health.toFixed(0)} / {totalHealth.toFixed(0)}
-				</div>
-				<div style={containerStyles(ForegroundColor, BackgroundColor, "left")}>
-					<div style={valueStyles(health, totalHealth, ForegroundColor)}></div>
-				</div>
+				</Text>
+				<Container foregroundColor={ForegroundColor} backgroundColor={BackgroundColor} side="left">
+					<Value value={health} total={totalHealth} foregroundColor={ForegroundColor} />
+				</Container>
 			</React.Fragment>
 		);
 	}
