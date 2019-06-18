@@ -10,6 +10,7 @@ import IPlayer from "./entity/player/IPlayer";
 import IUIRoot from "./ui/IUIRoot";
 import ICore from "./ICore";
 import Keybinds from "./input-tracker/Keybinds";
+import IFpsDisplay from "./common/fps-display/IFpsDisplay";
 
 export default class Core implements ICore {
 	onRestart: () => void;
@@ -29,7 +30,8 @@ export default class Core implements ICore {
 		private _rendererFactory: () => IRenderer,
 		private _worldFactory: () => IWorld & IWorldComponent,
 		private _playerFactory: () => IPlayer,
-		private _uiRootFactory: () => IUIRoot) {
+		private _uiRootFactory: () => IUIRoot,
+		private _fpsDisplay: IFpsDisplay) {
 
 		this.onRestart = () => {};
 		this._state = CoreState.None;
@@ -46,8 +48,12 @@ export default class Core implements ICore {
 	private run() {
 		requestAnimationFrame(() => this.run());
 
+		this._fpsDisplay.beginFrame();
+
 		this.update();
 		this.draw();
+
+		this._fpsDisplay.endFrame();
 	}
 
 	private update() {
@@ -110,6 +116,7 @@ export default class Core implements ICore {
 		}
 
 		this._logger.clear();
+		this._fpsDisplay.hide();
 
 		if (this._nextState === CoreState.Load) {
 			this.load();
@@ -128,6 +135,8 @@ export default class Core implements ICore {
 		}
 
 		if (this._nextState === CoreState.Run) {
+			this._fpsDisplay.show();
+
 			this._state = this._nextState;
 			this._nextState = null;
 			return;

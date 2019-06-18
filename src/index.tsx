@@ -25,6 +25,7 @@ import EntityDeathAnimationEngine from "./entity/engine/death-animation/EntityDe
 import EntityRangedAttackEngine from "./entity/engine/ranged-attack/EntityRangedAttackEngine";
 import Door from "./entity/door/Door";
 import PlayerSpellEngine from "./entity/player/spell-engine/PlayerSpellEngine";
+import FpsDisplay from "./common/fps-display/FpsDisplay";
 
 const container = new Container();
 
@@ -36,7 +37,7 @@ container.registerSingleton(Types.IInputTracker, InputTracker);
 
 container.registerSingleton(Types.ICore, Core,
 	Types.ILogger, Factory(Types.IAssetService), Types.IInputTracker, Factory(Types.ICamera), Factory(Types.IRenderer), Factory(Types.IWorld),
-	Factory(Types.IPlayer), Factory(Types.IUIRoot));
+	Factory(Types.IPlayer), Factory(Types.IUIRoot), Types.IFpsDisplay);
 
 container.registerSingleton(Types.ICamera, Camera);
 
@@ -80,6 +81,8 @@ container.register(Types.IEntityRangedAttackEngine, EntityRangedAttackEngine);
 container.register(Types.IDoor, Door, Types.IWorld, Types.IEntityId);
 
 container.register(Types.IPlayerSpellEngine, PlayerSpellEngine, Types.IWorld, Types.IInputTracker);
+
+container.register(Types.IFpsDisplay, FpsDisplay);
 
 const core = container.resolve(Types.ICore) as ICore;
 core.onRestart = () => {

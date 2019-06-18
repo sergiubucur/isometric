@@ -21,7 +21,8 @@ enum Types {
 	IEntityDeathAnimationEngine,
 	IEntityRangedAttackEngine,
 	IDoor,
-	IPlayerSpellEngine
+	IPlayerSpellEngine,
+	IFpsDisplay
 };
 
 export default Types;

@@ -15,6 +15,7 @@
     "react-scripts": "3.0.1",
     "rpg-awesome": "^0.2.0",
     "staticrypt": "^1.2.0",
+    "stats.js": "^0.17.0",
     "styled-components": "^4.3.1",
     "three": "^0.105.1",
     "typescript": "3.5.1"
