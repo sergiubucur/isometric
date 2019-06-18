@@ -9,4 +9,9 @@ export default interface IDoor extends IComponent {
 	init(rectangle: Rectangle, mesh: THREE.Mesh): void;
 	open(): void;
 	close(): void;
+	isInRange(position: THREE.Vector3): boolean;
+}
+
+export function isDoor(entity: IComponent): entity is IDoor {
+	return (entity as IDoor).open !== undefined;
 }

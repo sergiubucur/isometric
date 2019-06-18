@@ -13,6 +13,7 @@ import IAssetService from "../../asset/IAssetService";
 import IMonster from "../monster/IMonster";
 import IEntityDeathAnimationEngine from "../engine/death-animation/IEntityDeathAnimationEngine";
 import IPlayerSpellEngine from "./spell-engine/IPlayerSpellEngine";
+import IDoor, { isDoor } from "../door/IDoor";
 
 const StartPosition = new THREE.Vector3(16, 0, 16);
 const Size = 2;
@@ -45,7 +46,7 @@ export default class Player implements IPlayer {
 	mana: number;
 	totalMana: number;
 	manaRegen: number;
-	mouseOverTarget: IMonster | null;
+	mouseOverTarget: IMonster | IDoor | null;
 
 	private _mesh: THREE.Mesh;
 	private _pointLight: THREE.PointLight;
@@ -93,7 +94,7 @@ export default class Player implements IPlayer {
 
 		this.updateManaRegen();
 		this._mouseControls.update();
-		this.mouseOverTarget = this._world.getMonsterAtPosition(this._mouseControls.mousePosition, false);
+		this.mouseOverTarget = this._world.getEntityAtPosition(this._mouseControls.mousePosition, false);
 		this._movementEngine.move();
 		this._spellEngine.update();
 	}
@@ -139,6 +140,10 @@ export default class Player implements IPlayer {
 	}
 
 	private handleLeftClick() {
+		if (this.mouseOverTarget && isDoor(this.mouseOverTarget) && this.mouseOverTarget.isInRange(this._movementEngine.position)) {
+			this.mouseOverTarget.open();
+		}
+
 		this._movementEngine.startMovingTo(this._mouseControls.mousePosition);
 	}
 

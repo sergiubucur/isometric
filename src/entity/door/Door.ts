@@ -8,6 +8,7 @@ import IEntityId from "../entity-id/IEntityId";
 
 const WallHeight = 4;
 const AnimationTotalFrames = 60;
+const OpenRange = 3;
 
 export default class Door implements IDoor {
 	readonly id: number;
@@ -17,6 +18,7 @@ export default class Door implements IDoor {
 	private _yDelta: number;
 	private _animationFrames: number;
 	private _state: DoorState;
+	private _collisionBox: THREE.Box2;
 
 	constructor(private _world: IWorld, private _entityId: IEntityId) {
 		this.id = this._entityId.getNewId();
@@ -33,6 +35,16 @@ export default class Door implements IDoor {
 
 		this._world.addMesh(mesh);
 		this.modifyCells(true);
+		this.initCollisionBox();
+	}
+
+	private initCollisionBox() {
+		this._collisionBox = new THREE.Box2().setFromPoints([
+			new THREE.Vector2(this._rectangle.x0, this._rectangle.y0),
+			new THREE.Vector2(this._rectangle.x1, this._rectangle.y1)
+		]);
+
+		this._collisionBox.expandByScalar(OpenRange);
 	}
 
 	update() {
@@ -85,6 +97,12 @@ export default class Door implements IDoor {
 		this._animationFrames = AnimationTotalFrames;
 
 		this.modifyCells(true);
+	}
+
+	isInRange(position: THREE.Vector3) {
+		const mapPosition = this._world.map.convertToMapPosition(position);
+
+		return this._collisionBox.containsPoint(new THREE.Vector2(mapPosition.x, mapPosition.z));
 	}
 
 	private canClose() {

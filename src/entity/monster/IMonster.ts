@@ -10,3 +10,7 @@ export default interface IMonster extends IComponent {
 	init(position: THREE.Vector3): void;
 	damage(): void;
 }
+
+export function isMonster(entity: IComponent): entity is IMonster {
+	return (entity as IMonster).damage !== undefined;
+}

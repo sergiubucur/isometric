@@ -127,11 +127,21 @@ export default class World implements IWorld, IWorldComponent {
 		}
 	}
 
-	getMonsterAtPosition(position: THREE.Vector3, convertToMapPosition = true) {
+	getEntityAtPosition(position: THREE.Vector3, convertToMapPosition = true) {
 		const mapPosition = convertToMapPosition ? this.map.convertToMapPosition(position) : position;
 		const entityId = this.map.getEntityIdAt(mapPosition.x, mapPosition.z);
 
-		return this._monsters.find(x => x.id === entityId);
+		const monster = this._monsters.find(x => x.id === entityId);
+		if (monster) {
+			return monster;
+		}
+
+		const door = this._doors.find(x => x.id === entityId);
+		if (door) {
+			return door;
+		}
+
+		return null;
 	}
 
 	private initMap() {

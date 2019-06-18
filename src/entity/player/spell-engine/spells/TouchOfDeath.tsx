@@ -3,6 +3,7 @@ import React from "react";
 import BaseSpell from "../BaseSpell";
 import { Header, Separator } from "../../../../ui/tooltip/styles";
 import { Highlight } from "../../../../ui/common/Highlight";
+import IMonster, { isMonster } from "../../../monster/IMonster";
 
 export default class TouchOfDeath extends BaseSpell {
 	constructor() {
@@ -14,11 +15,13 @@ export default class TouchOfDeath extends BaseSpell {
 	}
 
 	cast() {
-		this._player.mouseOverTarget.damage();
+		(this._player.mouseOverTarget as IMonster).damage();
 	}
 
 	condition() {
-		return this._player.mouseOverTarget && !this._player.mouseOverTarget.dead;
+		const target = this._player.mouseOverTarget;
+
+		return target && isMonster(target) && !target.dead;
 	}
 
 	tooltip = () => (
