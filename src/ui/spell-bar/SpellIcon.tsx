@@ -5,15 +5,29 @@ import { IconContainer, IconInner, IconBadge, IconCooldownOverlay, ButtonSize, I
 import { KeybindNames } from "../../input-tracker/Keybinds";
 import Icon from "../common/Icon";
 import { GlobalCooldownTotalFrames } from "../../entity/player/spell-engine/PlayerSpellEngine";
+import ITooltipService from "../tooltip/service/ITooltipService";
 
 type Props = {
 	data: SpellKeybindAssignment,
 	active: boolean,
 	cooldown: number,
-	unusable: boolean
+	unusable: boolean,
+	tooltipService: ITooltipService
 };
 
 export default class SpellIcon extends Component<Props> {
+	handleMouseEnter = () => {
+		const { tooltipService, data } = this.props;
+
+		tooltipService.show(data.spell);
+	};
+
+	handleMouseLeave = () => {
+		const { tooltipService } = this.props;
+
+		tooltipService.hide();
+	};
+
 	render() {
 		const { data, active, cooldown, unusable } = this.props;
 
@@ -24,6 +38,9 @@ export default class SpellIcon extends Component<Props> {
 				</IconBadge>
 
 				<IconContainer
+					onMouseEnter={this.handleMouseEnter}
+					onMouseLeave={this.handleMouseLeave}
+
 					style={{
 						outline: active ? "2px solid #fff" : "2px solid #000",
 						filter: unusable ? "brightness(0.25)" : "none"

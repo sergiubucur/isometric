@@ -22,7 +22,8 @@ enum Types {
 	IEntityRangedAttackEngine,
 	IDoor,
 	IPlayerSpellEngine,
-	IFpsDisplay
+	IFpsDisplay,
+	ITooltipService
 };
 
 export default Types;

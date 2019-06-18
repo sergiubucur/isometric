@@ -26,6 +26,7 @@ import EntityRangedAttackEngine from "./entity/engine/ranged-attack/EntityRanged
 import Door from "./entity/door/Door";
 import PlayerSpellEngine from "./entity/player/spell-engine/PlayerSpellEngine";
 import FpsDisplay from "./common/fps-display/FpsDisplay";
+import TooltipService from "./ui/tooltip/service/TooltipService";
 
 const container = new Container();
 
@@ -63,7 +64,7 @@ container.registerSingleton(Types.IEntityId, EntityId);
 
 container.register(Types.IEntityMovementEngine, EntityMovementEngine, Types.IWorld);
 
-container.registerSingleton(Types.IUIRoot, UIRoot, Types.IWorld, Types.IPlayer, Types.ILogger);
+container.registerSingleton(Types.IUIRoot, UIRoot, Types.IWorld, Types.IPlayer, Types.ILogger, Types.ITooltipService);
 
 container.register(Types.IProjectile, Projectile, Types.IWorld, Types.IEntityId, Types.IEntityMovementEngine, Types.IPointLightCache,
 	Types.IPrimitiveCache);
@@ -84,6 +85,8 @@ container.register(Types.IPlayerSpellEngine, PlayerSpellEngine, Types.IWorld, Ty
 
 container.register(Types.IFpsDisplay, FpsDisplay);
 
+container.registerSingleton(Types.ITooltipService, TooltipService);
+
 const core = container.resolve(Types.ICore) as ICore;
 core.onRestart = () => {
 	container.disposeSingleton(Types.ICamera);
@@ -95,4 +98,5 @@ core.onRestart = () => {
 	container.disposeSingleton(Types.IPointLightCache);
 	container.disposeSingleton(Types.IPrimitiveCache);
 	container.disposeSingleton(Types.IAssetService);
+	container.disposeSingleton(Types.ITooltipService);
 };

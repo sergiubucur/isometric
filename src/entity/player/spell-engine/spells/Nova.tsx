@@ -1,6 +1,8 @@
 import * as THREE from "three";
+import React from "react";
 
 import BaseSpell from "../BaseSpell";
+import { Header, Separator, Highlight } from "../../../../ui/tooltip/styles";
 
 const ProjectileColor = 0xbada55;
 const ProjectileSpeed = 0.5;
@@ -24,6 +26,18 @@ export default class Nova extends BaseSpell {
 			this.throwProjectile(targetPosition);
 		}
 	}
+
+	tooltip = () => (
+		<React.Fragment>
+			<Header>Nova</Header>
+			<Separator/>
+			<Highlight>50</Highlight> mana
+			<Separator/>
+
+			Throw <Highlight>10</Highlight> orbs of green flame in a circle around you.
+			Each orb explodes on impact for <Highlight>50</Highlight> damage in a <Highlight>3</Highlight> yard radius.
+		</React.Fragment>
+	);
 
 	private throwProjectile(targetPosition: THREE.Vector3) {
 		this._world.addProjectile({

@@ -10,6 +10,7 @@ export default abstract class BaseSpell implements ISpell {
 	uncloakOnCast: boolean;
 	iconName: string;
 	flipIcon: boolean;
+	abstract tooltip: React.FunctionComponent;
 
 	protected _world: IWorld;
 	protected _player: IPlayer;

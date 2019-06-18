@@ -4,9 +4,11 @@ import IPlayer from "../../entity/player/IPlayer";
 import { SpellBarContainer } from "./styles";
 import SpellIcon from "./SpellIcon";
 import SpellKeybindAssignment from "../../entity/player/spell-engine/SpellKeybindAssignment";
+import ITooltipService from "../tooltip/service/ITooltipService";
 
 type Props = {
-	player: IPlayer
+	player: IPlayer,
+	tooltipService: ITooltipService
 };
 
 type State = {
@@ -47,6 +49,7 @@ export default class SpellBar extends PureComponent<Props, State> {
 	}
 
 	render() {
+		const { tooltipService } = this.props;
 		const { spells, activeSpell, globalCooldown, mana } = this.state;
 
 		return (
@@ -58,7 +61,8 @@ export default class SpellBar extends PureComponent<Props, State> {
 						data={x}
 						active={x === activeSpell}
 						cooldown={globalCooldown}
-						unusable={x.spell.manaCost > mana} />
+						unusable={x.spell.manaCost > mana}
+						tooltipService={tooltipService} />
 				))}
 
 			</SpellBarContainer>

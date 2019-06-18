@@ -1,3 +1,5 @@
+import React from "react";
+
 import IPlayer from "../IPlayer";
 import IEntityMovementEngine from "../../engine/movement/IEntityMovementEngine";
 import IMouseControls from "../mouse-controls/IMouseControls";
@@ -9,6 +11,7 @@ export default interface ISpell {
 	readonly uncloakOnCast: boolean;
 	readonly iconName: string;
 	readonly flipIcon: boolean;
+	readonly tooltip: React.FunctionComponent;
 
 	init(world: IWorld, player: IPlayer, movementEngine: IEntityMovementEngine, mouseControls: IMouseControls): void;
 	cast(): void;

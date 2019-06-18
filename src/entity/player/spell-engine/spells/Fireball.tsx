@@ -1,6 +1,8 @@
 import * as THREE from "three";
+import React from "react";
 
 import BaseSpell from "../BaseSpell";
+import { Header, Separator, Highlight } from "../../../../ui/tooltip/styles";
 
 const ProjectileColor = 0xbada55;
 const ProjectileSpeed = 0.5;
@@ -21,6 +23,18 @@ export default class Fireball extends BaseSpell {
 
 		this.throwProjectile();
 	}
+
+	tooltip = () => (
+		<React.Fragment>
+			<Header>Fireball</Header>
+			<Separator/>
+			<Highlight>10</Highlight> mana
+			<Separator/>
+
+			Throw an orb of green flame.
+			Explodes on impact for <Highlight>50</Highlight> damage in a <Highlight>3</Highlight> yard radius.
+		</React.Fragment>
+	);
 
 	private throwProjectile() {
 		this._world.addProjectile({

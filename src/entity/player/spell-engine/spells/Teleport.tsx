@@ -1,4 +1,7 @@
+import React from "react";
+
 import BaseSpell from "../BaseSpell";
+import { Header, Highlight, Separator } from "../../../../ui/tooltip/styles";
 
 export default class Teleport extends BaseSpell {
 	constructor() {
@@ -15,4 +18,15 @@ export default class Teleport extends BaseSpell {
 			this._movementEngine.moveTo(this._mouseControls.mousePosition);
 		}
 	}
+
+	tooltip = () => (
+		<React.Fragment>
+			<Header>Teleport</Header>
+			<Separator/>
+			<Highlight>5</Highlight> mana
+			<Separator/>
+
+			Teleport to a chosen nearby location.
+		</React.Fragment>
+	);
 }

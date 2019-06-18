@@ -28,6 +28,10 @@ export const IconContainer = styled.div`
 	background: ${BackgroundColor};
 	font-size: 26px;
 	position: relative;
+
+	&:hover {
+		box-shadow: inset 0px 0px 10px 0px rgba(255,255,255,1);
+	}
 `;
 
 export const IconInner = styled.div`

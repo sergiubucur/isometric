@@ -26,17 +26,18 @@ export default class Logger implements ILogger {
 
 		this._domElement.style.color = "#fff";
 		this._domElement.style.fontFamily = "Arial, Helvetica, sans-serif";
-		this._domElement.style.fontSize = "22px";
+		this._domElement.style.fontSize = "16px";
 		this._domElement.style.position = "fixed";
 		this._domElement.style.left = "10px";
 		this._domElement.style.top = "10px";
 		this._domElement.style.zIndex = "100";
+		this._domElement.style.opacity = "0.5";
 
 		document.body.appendChild(this._domElement);
 	}
 
 	update() {
-		this._domElement.innerHTML = this._logItems.join("<br/>");
+		this._domElement.innerHTML = this._logItems.join(`<div style="margin-bottom: 5px"></div>`);
 		this._logItems.length = 0;
 
 		Object.keys(this._bounds).forEach(x => {
