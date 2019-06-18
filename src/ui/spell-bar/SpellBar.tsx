@@ -51,6 +51,7 @@ export default class SpellBar extends PureComponent<Props, State> {
 
 		return (
 			<SpellBarContainer>
+
 				{spells.map((x, i) => (
 					<SpellIcon
 						key={i}
@@ -59,6 +60,7 @@ export default class SpellBar extends PureComponent<Props, State> {
 						cooldown={globalCooldown}
 						unusable={x.spell.manaCost > mana} />
 				))}
+
 			</SpellBarContainer>
 		);
 	}

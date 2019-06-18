@@ -2,6 +2,7 @@ import React, { PureComponent } from "react";
 
 import IPlayer from "../../entity/player/IPlayer";
 import { Container, Text, Value } from "./styles";
+import { Margin, Width } from "./styles";
 
 interface State {
 	health: number,
@@ -44,11 +45,17 @@ export default class HealthBar extends PureComponent<Props, State> {
 
 		return (
 			<React.Fragment>
-				<Text side="left">
+				<Text style={{ left: Margin }}>
 					{health.toFixed(0)} / {totalHealth.toFixed(0)}
 				</Text>
-				<Container foregroundColor={ForegroundColor} backgroundColor={BackgroundColor} side="left">
-					<Value value={health} total={totalHealth} foregroundColor={ForegroundColor} />
+
+				<Container style={{ left: Margin, border: `2px solid ${ForegroundColor}`, background: BackgroundColor }}>
+
+					<Value style={{
+						width: `${Math.max(Math.floor((health / totalHealth) * Width) - 10, 0)}px`,
+						background: ForegroundColor
+					}} />
+
 				</Container>
 			</React.Fragment>
 		);

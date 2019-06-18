@@ -1,11 +1,9 @@
 import styled from "styled-components/macro";
 
-import { GlobalCooldownTotalFrames } from "../../entity/player/spell-engine/PlayerSpellEngine";
-
-const Margin = 28;
-const ButtonSize = 48;
-const BackgroundColor = "#002040";
-const ForegroundColor = "#2080C0";
+export const Margin = 28;
+export const ButtonSize = 48;
+export const BackgroundColor = "#002040";
+export const ForegroundColor = "#2080C0";
 
 export const SpellBarContainer = styled.div`
 	position: fixed;
@@ -18,21 +16,14 @@ export const SpellBarContainer = styled.div`
 	display: flex;
 `;
 
-export type IconContainerProps = {
-	active: boolean,
-	unusable: boolean
-};
-
-export const IconContainer = styled.div<IconContainerProps>`
+export const IconContainer = styled.div`
 	margin: 4px;
 	width: ${ButtonSize}px;
 	height: ${ButtonSize}px;
 	box-sizing: border-box;
-	outline: ${props => props.active ? "2px solid #fff" : "2px solid #000"};
 	background: ${BackgroundColor};
 	font-size: 26px;
 	position: relative;
-	filter: ${props => props.unusable ? "brightness(0.25)" : "none"};
 `;
 
 export const IconInner = styled.div`
@@ -58,13 +49,7 @@ export const IconBadge = styled.div`
 	text-align: center;
 `;
 
-export type IconCooldownOverlayProps = {
-	cooldown: number
-};
-
-export const IconCooldownOverlay = styled.div.attrs<IconCooldownOverlayProps>(props => ({
-	height: `${Math.floor((props.cooldown / GlobalCooldownTotalFrames) * ButtonSize)}px`
-}))<IconCooldownOverlayProps>`
+export const IconCooldownOverlay = styled.div`
 	position: absolute;
 	left: 0;
 	top: 0;

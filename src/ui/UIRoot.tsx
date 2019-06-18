@@ -14,20 +14,25 @@ export default class UIRoot implements IUIRoot {
 	constructor(private _world: IWorld, private _player: IPlayer, private _logger: ILogger) {
 		ReactDOM.render(
 			<React.Fragment>
+
 				<Minimap
 					world={this._world}
 					player={this._player}
 					logger={this._logger}>
 				</Minimap>
+
 				<HealthBar
 					player={this._player}>
 				</HealthBar>
+
 				<ManaBar
 					player={this._player}>
 				</ManaBar>
+
 				<SpellBar
 					player={this._player}>
 				</SpellBar>
+
 			</React.Fragment>, document.getElementById("root"));
 	}
 

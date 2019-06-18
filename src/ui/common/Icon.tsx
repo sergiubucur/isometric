@@ -1,8 +1,6 @@
 import React from "react";
 import "rpg-awesome/css/rpg-awesome.css";
 
-import { IconContainer } from "./styles";
-
 type Props = {
 	name: string,
 	flip?: boolean
@@ -10,7 +8,7 @@ type Props = {
 
 const Icon: React.FunctionComponent<Props> = ({ name, flip }) => {
 	return (
-		<IconContainer flip={flip} className={`ra ${name}`}></IconContainer>
+		<i style={{ transform: flip ? "rotateY(180deg)" : "none" }} className={`ra ${name}`}></i>
 	);
 };
 
