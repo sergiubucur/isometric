@@ -10,6 +10,6 @@ steps:
     git config --global user.name "Sergiu Bucur"
     npm install
     npm run predeploy
-    echo "window.VERSION = $(Build.BuildNumber);" > build/version.js
+    echo "window.VERSION = \"$(Build.BuildNumber)\";" > build/version.js
     npm run deploy-ci -- -r https://$(github_pat)@github.com/sergiubucur/airstrip-one.git
   displayName: 'npm install, build and deploy'
