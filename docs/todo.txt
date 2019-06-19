@@ -2,7 +2,6 @@ mock experience bar
 powerups
 monster health bar
 fix laptop zoom bug
-refactor map loader
 spell aura system
 different types of monsters
 multiple levels
