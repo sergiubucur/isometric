@@ -7,6 +7,6 @@ export default interface IWorldComponent extends IComponent {
 	readonly scene: THREE.Scene;
 
 	init(): void;
-	initMonsters(): void;
+	initEntities(): void;
 	setPlayer(player: IPlayer): void;
 }

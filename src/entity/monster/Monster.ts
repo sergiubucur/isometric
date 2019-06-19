@@ -12,6 +12,7 @@ import IEntityDeathAnimationEngine from "../engine/death-animation/IEntityDeathA
 import IEntityRangedAttackEngine from "../engine/ranged-attack/IEntityRangedAttackEngine";
 import IEntityAttackEngine from "../engine/IEntityAttackEngine";
 import AuraType from "../aura/AuraType";
+import PowerupType from "../powerup/PowerupType";
 
 const Size = 2;
 const MeleeSpeed = 0.1;
@@ -28,7 +29,7 @@ const ProjectileRange = 30;
 const ProjectileSpeed = 0.33;
 
 export default class Monster implements IMonster {
-	id: number;
+	readonly id: number;
 	dead: boolean;
 	readonly size: number;
 
@@ -123,6 +124,7 @@ export default class Monster implements IMonster {
 			return;
 		}
 
+		this.dropPowerup();
 		this._player.gainExperience();
 
 		this.updateMeshPosition();
@@ -130,6 +132,12 @@ export default class Monster implements IMonster {
 		this._movementEngine.clearCells();
 		this._movementEngine.stop();
 		this.dead = true;
+	}
+
+	private dropPowerup() {
+		const powerupPosition = this._world.map.convertToMapPosition(this._movementEngine.position);
+		const powerupType = Math.random() < 0.5 ? PowerupType.Health : PowerupType.Mana;
+		this._world.addPowerup(powerupPosition, powerupType);
 	}
 
 	private throwProjectile() {

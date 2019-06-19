@@ -166,7 +166,7 @@ export default class Core implements ICore {
 
 		const player = this._playerFactory();
 		this._world.setPlayer(player);
-		this._world.initMonsters();
+		this._world.initEntities();
 
 		this._uiRoot = this._uiRootFactory();
 		this._nextState = CoreState.Run;

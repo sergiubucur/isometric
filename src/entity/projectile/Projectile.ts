@@ -16,7 +16,7 @@ const FadeInAnimationTotalFrames = 3;
 const GeometryCacheKey = "Projectile";
 
 export default class Projectile implements IProjectile {
-	id: number;
+	readonly id: number;
 	toBeDeleted: boolean;
 
 	private _mesh: THREE.Mesh;

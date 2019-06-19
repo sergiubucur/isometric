@@ -40,7 +40,7 @@ export default class Player implements IPlayer {
 		return this._spellEngine;
 	}
 
-	id: number;
+	readonly id: number;
 	invisible: boolean;
 	readonly size: number;
 	dead: boolean;
@@ -89,6 +89,7 @@ export default class Player implements IPlayer {
 			this._camera.setPosition(this._movementEngine.position);
 			this.updateMeshPosition();
 			this._useEngine.afterPositionUpdate();
+			this.absorbPowerups();
 		};
 	}
 
@@ -179,6 +180,15 @@ export default class Player implements IPlayer {
 
 	spendMana(value: number) {
 		this.mana -= value;
+	}
+
+	private absorbPowerups() {
+		const powerups = this._world.getPowerupsInArea(this._movementEngine.position, this.size);
+		powerups.forEach(x => {
+			console.log(x.type);
+
+			x.markForDeletion();
+		});
 	}
 
 	private initMesh() {

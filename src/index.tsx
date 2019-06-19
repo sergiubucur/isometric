@@ -28,6 +28,7 @@ import PlayerSpellEngine from "./entity/player/spell-engine/PlayerSpellEngine";
 import FpsDisplay from "./common/fps-display/FpsDisplay";
 import TooltipService from "./ui/tooltip/service/TooltipService";
 import PlayerUseEngine from "./entity/player/use-engine/PlayerUseEngine";
+import Powerup from "./entity/powerup/Powerup";
 
 const container = new Container();
 
@@ -50,7 +51,8 @@ container.register(Types.IWorldMeshBuilder, WorldMeshBuilder, Types.IAssetServic
 container.register(Types.IMapLoader, MapLoader);
 
 container.registerSingleton(Types.IWorld, World, Types.IAssetService, Types.IMapLoader, Types.IWorldMeshBuilder, Factory(Types.IMonster),
-	Factory(Types.IProjectile), Types.ILogger, Factory(Types.IPointLightCache), Types.IPrimitiveCache, Factory(Types.IDoor));
+	Factory(Types.IProjectile), Types.ILogger, Factory(Types.IPointLightCache), Types.IPrimitiveCache, Factory(Types.IDoor),
+	Factory(Types.IPowerup));
 
 container.register(Types.IMouseControls, MouseControls, Types.ICamera, Types.IInputTracker, Types.IWorld, Types.ILogger);
 
@@ -89,6 +91,8 @@ container.register(Types.IFpsDisplay, FpsDisplay, Types.ILogger);
 container.registerSingleton(Types.ITooltipService, TooltipService);
 
 container.register(Types.IPlayerUseEngine, PlayerUseEngine);
+
+container.register(Types.IPowerup, Powerup, Types.IWorld, Types.IEntityId, Types.IPrimitiveCache);
 
 const core = container.resolve(Types.ICore) as ICore;
 core.onRestart = () => {
