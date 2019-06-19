@@ -72,6 +72,10 @@ export default class InputTracker implements IInputTracker {
 		});
 
 		document.addEventListener("wheel", (e) => {
+			if (e.deltaY === 0) {
+				return;
+			}
+			
 			this.wheelEvents.push(e.deltaY / Math.abs(e.deltaY));
 		});
 	}
