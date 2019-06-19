@@ -14,7 +14,7 @@ interface Props {
 
 const RefreshIntervalMs = 33;
 const ForegroundColor = "#c0c0c0";
-const BackgroundColor = "#404040";
+const BackgroundColor = "#202020";
 const Width = 272;
 const Height = 16;
 
