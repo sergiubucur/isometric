@@ -2,7 +2,7 @@ import IComponent from "../../common/IComponent";
 import IMonster from "../monster/IMonster";
 import IPlayerSpellEngine from "./spell-engine/IPlayerSpellEngine";
 import IDoor from "../door/IDoor";
-import AuraType from "../aura/AuraType";
+import AuraType from "./aura-engine/AuraType";
 import IPlayerAuraEngine from "./aura-engine/IPlayerAuraEngine";
 
 export default interface IPlayer extends IComponent {

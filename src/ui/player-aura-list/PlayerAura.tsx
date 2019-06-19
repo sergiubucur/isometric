@@ -2,13 +2,11 @@ import React, { Component } from "react";
 
 import Icon from "../common/Icon";
 import ITooltipService from "../tooltip/service/ITooltipService";
-import AuraType from "../../entity/aura/AuraType";
-import AuraTooltip from "../../entity/aura/AuraTooltip";
-import AuraIcon from "../../entity/aura/AuraIcon";
 import { IconContainer } from "./styles";
+import IAura from "../../entity/player/aura-engine/IAura";
 
 type Props = {
-	aura: AuraType,
+	aura: IAura,
 	tooltipService: ITooltipService
 };
 
@@ -16,7 +14,7 @@ export default class SpellIcon extends Component<Props> {
 	handleMouseEnter = () => {
 		const { tooltipService, aura } = this.props;
 
-		tooltipService.show(AuraTooltip[aura]);
+		tooltipService.show(aura.tooltip);
 	};
 
 	handleMouseLeave = () => {
@@ -27,7 +25,7 @@ export default class SpellIcon extends Component<Props> {
 
 	render() {
 		const { aura } = this.props;
-		const { iconName, flipIcon } = AuraIcon[aura];
+		const { iconName, flipIcon } = aura;
 
 		return (
 			<IconContainer

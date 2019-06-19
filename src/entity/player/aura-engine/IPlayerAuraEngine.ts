@@ -1,9 +1,10 @@
 import IComponent from "../../../common/IComponent";
-import AuraType from "../../aura/AuraType";
+import AuraType from "./AuraType";
 import IPlayer from "../IPlayer";
+import IAura from "./IAura";
 
 export default interface IPlayerAuraEngine extends IComponent {
-	readonly auras: AuraType[];
+	readonly auras: IAura[];
 
 	init(player: IPlayer): void;
 	addAura(type: AuraType): void;

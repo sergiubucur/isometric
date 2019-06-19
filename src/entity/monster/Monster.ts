@@ -11,7 +11,7 @@ import IPrimitiveCache from "../../world/primitive-cache/IPrimitiveCache";
 import IEntityDeathAnimationEngine from "../engine/death-animation/IEntityDeathAnimationEngine";
 import IEntityRangedAttackEngine from "../engine/ranged-attack/IEntityRangedAttackEngine";
 import IEntityAttackEngine from "../engine/IEntityAttackEngine";
-import AuraType from "../aura/AuraType";
+import AuraType from "../player/aura-engine/AuraType";
 import PowerupType from "../powerup/PowerupType";
 
 const Size = 2;

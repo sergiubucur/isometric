@@ -15,7 +15,7 @@ import IEntityDeathAnimationEngine from "../engine/death-animation/IEntityDeathA
 import IPlayerSpellEngine from "./spell-engine/IPlayerSpellEngine";
 import IDoor from "../door/IDoor";
 import IPlayerUseEngine from "./use-engine/IPlayerUseEngine";
-import AuraType from "../aura/AuraType";
+import AuraType from "./aura-engine/AuraType";
 import IPlayerAuraEngine from "./aura-engine/IPlayerAuraEngine";
 
 const StartPosition = new THREE.Vector3(16, 0, 16);

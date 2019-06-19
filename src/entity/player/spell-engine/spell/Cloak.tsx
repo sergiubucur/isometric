@@ -2,7 +2,7 @@ import React from "react";
 
 import BaseSpell from "../BaseSpell";
 import { Header, Separator } from "../../../../ui/tooltip/styles";
-import AuraType from "../../../aura/AuraType";
+import AuraType from "../../aura-engine/AuraType";
 
 export default class Cloak extends BaseSpell {
 	constructor() {

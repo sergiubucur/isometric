@@ -3,9 +3,9 @@ import React, { PureComponent } from "react";
 import IPlayer from "../../entity/player/IPlayer";
 import { Container } from "./styles";
 import ITooltipService from "../tooltip/service/ITooltipService";
-import AuraType from "../../entity/aura/AuraType";
 import PlayerAura from "./PlayerAura";
 import UIConstants from "../common/UIConstants";
+import IAura from "../../entity/player/aura-engine/IAura";
 
 type Props = {
 	player: IPlayer,
@@ -13,7 +13,7 @@ type Props = {
 };
 
 type State = {
-	auras: AuraType[];
+	auras: IAura[];
 };
 
 export default class PlayerAuraList extends PureComponent<Props, State> {
@@ -49,7 +49,7 @@ export default class PlayerAuraList extends PureComponent<Props, State> {
 
 		return (
 			<Container>
-				{auras.map(x => <PlayerAura key={x} aura={x} tooltipService={this.props.tooltipService} />)}
+				{auras.map((x, i) => <PlayerAura key={i} aura={x} tooltipService={this.props.tooltipService} />)}
 			</Container>
 		);
 	}
