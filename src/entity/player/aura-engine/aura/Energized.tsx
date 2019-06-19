@@ -17,8 +17,8 @@ export default class Energized extends BaseAura {
 	tick() {
 		super.tick();
 
-		this._player.gainHealth(1);
-		this._player.gainMana(1);
+		this._player.gainHealth(this.stacks / 20);
+		this._player.gainMana(this.stacks / 10);
 	}
 
 	tooltip = () => (
@@ -26,7 +26,7 @@ export default class Energized extends BaseAura {
 			<Header>Energized</Header>
 			<Separator/>
 
-			Gaining health and mana over time.
+			Gaining health and mana over time. Can stack.
 		</React.Fragment>
 	);
 }

@@ -51,8 +51,6 @@ export default class PlayerAuraList extends PureComponent<Props, State> {
 	render() {
 		const { auras } = this.state;
 
-		console.log("render");
-
 		return (
 			<Container>
 				{auras.map((x, i) => <PlayerAura key={i} aura={x} tooltipService={this.props.tooltipService} />)}
