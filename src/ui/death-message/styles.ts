@@ -5,7 +5,7 @@ export const Container = styled.div`
 	left: 50%;
 	top: 50%;
 	transform: translateX(-50%) translateY(-50%);
-	font-size: 22px;
+	font-size: 30px;
 	user-select: none;
 	padding: 16px;
 	text-align: center;
@@ -14,5 +14,5 @@ export const Container = styled.div`
 
 export const Title = styled.div`
 	font-size: 2em;
-	margin-bottom: 16px;
+	margin-bottom: 32px;
 `;
