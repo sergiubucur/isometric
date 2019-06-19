@@ -40,14 +40,17 @@ export default class Logger implements ILogger {
 		this._domElement.style.zIndex = "100";
 		this._domElement.style.opacity = "0.5";
 		this._domElement.style.display = Version === "dev-build" ? "block" : "none";
+		this._domElement.style.userSelect = "none";
 
 		document.body.appendChild(this._domElement);
 	}
 
 	update() {
 		if (Version !== "dev-build") {
-			this._logItems.unshift(`----`);
-			this._logItems.unshift(`Build ${Version} - by Sergiu-Valentin Bucur`);
+			this._logItems.unshift(
+				`isometric - build ${Version} - by Sergiu-Valentin Bucur`,
+				`----`
+			);
 		}
 
 		this._domElement.innerHTML = this._logItems.join(`<div style="margin-bottom: 5px"></div>`);
