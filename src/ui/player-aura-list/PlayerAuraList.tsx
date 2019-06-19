@@ -5,6 +5,7 @@ import { Container } from "./styles";
 import ITooltipService from "../tooltip/service/ITooltipService";
 import AuraType from "../../entity/aura/AuraType";
 import PlayerAura from "./PlayerAura";
+import UIConstants from "../common/UIConstants";
 
 type Props = {
 	player: IPlayer,
@@ -14,8 +15,6 @@ type Props = {
 type State = {
 	auras: AuraType[];
 };
-
-const RefreshIntervalMs = 33;
 
 export default class PlayerAuraList extends PureComponent<Props, State> {
 	state: State = {
@@ -34,7 +33,7 @@ export default class PlayerAuraList extends PureComponent<Props, State> {
 					auras
 				});
 			}
-		}, RefreshIntervalMs);
+		}, UIConstants.RefreshIntervalMs);
 	}
 
 	componentWillUnmount() {

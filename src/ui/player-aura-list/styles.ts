@@ -1,5 +1,5 @@
 import styled from "styled-components/macro";
-import { BackgroundColor, ForegroundColor } from "../spell-bar/styles";
+import UIConstants from "../common/UIConstants";
 
 export const TopMargin = 30;
 export const RightMargin = 306;
@@ -21,8 +21,8 @@ export const IconContainer = styled.div`
 	display: flex;
 	justify-content: center;
 	align-items: center;
-	border: 2px solid ${ForegroundColor};
-	background: ${BackgroundColor};
+	border: 2px solid ${UIConstants.ManaLightColor};
+	background: ${UIConstants.ManaDarkColor};
 
 	&:hover {
 		box-shadow: inset 0px 0px 5px 0px rgba(255,255,255,1);

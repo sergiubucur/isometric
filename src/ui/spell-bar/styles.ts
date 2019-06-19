@@ -1,9 +1,9 @@
 import styled from "styled-components/macro";
 
+import UIConstants from "../common/UIConstants";
+
 export const Margin = 52;
 export const ButtonSize = 48;
-export const BackgroundColor = "#002040";
-export const ForegroundColor = "#2080C0";
 
 export const SpellBarContainer = styled.div`
 	position: fixed;
@@ -25,7 +25,7 @@ export const IconContainer = styled.div`
 	width: ${ButtonSize}px;
 	height: ${ButtonSize}px;
 	box-sizing: border-box;
-	background: ${BackgroundColor};
+	background: ${UIConstants.ManaDarkColor};
 	font-size: 26px;
 	position: relative;
 
@@ -35,7 +35,7 @@ export const IconContainer = styled.div`
 `;
 
 export const IconInner = styled.div`
-	border: 2px solid ${ForegroundColor};
+	border: 2px solid ${UIConstants.ManaLightColor};
 	width: ${ButtonSize}px;
 	height: ${ButtonSize}px;
 	box-sizing: border-box;
@@ -51,8 +51,8 @@ export const IconBadge = styled.div`
 	outline: 2px solid #000;
 	top: -22px;
 	font-size: 12px;
-	background: ${BackgroundColor};
-	border: 2px solid ${ForegroundColor};
+	background: ${UIConstants.ManaDarkColor};
+	border: 2px solid ${UIConstants.ManaLightColor};
 	width: 32px;
 	text-align: center;
 `;

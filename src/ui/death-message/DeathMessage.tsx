@@ -3,6 +3,7 @@ import React, { PureComponent } from "react";
 import IPlayer from "../../entity/player/IPlayer";
 import { Container, Title } from "./styles";
 import { Highlight } from "../common/Highlight";
+import UIConstants from "../common/UIConstants";
 
 interface State {
 	visible: boolean
@@ -11,8 +12,6 @@ interface State {
 interface Props {
 	player: IPlayer
 }
-
-const RefreshIntervalMs = 33;
 
 export default class HealthBar extends PureComponent<Props, State> {
 	state: State = {
@@ -28,7 +27,7 @@ export default class HealthBar extends PureComponent<Props, State> {
 			this.setState({
 				visible: player.dead
 			});
-		}, RefreshIntervalMs);
+		}, UIConstants.RefreshIntervalMs);
 	}
 
 	componentWillUnmount() {

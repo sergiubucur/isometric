@@ -1,5 +1,7 @@
 import styled from "styled-components/macro";
 
+import UIConstants from "../common/UIConstants";
+
 export const Size = 32;
 export const CellSize = 8;
 export const Zoom = 4;
@@ -31,6 +33,6 @@ export const PlayerDot = styled.div`
 	top: ${Size * CellSize / 2 - 4}px;
 	width: 8px;
 	height: 8px;
-	background: #bada55;
+	background: ${UIConstants.HighlightColor};
 	border-radius: 4px;
 `;

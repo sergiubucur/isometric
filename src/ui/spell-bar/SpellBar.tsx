@@ -5,6 +5,7 @@ import { SpellBarContainer } from "./styles";
 import SpellIcon from "./SpellIcon";
 import SpellKeybindAssignment from "../../entity/player/spell-engine/SpellKeybindAssignment";
 import ITooltipService from "../tooltip/service/ITooltipService";
+import UIConstants from "../common/UIConstants";
 
 type Props = {
 	player: IPlayer,
@@ -17,8 +18,6 @@ type State = {
 	globalCooldown: number,
 	mana: number
 };
-
-const RefreshIntervalMs = 33;
 
 export default class SpellBar extends PureComponent<Props, State> {
 	state: State = {
@@ -41,7 +40,7 @@ export default class SpellBar extends PureComponent<Props, State> {
 				activeSpell,
 				globalCooldown
 			});
-		}, RefreshIntervalMs);
+		}, UIConstants.RefreshIntervalMs);
 	}
 
 	componentWillUnmount() {

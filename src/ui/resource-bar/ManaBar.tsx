@@ -2,6 +2,7 @@ import React, { PureComponent } from "react";
 
 import IPlayer from "../../entity/player/IPlayer";
 import { Container, Text, Value, Margin, Width, BottomRightPadding } from "./styles";
+import UIConstants from "../common/UIConstants";
 
 interface State {
 	mana: number,
@@ -11,10 +12,6 @@ interface State {
 interface Props {
 	player: IPlayer
 }
-
-const RefreshIntervalMs = 33;
-const ForegroundColor = "#2080c0";
-const BackgroundColor = "#002040";
 
 export default class ManaBar extends PureComponent<Props, State> {
 	state = {
@@ -32,7 +29,7 @@ export default class ManaBar extends PureComponent<Props, State> {
 				mana: player.mana,
 				totalMana: player.totalMana
 			});
-		}, RefreshIntervalMs);
+		}, UIConstants.RefreshIntervalMs);
 	}
 
 	componentWillUnmount() {
@@ -48,11 +45,11 @@ export default class ManaBar extends PureComponent<Props, State> {
 					{mana.toFixed(0)} / {totalMana.toFixed(0)}
 				</Text>
 
-				<Container style={{ right: Margin, border: `2px solid ${ForegroundColor}`, background: BackgroundColor }}>
+				<Container style={{ right: Margin, border: `2px solid ${UIConstants.ManaLightColor}`, background: UIConstants.ManaDarkColor }}>
 
 					<Value style={{
 						width: Math.floor((mana / totalMana) * (Width - BottomRightPadding)),
-						background: ForegroundColor
+						background: UIConstants.ManaLightColor
 					}} />
 
 				</Container>

@@ -3,6 +3,7 @@ import React, { PureComponent } from "react";
 import IPlayer from "../../entity/player/IPlayer";
 import { Container, Text, Value, BottomRightPadding } from "./styles";
 import { Margin, Width } from "./styles";
+import UIConstants from "../common/UIConstants";
 
 interface State {
 	health: number,
@@ -12,10 +13,6 @@ interface State {
 interface Props {
 	player: IPlayer
 }
-
-const RefreshIntervalMs = 33;
-const ForegroundColor = "#c02020";
-const BackgroundColor = "#400000";
 
 export default class HealthBar extends PureComponent<Props, State> {
 	state = {
@@ -33,7 +30,7 @@ export default class HealthBar extends PureComponent<Props, State> {
 				health: player.health,
 				totalHealth: player.totalHealth
 			});
-		}, RefreshIntervalMs);
+		}, UIConstants.RefreshIntervalMs);
 	}
 
 	componentWillUnmount() {
@@ -49,11 +46,11 @@ export default class HealthBar extends PureComponent<Props, State> {
 					{health.toFixed(0)} / {totalHealth.toFixed(0)}
 				</Text>
 
-				<Container style={{ left: Margin, border: `2px solid ${ForegroundColor}`, background: BackgroundColor }}>
+				<Container style={{ left: Margin, border: `2px solid ${UIConstants.HealthLightColor}`, background: UIConstants.HealthDarkColor }}>
 
 					<Value style={{
 						width: Math.floor((health / totalHealth) * (Width - BottomRightPadding)),
-						background: ForegroundColor
+						background: UIConstants.HealthLightColor
 					}} />
 
 				</Container>

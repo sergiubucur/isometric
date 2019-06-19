@@ -1,5 +1,6 @@
 import styled from "styled-components/macro";
-import { HighlightColor } from "../common/Highlight";
+
+import UIConstants from "../common/UIConstants";
 
 export const Margin = 32;
 export const Padding = 16;
@@ -21,7 +22,7 @@ export const Container = styled.div`
 `;
 
 export const Header = styled.div`
-	color: ${HighlightColor};
+	color: ${UIConstants.HighlightColor};
 	font-size: 1.2em;
 `;
 
