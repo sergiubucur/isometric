@@ -1,3 +1,5 @@
+fix loading/initializing bug on production
+fix aura expires tooltip remains bug
 monster health bar
 
 ----
