@@ -1,6 +1,8 @@
 import * as THREE from "three";
 
 import ILogger from "./ILogger";
+import IInputTracker from "../../input-tracker/IInputTracker";
+import Keybinds from "../../input-tracker/Keybinds";
 
 type BoundsInfo = {
 	value: number,
@@ -9,14 +11,20 @@ type BoundsInfo = {
 	digits: number
 };
 
+const DefaultVisibility = true;
+
 export default class Logger implements ILogger {
 	private _domElement: HTMLElement;
 	private _logItems: string[];
 	private _bounds: { [key: string]: BoundsInfo };
+	private _visible: boolean;
+	private _keyPressed: boolean;
 
-	constructor() {
+	constructor(private _inputTracker: IInputTracker) {
 		this._logItems = [];
 		this._bounds = {};
+		this._visible = DefaultVisibility;
+		this._keyPressed = false;
 
 		this.initDomElement();
 	}
@@ -32,6 +40,7 @@ export default class Logger implements ILogger {
 		this._domElement.style.top = "10px";
 		this._domElement.style.zIndex = "100";
 		this._domElement.style.opacity = "0.5";
+		this._domElement.style.display = DefaultVisibility ? "block" : "none";
 
 		document.body.appendChild(this._domElement);
 	}
@@ -45,6 +54,19 @@ export default class Logger implements ILogger {
 
 			this._logItems.push(`${x}: ${value.toFixed(digits)} (min: ${min.toFixed(digits)}, max: ${max.toFixed(digits)})`);
 		});
+
+		this.updateVisibility();
+	}
+
+	private updateVisibility() {
+		if (!this._inputTracker.keysPressed[Keybinds.Backtick]) {
+			this._keyPressed = false;
+		}
+
+		if (this._inputTracker.keysPressed[Keybinds.Backtick] && !this._keyPressed) {
+			this.toggleVisibility();
+			this._keyPressed = true;
+		}
 	}
 
 	clear() {
@@ -83,5 +105,15 @@ export default class Logger implements ILogger {
 		const bounds = this._bounds[name];
 		bounds.min = Math.min(value, bounds.min);
 		bounds.max = Math.max(value, bounds.max);
+	}
+
+	toggleVisibility() {
+		this._visible = !this._visible;
+
+		if (this._visible) {
+			this._domElement.style.display = "block";
+		} else {
+			this._domElement.style.display = "none";
+		}
 	}
 }

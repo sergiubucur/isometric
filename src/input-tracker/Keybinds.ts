@@ -12,7 +12,8 @@ const Keybinds = {
 	D3: 51,
 	D4: 52,
 	Enter: 13,
-	RightMouseButton: 1000
+	RightMouseButton: 1000,
+	Backtick: 192
 };
 
 export default Keybinds;

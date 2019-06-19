@@ -31,7 +31,7 @@ import PlayerUseEngine from "./entity/player/use-engine/PlayerUseEngine";
 
 const container = new Container();
 
-container.registerSingleton(Types.ILogger, Logger);
+container.registerSingleton(Types.ILogger, Logger, Types.IInputTracker);
 
 container.registerSingleton(Types.IAssetService, AssetService);
 
