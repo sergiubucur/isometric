@@ -11,6 +11,7 @@ import IPrimitiveCache from "../../world/primitive-cache/IPrimitiveCache";
 import IEntityDeathAnimationEngine from "../engine/death-animation/IEntityDeathAnimationEngine";
 import IEntityRangedAttackEngine from "../engine/ranged-attack/IEntityRangedAttackEngine";
 import IEntityAttackEngine from "../engine/IEntityAttackEngine";
+import AuraType from "../aura/AuraType";
 
 const Size = 2;
 const MeleeSpeed = 0.1;
@@ -67,7 +68,10 @@ export default class Monster implements IMonster {
 	private initAttackEngine() {
 		if (this._ranged) {
 			const rangedAttackEngine = this._rangedAttackEngineFactory();
-			rangedAttackEngine.init(() => this._player.position, () => !this._player.invisible, ProjectileRange, this._mesh, this._movementEngine);
+
+			rangedAttackEngine.init(() => this._player.position, () => !this._player.auras.has(AuraType.Cloaked),
+				ProjectileRange, this._mesh, this._movementEngine);
+
 			rangedAttackEngine.onHit = () => {
 				this.throwProjectile();
 			};
@@ -140,7 +144,7 @@ export default class Monster implements IMonster {
 	}
 
 	private chase() {
-		if (!this._player.dead && !this._player.invisible) {
+		if (!this._player.dead && !this._player.auras.has(AuraType.Cloaked)) {
 			this._movementEngine.startMovingTo(this._player.position);
 		}
 	}

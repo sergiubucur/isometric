@@ -15,6 +15,7 @@ import IEntityDeathAnimationEngine from "../engine/death-animation/IEntityDeathA
 import IPlayerSpellEngine from "./spell-engine/IPlayerSpellEngine";
 import IDoor from "../door/IDoor";
 import IPlayerUseEngine from "./use-engine/IPlayerUseEngine";
+import AuraType from "../aura/AuraType";
 
 const StartPosition = new THREE.Vector3(16, 0, 16);
 const Size = 2;
@@ -51,6 +52,7 @@ export default class Player implements IPlayer {
 	mouseOverTarget: IMonster | IDoor | null;
 	experience: number;
 	experienceToNextLevel: number;
+	readonly auras: Set<AuraType>;
 
 	private _mesh: THREE.Mesh;
 	private _pointLight: THREE.PointLight;
@@ -63,7 +65,6 @@ export default class Player implements IPlayer {
 		this._mouseControls.onLeftClick = () => this.handleLeftClick();
 
 		this.id = this._entityId.getNewId();
-		this.invisible = false;
 		this.size = Size;
 		this.dead = false;
 		this.totalHealth = TotalHealth;
@@ -74,6 +75,7 @@ export default class Player implements IPlayer {
 		this.mouseOverTarget = null;
 		this.experience = 0;
 		this.experienceToNextLevel = ExperienceToNextLevel;
+		this.auras = new Set<AuraType>();
 
 		this.initMovementEngine();
 		this._camera.setPosition(StartPosition);
@@ -123,7 +125,7 @@ export default class Player implements IPlayer {
 			return;
 		}
 
-		this.uncloak();
+		this.setInvisibility(false);
 
 		this.health -= 25;
 		if (this.health <= 0) {
@@ -140,7 +142,7 @@ export default class Player implements IPlayer {
 	private die() {
 		this.experience = Math.floor(this.experience * 0.75);
 
-		this.uncloak();
+		this.setInvisibility(false);
 		this._pointLight.color.setHex(PointLightDeathColor);
 		this.updateMeshPosition();
 		this._deathAnimationEngine.startAnimation();
@@ -165,13 +167,14 @@ export default class Player implements IPlayer {
 		this._movementEngine.startMovingTo(this._mouseControls.mousePosition);
 	}
 
-	private uncloak() {
-		this.setInvisibility(false);
-	}
-
 	setInvisibility(value: boolean) {
-		this.invisible = value;
-		(this._mesh.material as THREE.MeshPhongMaterial).opacity = this.invisible ? 0.33 : 1;
+		if (value) {
+			this.auras.add(AuraType.Cloaked);
+		} else {
+			this.auras.delete(AuraType.Cloaked);
+		}
+
+		(this._mesh.material as THREE.MeshPhongMaterial).opacity = value ? 0.33 : 1;
 	}
 
 	spendMana(value: number) {

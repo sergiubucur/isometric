@@ -2,6 +2,7 @@ import React from "react";
 
 import BaseSpell from "../BaseSpell";
 import { Header, Separator } from "../../../../ui/tooltip/styles";
+import AuraType from "../../../aura/AuraType";
 
 export default class Cloak extends BaseSpell {
 	constructor() {
@@ -13,7 +14,8 @@ export default class Cloak extends BaseSpell {
 	}
 
 	cast() {
-		this._player.setInvisibility(!this._player.invisible);
+		const invisible = this._player.auras.has(AuraType.Cloaked);
+		this._player.setInvisibility(!invisible);
 	}
 
 	tooltip = () => (
