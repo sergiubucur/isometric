@@ -15,9 +15,12 @@ export default interface IPlayer extends IComponent {
 	readonly dead: boolean;
 	readonly mouseOverTarget: IMonster | IDoor | null;
 	readonly spellEngine: IPlayerSpellEngine;
+	readonly experience: number;
+	readonly experienceToNextLevel: number;
 
 	damage(): void;
 	setInvisibility(value: boolean): void;
 	spendMana(value: number): void;
 	updateMeshPosition(): void;
+	gainExperience(): void;
 }

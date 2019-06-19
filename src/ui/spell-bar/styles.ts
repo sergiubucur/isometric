@@ -1,6 +1,6 @@
 import styled from "styled-components/macro";
 
-export const Margin = 28;
+export const Margin = 52;
 export const ButtonSize = 48;
 export const BackgroundColor = "#002040";
 export const ForegroundColor = "#2080C0";

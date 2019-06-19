@@ -7,6 +7,7 @@ import IDoor from "../entity/door/IDoor";
 
 export default interface IWorld {
 	readonly map: IMap;
+	readonly totalMonsters: number;
 
 	dispose(): void;
 	addMesh(mesh: THREE.Object3D): void;

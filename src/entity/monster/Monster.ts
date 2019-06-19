@@ -119,6 +119,8 @@ export default class Monster implements IMonster {
 			return;
 		}
 
+		this._player.gainExperience();
+
 		this.updateMeshPosition();
 		this._deathAnimationEngine.startAnimation();
 		this._movementEngine.clearCells();

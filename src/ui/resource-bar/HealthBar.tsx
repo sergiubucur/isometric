@@ -1,7 +1,7 @@
 import React, { PureComponent } from "react";
 
 import IPlayer from "../../entity/player/IPlayer";
-import { Container, Text, Value } from "./styles";
+import { Container, Text, Value, BottomRightPadding } from "./styles";
 import { Margin, Width } from "./styles";
 
 interface State {
@@ -52,7 +52,7 @@ export default class HealthBar extends PureComponent<Props, State> {
 				<Container style={{ left: Margin, border: `2px solid ${ForegroundColor}`, background: BackgroundColor }}>
 
 					<Value style={{
-						width: `${Math.max(Math.floor((health / totalHealth) * Width) - 10, 0)}px`,
+						width: Math.floor((health / totalHealth) * (Width - BottomRightPadding)),
 						background: ForegroundColor
 					}} />
 

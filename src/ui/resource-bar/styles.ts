@@ -3,6 +3,7 @@ import styled from "styled-components/macro";
 export const Margin = 32;
 export const Width = 256;
 export const Height = 32;
+export const BottomRightPadding = 10;
 
 export const Text = styled.div`
 	position: fixed;
@@ -26,5 +27,5 @@ export const Container = styled.div`
 
 export const Value = styled.div`
 	margin: 3px;
-	height: ${Height - 10}px;
+	height: ${Height - BottomRightPadding}px;
 `;

@@ -13,6 +13,7 @@ import Tooltip from "./tooltip/Tooltip";
 import DeathMessage from "./death-message/DeathMessage";
 import ITooltipService from "./tooltip/service/ITooltipService";
 import ITooltipConnector from "./tooltip/service/ITooltipConnector";
+import ExperienceBar from "./resource-bar/ExperienceBar";
 
 export default class UIRoot implements IUIRoot {
 	constructor(private _world: IWorld, private _player: IPlayer, private _logger: ILogger, private _tooltipService: ITooltipService) {
@@ -32,6 +33,10 @@ export default class UIRoot implements IUIRoot {
 				<ManaBar
 					player={this._player}>
 				</ManaBar>
+
+				<ExperienceBar
+					player={this._player}>
+				</ExperienceBar>
 
 				<SpellBar
 					player={this._player}

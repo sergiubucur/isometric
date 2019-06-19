@@ -1,7 +1,7 @@
 import React, { PureComponent } from "react";
 
 import IPlayer from "../../entity/player/IPlayer";
-import { Container, Text, Value, Margin, Width } from "./styles";
+import { Container, Text, Value, Margin, Width, BottomRightPadding } from "./styles";
 
 interface State {
 	mana: number,
@@ -51,7 +51,7 @@ export default class ManaBar extends PureComponent<Props, State> {
 				<Container style={{ right: Margin, border: `2px solid ${ForegroundColor}`, background: BackgroundColor }}>
 
 					<Value style={{
-						width: `${Math.max(Math.floor((mana / totalMana) * Width) - 10, 0)}px`,
+						width: Math.floor((mana / totalMana) * (Width - BottomRightPadding)),
 						background: ForegroundColor
 					}} />
 

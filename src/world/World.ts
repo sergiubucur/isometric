@@ -20,6 +20,10 @@ import CellType from "./map/CellType";
 const MapName = "testMap";
 
 export default class World implements IWorld, IWorldComponent {
+	get totalMonsters() {
+		return this._monsters.length;
+	}
+
 	readonly scene: THREE.Scene;
 	map: IMap;
 
@@ -64,8 +68,7 @@ export default class World implements IWorld, IWorldComponent {
 
 		this.deleteMarkedEntities();
 
-		this._logger.logNumber("entities", this._monsters.length + this._projectiles.length + 1, 0);
-		this._logger.logNumber("monsters left", this._monsters.filter(x => !x.dead).length, 0);
+		this._logger.logNumber("map entities", this._monsters.length + this._projectiles.length + this._doors.length + 1, 0);
 	}
 
 	deleteMarkedEntities() {

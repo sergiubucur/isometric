@@ -28,6 +28,7 @@ const MeshName = "human";
 const TotalHealth = 100;
 const TotalMana = 100;
 const ManaRegen = 0.1;
+const ExperienceToNextLevel = 10000;
 
 export default class Player implements IPlayer {
 	get position() {
@@ -48,6 +49,8 @@ export default class Player implements IPlayer {
 	totalMana: number;
 	manaRegen: number;
 	mouseOverTarget: IMonster | IDoor | null;
+	experience: number;
+	experienceToNextLevel: number;
 
 	private _mesh: THREE.Mesh;
 	private _pointLight: THREE.PointLight;
@@ -69,6 +72,8 @@ export default class Player implements IPlayer {
 		this.mana = this.totalMana;
 		this.manaRegen = ManaRegen;
 		this.mouseOverTarget = null;
+		this.experience = 0;
+		this.experienceToNextLevel = ExperienceToNextLevel;
 
 		this.initMovementEngine();
 		this._camera.setPosition(StartPosition);
@@ -133,6 +138,8 @@ export default class Player implements IPlayer {
 	}
 
 	private die() {
+		this.experience = Math.floor(this.experience * 0.75);
+
 		this.uncloak();
 		this._pointLight.color.setHex(PointLightDeathColor);
 		this.updateMeshPosition();
@@ -194,5 +201,9 @@ export default class Player implements IPlayer {
 	updateMeshPosition() {
 		this._mesh.position.copy(this._movementEngine.position);
 		this._mesh.rotation.y = this._movementEngine.rotationY;
+	}
+
+	gainExperience() {
+		this.experience += Math.floor(ExperienceToNextLevel / this._world.totalMonsters);
 	}
 }
