@@ -13,21 +13,12 @@ const AuraTooltip = {
 		</React.Fragment>
 	),
 
-	[AuraType.HealthBoost]: () => (
+	[AuraType.Energized]: () => (
 		<React.Fragment>
-			<Header>Health Boost</Header>
+			<Header>Energized</Header>
 			<Separator/>
 
-			Gaining health over time.
-		</React.Fragment>
-	),
-
-	[AuraType.ManaBoost]: () => (
-		<React.Fragment>
-			<Header>Mana Boost</Header>
-			<Separator/>
-
-			Gaining mana over time.
+			Gaining health and mana over time.
 		</React.Fragment>
 	)
 }

@@ -52,11 +52,8 @@ export default class PlayerAuraEngine implements IPlayerAuraEngine {
 	private applyAuras() {
 		this._auras.forEach(x => {
 			switch (x) {
-				case AuraType.HealthBoost:
+				case AuraType.Energized:
 					this._player.gainHealth(1);
-					break;
-
-				case AuraType.ManaBoost:
 					this._player.gainMana(1);
 					break;
 			}

@@ -136,8 +136,7 @@ export default class Monster implements IMonster {
 
 	private dropPowerup() {
 		const powerupPosition = this._world.map.convertToMapPosition(this._movementEngine.position);
-		const powerupType = Math.random() < 0.5 ? PowerupType.Health : PowerupType.Mana;
-		this._world.addPowerup(powerupPosition, powerupType);
+		this._world.addPowerup(powerupPosition, PowerupType.Energy);
 	}
 
 	private throwProjectile() {

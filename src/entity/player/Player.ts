@@ -17,7 +17,6 @@ import IDoor from "../door/IDoor";
 import IPlayerUseEngine from "./use-engine/IPlayerUseEngine";
 import AuraType from "../aura/AuraType";
 import IPlayerAuraEngine from "./aura-engine/IPlayerAuraEngine";
-import PowerupType from "../powerup/PowerupType";
 
 const StartPosition = new THREE.Vector3(16, 0, 16);
 const Size = 2;
@@ -190,18 +189,7 @@ export default class Player implements IPlayer {
 	private absorbPowerups() {
 		const powerups = this._world.getPowerupsInArea(this._movementEngine.position, this.size);
 		powerups.forEach(x => {
-			console.log(x.type);
-
-			switch (x.type) {
-				case PowerupType.Health:
-					this.auraEngine.addAura(AuraType.HealthBoost);
-					break;
-
-				case PowerupType.Mana:
-					this.auraEngine.addAura(AuraType.ManaBoost);
-					break;
-			}
-
+			this.auraEngine.addAura(AuraType.Energized);
 			x.markForDeletion();
 		});
 	}

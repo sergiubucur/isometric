@@ -1,7 +1,6 @@
 enum AuraType {
 	Cloaked = 1,
-	HealthBoost,
-	ManaBoost
+	Energized
 };
 
 export default AuraType;

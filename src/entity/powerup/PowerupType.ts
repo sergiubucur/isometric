@@ -1,6 +1,5 @@
 enum PowerupType {
-	Health = 1,
-	Mana
+	Energy = 1
 };
 
 export default PowerupType;

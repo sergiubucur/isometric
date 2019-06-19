@@ -8,19 +8,15 @@ import PowerupType from "./PowerupType";
 import MapMatrixType from "../../world/map/MapMatrixType";
 
 const PowerupInfo = {
-	[PowerupType.Health]: {
-		materialCacheKey: "PowerupHealth",
-		color: "#ff0000"
-	},
-	[PowerupType.Mana]: {
-		materialCacheKey: "PowerupMana",
-		color: "#0080ff"
+	[PowerupType.Energy]: {
+		geometryCacheKey: "PowerupEnergy",
+		materialCacheKey: "PowerupEnergy",
+		color: "#bada55"
 	}
 };
 
-const GeometryCacheKey = "Powerup";
 const MapSize = 2;
-const MeshSize = 0.5;
+const MeshSize = 1;
 const YOffset = 2;
 
 export default class Powerup implements IPowerup {
@@ -49,18 +45,28 @@ export default class Powerup implements IPowerup {
 		const info = PowerupInfo[type];
 
 		this._position.copy(position);
-		this._geometry = this._primitiveCache.getGeometry(GeometryCacheKey, () => new THREE.TorusKnotBufferGeometry());
-		this._material = this._primitiveCache.getMaterial(info.materialCacheKey, () => new THREE.MeshPhongMaterial({ color: info.color }));
+		this._geometry = this._primitiveCache.getGeometry(info.geometryCacheKey, () => new THREE.OctahedronBufferGeometry());
+		this._material = this._primitiveCache.getMaterial(info.materialCacheKey, () => new THREE.MeshPhongMaterial({
+			color: info.color
+		}));
 
 		this.initMesh();
 		this.modifyCells(true);
 	}
 
 	update() {
-		this._angle += 0.1;
+		this._angle += 5;
 
 		this._mesh.rotation.y += 0.05;
-		this._mesh.position.y = YOffset + 0.5 * Math.sin(this._angle);
+		this._mesh.position.y = YOffset + 0.5 * Math.sin(Math.PI / 180 * this._angle);
+
+		if (this._angle < 180) {
+			this._mesh.position.y += Math.sin(Math.PI / 180 * this._angle) * 2;
+		}
+
+		if (this._angle >= 720) {
+			this._angle -= 360;
+		}
 	}
 
 	dispose() {
