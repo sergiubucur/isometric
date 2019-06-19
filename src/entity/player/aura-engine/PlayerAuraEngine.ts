@@ -3,8 +3,7 @@ import AuraType from "./AuraType";
 import IPlayer from "../IPlayer";
 import IAura from "./IAura";
 import getAuras from "./AuraFactory";
-
-const TickTotalFrames = 6;
+import { FramesPerTick } from "./AuraTick";
 
 export default class PlayerAuraEngine implements IPlayerAuraEngine {
 	get auras() {
@@ -18,7 +17,7 @@ export default class PlayerAuraEngine implements IPlayerAuraEngine {
 
 	constructor() {
 		this._auras = new Set<IAura>();
-		this._tickFrames = TickTotalFrames;
+		this._tickFrames = FramesPerTick;
 	}
 
 	init(player: IPlayer) {
@@ -32,6 +31,8 @@ export default class PlayerAuraEngine implements IPlayerAuraEngine {
 
 	addAura(type: AuraType) {
 		const aura = this._allAuras[type];
+		aura.reset();
+
 		this._auras.add(aura);
 	}
 
@@ -54,9 +55,25 @@ export default class PlayerAuraEngine implements IPlayerAuraEngine {
 			this._tickFrames--;
 
 			if (this._tickFrames === 0) {
-				this._tickFrames = TickTotalFrames;
-				this._auras.forEach(x => x.tick());
+				this._tickFrames = FramesPerTick;
+				this.tick();
 			}
 		}
+	}
+
+	private tick() {
+		const toRemove: IAura[] = [];
+
+		this._auras.forEach(x => {
+			if (x.isTimeBased()) {
+				x.tick();
+
+				if (x.ticks === 0) {
+					toRemove.push(x);
+				}
+			}
+		});
+
+		toRemove.forEach(x => this._auras.delete(x));
 	}
 }

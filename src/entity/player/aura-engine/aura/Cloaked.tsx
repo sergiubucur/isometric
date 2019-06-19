@@ -11,9 +11,6 @@ export default class Cloaked extends BaseAura {
 		this.iconName = "ra-hood";
 	}
 
-	tick() {
-	}
-
 	tooltip = () => (
 		<React.Fragment>
 			<Header>Cloaked</Header>
