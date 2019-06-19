@@ -1,6 +1,5 @@
 export default interface IFpsDisplay {
-	beginFrame(): void;
-	endFrame(): void;
+	afterFrame(): void;
 	show(): void;
 	hide(): void;
 }

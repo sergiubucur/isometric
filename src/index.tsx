@@ -84,7 +84,7 @@ container.register(Types.IDoor, Door, Types.IWorld, Types.IEntityId);
 
 container.register(Types.IPlayerSpellEngine, PlayerSpellEngine, Types.IWorld, Types.IInputTracker);
 
-container.register(Types.IFpsDisplay, FpsDisplay);
+container.register(Types.IFpsDisplay, FpsDisplay, Types.ILogger);
 
 container.registerSingleton(Types.ITooltipService, TooltipService);
 

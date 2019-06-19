@@ -48,12 +48,10 @@ export default class Core implements ICore {
 	private run() {
 		requestAnimationFrame(() => this.run());
 
-		this._fpsDisplay.beginFrame();
-
 		this.update();
 		this.draw();
 
-		this._fpsDisplay.endFrame();
+		this._fpsDisplay.afterFrame();
 	}
 
 	private update() {

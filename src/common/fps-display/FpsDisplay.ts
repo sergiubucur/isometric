@@ -1,38 +1,36 @@
-import Stats from "stats.js";
-
 import IFpsDisplay from "./IFpsDisplay";
+import ILogger from "../logger/ILogger";
 
 export default class FpsDisplay implements IFpsDisplay {
-	private _stats: Stats;
+	private _visible: boolean;
+	private _time: number;
+	private _frames: number;
 
-	constructor() {
-		this._stats = new Stats();
-		this._stats.dom.style.cssText = `
-			position: fixed;
-			top: 306px;
-			right: 30px;
-			cursor: pointer;
-			opacity: 0.75;
-			z-index: 10000;
-		`;
-		this._stats.showPanel(0);
-
-		document.body.appendChild(this._stats.dom);
+	constructor(private _logger: ILogger) {
+		this._visible = false;
+		this._time = performance.now();
+		this._frames = 0;
 	}
 
-	beginFrame() {
-		this._stats.begin();
-	}
+	afterFrame() {
+		this._frames++;
 
-	endFrame() {
-		this._stats.end();
+		const time = performance.now();
+		if (time - this._time > 1000) {
+			if (this._visible) {
+				this._logger.logBounds("fps", this._frames, 0);
+			}
+
+			this._time = time;
+			this._frames = 0;
+		}
 	}
 
 	hide() {
-		this._stats.dom.style.display = "none";
+		this._visible = false;
 	}
 
 	show() {
-		this._stats.dom.style.display = "block";
+		this._visible = true;
 	}
 }
