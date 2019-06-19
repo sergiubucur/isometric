@@ -7,7 +7,14 @@ export default class FpsDisplay implements IFpsDisplay {
 
 	constructor() {
 		this._stats = new Stats();
-		this._stats.dom.style.cssText = "position: fixed; top: 292px; right: 30px; cursor: pointer; opacity: 0.75; z-index: 10000;";
+		this._stats.dom.style.cssText = `
+			position: fixed;
+			top: 306px;
+			right: 30px;
+			cursor: pointer;
+			opacity: 0.75;
+			z-index: 10000;
+		`;
 		this._stats.showPanel(0);
 
 		document.body.appendChild(this._stats.dom);

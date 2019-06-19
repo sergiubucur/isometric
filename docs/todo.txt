@@ -1,7 +1,6 @@
 powerups
 monster health bar
 fix laptop zoom bug
-spell aura system
 
 ----
 
