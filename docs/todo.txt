@@ -1,6 +1,5 @@
 powerups
 monster health bar
-fix laptop zoom bug
 
 ----
 
