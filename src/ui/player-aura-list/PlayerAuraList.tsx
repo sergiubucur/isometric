@@ -14,11 +14,13 @@ type Props = {
 
 type State = {
 	auras: IAura[];
+	stacks: number[];
 };
 
 export default class PlayerAuraList extends PureComponent<Props, State> {
 	state: State = {
-		auras: []
+		auras: [],
+		stacks: []
 	};
 
 	private _intervalId: number;
@@ -28,9 +30,10 @@ export default class PlayerAuraList extends PureComponent<Props, State> {
 			const { player } = this.props;
 			const { auras } = player.auraEngine;
 
-			if (!this.arrayEquals(auras, this.state.auras)) {
+			if (this.needsUpdate(auras)) {
 				this.setState({
-					auras
+					auras,
+					stacks: auras.map(x => x.stacks)
 				});
 			}
 		}, UIConstants.RefreshIntervalMs);
@@ -40,12 +43,15 @@ export default class PlayerAuraList extends PureComponent<Props, State> {
 		clearInterval(this._intervalId);
 	}
 
-	private arrayEquals<T>(a: T[], b: T[]) {
-		return a.length === b.length && a.every((x, i) => x === b[i]);
+	private needsUpdate(auras: IAura[]) {
+		return auras.length !== this.state.auras.length
+			|| auras.find((x, i) => x !== this.state.auras[i] || x.stacks !== this.state.stacks[i]);
 	}
 
 	render() {
 		const { auras } = this.state;
+
+		console.log("render");
 
 		return (
 			<Container>

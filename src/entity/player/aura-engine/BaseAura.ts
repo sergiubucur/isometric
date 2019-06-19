@@ -8,6 +8,8 @@ export default abstract class BaseSpell implements IAura {
 	abstract tooltip: React.FunctionComponent;
 	ticks: number;
 	totalTicks: number;
+	stacking: boolean;
+	stacks: number;
 
 	protected _player: IPlayer;
 
@@ -15,8 +17,11 @@ export default abstract class BaseSpell implements IAura {
 		this.name = "BaseAura";
 		this.iconName = "ra-sword";
 		this.flipIcon = false;
-		this.ticks = 0;
 		this.totalTicks = 0;
+		this.stacking = false;
+
+		this.resetTicks();
+		this.resetStacks();
 	}
 
 	init(player: IPlayer) {
@@ -25,15 +30,21 @@ export default abstract class BaseSpell implements IAura {
 
 	tick() {
 		this.ticks--;
-
-		console.log("tick");
 	}
 
-	reset() {
+	resetTicks() {
 		this.ticks = this.totalTicks;
+	}
+
+	resetStacks() {
+		this.stacks = 1;
 	}
 
 	isTimeBased() {
 		return this.totalTicks > 0;
+	}
+
+	addStack() {
+		this.stacks++;
 	}
 }

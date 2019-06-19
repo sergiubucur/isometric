@@ -2,7 +2,7 @@ import React, { Component } from "react";
 
 import Icon from "../common/Icon";
 import ITooltipService from "../tooltip/service/ITooltipService";
-import { IconContainer } from "./styles";
+import { IconContainer, StackValue } from "./styles";
 import IAura from "../../entity/player/aura-engine/IAura";
 
 type Props = {
@@ -30,9 +30,11 @@ export default class SpellIcon extends Component<Props> {
 		return (
 			<IconContainer
 				onMouseEnter={this.handleMouseEnter}
-				onMouseLeave={this.handleMouseLeave}>
+				onMouseLeave={this.handleMouseLeave}
+				flicker={aura.isTimeBased()}>
 
 				<Icon name={iconName} flip={flipIcon}/>
+				{aura.stacking && <StackValue>{aura.stacks}</StackValue>}
 			</IconContainer>
 		);
 	}

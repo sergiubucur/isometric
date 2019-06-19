@@ -31,9 +31,14 @@ export default class PlayerAuraEngine implements IPlayerAuraEngine {
 
 	addAura(type: AuraType) {
 		const aura = this._allAuras[type];
-		aura.reset();
+		aura.resetTicks();
 
-		this._auras.add(aura);
+		if (aura.stacking && this._auras.has(aura)) {
+			aura.addStack();
+		} else {
+			aura.resetStacks();
+			this._auras.add(aura);
+		}
 	}
 
 	removeAura(type: AuraType) {
