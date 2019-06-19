@@ -49,7 +49,7 @@ export const IconBadge = styled.div`
 	left: 50%;
 	transform: translateX(-50%);
 	outline: 2px solid #000;
-	top: -24px;
+	top: -22px;
 	font-size: 12px;
 	background: ${BackgroundColor};
 	border: 2px solid ${ForegroundColor};
