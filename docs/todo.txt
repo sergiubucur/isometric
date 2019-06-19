@@ -2,10 +2,10 @@ mock experience bar
 powerups
 monster health bar
 fix laptop zoom bug
+spell aura system
 
 ----
 
-spell aura system
 different types of monsters
 multiple levels
 procedurally generated levels
