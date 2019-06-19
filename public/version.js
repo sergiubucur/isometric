@@ -1,0 +1,1 @@
+window.VERSION = "dev-build";

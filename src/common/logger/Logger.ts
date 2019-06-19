@@ -3,6 +3,7 @@ import * as THREE from "three";
 import ILogger from "./ILogger";
 import IInputTracker from "../../input-tracker/IInputTracker";
 import Keybinds from "../../input-tracker/Keybinds";
+import Version from "../../common/Version";
 
 type BoundsInfo = {
 	value: number,
@@ -10,8 +11,6 @@ type BoundsInfo = {
 	max: number,
 	digits: number
 };
-
-const DefaultVisibility = true;
 
 export default class Logger implements ILogger {
 	private _domElement: HTMLElement;
@@ -23,7 +22,7 @@ export default class Logger implements ILogger {
 	constructor(private _inputTracker: IInputTracker) {
 		this._logItems = [];
 		this._bounds = {};
-		this._visible = DefaultVisibility;
+		this._visible = Version === "dev-build";
 		this._keyPressed = false;
 
 		this.initDomElement();
@@ -40,12 +39,17 @@ export default class Logger implements ILogger {
 		this._domElement.style.top = "10px";
 		this._domElement.style.zIndex = "100";
 		this._domElement.style.opacity = "0.5";
-		this._domElement.style.display = DefaultVisibility ? "block" : "none";
+		this._domElement.style.display = Version === "dev-build" ? "block" : "none";
 
 		document.body.appendChild(this._domElement);
 	}
 
 	update() {
+		if (Version !== "dev-build") {
+			this._logItems.unshift(`----`);
+			this._logItems.unshift(`Build ${Version} - by Sergiu-Valentin Bucur`);
+		}
+
 		this._domElement.innerHTML = this._logItems.join(`<div style="margin-bottom: 5px"></div>`);
 		this._logItems.length = 0;
 
