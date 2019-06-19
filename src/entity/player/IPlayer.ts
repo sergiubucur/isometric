@@ -3,6 +3,7 @@ import IMonster from "../monster/IMonster";
 import IPlayerSpellEngine from "./spell-engine/IPlayerSpellEngine";
 import IDoor from "../door/IDoor";
 import AuraType from "../aura/AuraType";
+import IPlayerAuraEngine from "./aura-engine/IPlayerAuraEngine";
 
 export default interface IPlayer extends IComponent {
 	readonly id: number;
@@ -17,11 +18,13 @@ export default interface IPlayer extends IComponent {
 	readonly spellEngine: IPlayerSpellEngine;
 	readonly experience: number;
 	readonly experienceToNextLevel: number;
-	readonly auras: Set<AuraType>;
+	readonly auraEngine: IPlayerAuraEngine;
 
 	damage(): void;
 	setInvisibility(value: boolean): void;
 	spendMana(value: number): void;
 	updateMeshPosition(): void;
 	gainExperience(): void;
+	gainHealth(value: number): void;
+	gainMana(value: number): void;
 }

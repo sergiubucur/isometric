@@ -14,7 +14,7 @@ export default class Cloak extends BaseSpell {
 	}
 
 	cast() {
-		const invisible = this._player.auras.has(AuraType.Cloaked);
+		const invisible = this._player.auraEngine.hasAura(AuraType.Cloaked);
 		this._player.setInvisibility(!invisible);
 	}
 

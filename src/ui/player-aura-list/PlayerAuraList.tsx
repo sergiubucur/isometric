@@ -26,7 +26,7 @@ export default class PlayerAuraList extends PureComponent<Props, State> {
 	componentDidMount() {
 		this._intervalId = setInterval(() => {
 			const { player } = this.props;
-			const auras = Array.from(player.auras);
+			const { auras } = player.auraEngine;
 
 			if (!this.arrayEquals(auras, this.state.auras)) {
 				this.setState({

@@ -16,6 +16,8 @@ import IPlayerSpellEngine from "./spell-engine/IPlayerSpellEngine";
 import IDoor from "../door/IDoor";
 import IPlayerUseEngine from "./use-engine/IPlayerUseEngine";
 import AuraType from "../aura/AuraType";
+import IPlayerAuraEngine from "./aura-engine/IPlayerAuraEngine";
+import PowerupType from "../powerup/PowerupType";
 
 const StartPosition = new THREE.Vector3(16, 0, 16);
 const Size = 2;
@@ -52,7 +54,7 @@ export default class Player implements IPlayer {
 	mouseOverTarget: IMonster | IDoor | null;
 	experience: number;
 	experienceToNextLevel: number;
-	readonly auras: Set<AuraType>;
+	readonly auraEngine: IPlayerAuraEngine;
 
 	private _mesh: THREE.Mesh;
 	private _pointLight: THREE.PointLight;
@@ -60,7 +62,7 @@ export default class Player implements IPlayer {
 	constructor(private _mouseControls: IMouseControls, private _camera: ICamera, private _inputTracker: IInputTracker,
 		private _world: IWorld, private _logger: ILogger, private _entityId: IEntityId, private _movementEngine: IEntityMovementEngine,
 		private _assetService: IAssetService, private _deathAnimationEngine: IEntityDeathAnimationEngine,
-		private _spellEngine: IPlayerSpellEngine, private _useEngine: IPlayerUseEngine) {
+		private _spellEngine: IPlayerSpellEngine, private _useEngine: IPlayerUseEngine, auraEngine: IPlayerAuraEngine) {
 
 		this._mouseControls.onLeftClick = () => this.handleLeftClick();
 
@@ -75,7 +77,7 @@ export default class Player implements IPlayer {
 		this.mouseOverTarget = null;
 		this.experience = 0;
 		this.experienceToNextLevel = ExperienceToNextLevel;
-		this.auras = new Set<AuraType>();
+		this.auraEngine = auraEngine;
 
 		this.initMovementEngine();
 		this._camera.setPosition(StartPosition);
@@ -97,6 +99,7 @@ export default class Player implements IPlayer {
 		this._deathAnimationEngine.init(this._mesh, this.size);
 		this._spellEngine.init(this, this._movementEngine, this._mouseControls);
 		this._useEngine.init(this._movementEngine);
+		this.auraEngine.init(this);
 	}
 
 	update() {
@@ -109,6 +112,7 @@ export default class Player implements IPlayer {
 			return;
 		}
 
+		this.auraEngine.update();
 		this.updateManaRegen();
 		this._mouseControls.update();
 		this.updateMouseOverTarget();
@@ -154,6 +158,7 @@ export default class Player implements IPlayer {
 	}
 
 	private resurrect() {
+		this.auraEngine.clearAuras();
 		this._pointLight.color.setHex(Color);
 		this._deathAnimationEngine.cancelAnimation();
 		this._mouseControls.show();
@@ -170,9 +175,9 @@ export default class Player implements IPlayer {
 
 	setInvisibility(value: boolean) {
 		if (value) {
-			this.auras.add(AuraType.Cloaked);
+			this.auraEngine.addAura(AuraType.Cloaked);
 		} else {
-			this.auras.delete(AuraType.Cloaked);
+			this.auraEngine.removeAura(AuraType.Cloaked);
 		}
 
 		(this._mesh.material as THREE.MeshPhongMaterial).opacity = value ? 0.33 : 1;
@@ -186,6 +191,16 @@ export default class Player implements IPlayer {
 		const powerups = this._world.getPowerupsInArea(this._movementEngine.position, this.size);
 		powerups.forEach(x => {
 			console.log(x.type);
+
+			switch (x.type) {
+				case PowerupType.Health:
+					this.auraEngine.addAura(AuraType.HealthBoost);
+					break;
+
+				case PowerupType.Mana:
+					this.auraEngine.addAura(AuraType.ManaBoost);
+					break;
+			}
 
 			x.markForDeletion();
 		});
@@ -218,5 +233,16 @@ export default class Player implements IPlayer {
 
 	gainExperience() {
 		this.experience += Math.floor(ExperienceToNextLevel / this._world.totalMonsters);
+		this.experience = THREE.Math.clamp(this.experience, 0, ExperienceToNextLevel);
+	}
+
+	gainHealth(value: number) {
+		this.health += value;
+		this.health = THREE.Math.clamp(this.health, 0, this.totalHealth);
+	}
+
+	gainMana(value: number) {
+		this.mana += value;
+		this.mana = THREE.Math.clamp(this.mana, 0, this.totalMana);
 	}
 }

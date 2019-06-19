@@ -25,7 +25,8 @@ enum Types {
 	IFpsDisplay,
 	ITooltipService,
 	IPlayerUseEngine,
-	IPowerup
+	IPowerup,
+	IPlayerAuraEngine
 };
 
 export default Types;

@@ -70,7 +70,7 @@ export default class Monster implements IMonster {
 		if (this._ranged) {
 			const rangedAttackEngine = this._rangedAttackEngineFactory();
 
-			rangedAttackEngine.init(() => this._player.position, () => !this._player.auras.has(AuraType.Cloaked),
+			rangedAttackEngine.init(() => this._player.position, () => !this._player.auraEngine.hasAura(AuraType.Cloaked),
 				ProjectileRange, this._mesh, this._movementEngine);
 
 			rangedAttackEngine.onHit = () => {
@@ -152,7 +152,7 @@ export default class Monster implements IMonster {
 	}
 
 	private chase() {
-		if (!this._player.dead && !this._player.auras.has(AuraType.Cloaked)) {
+		if (!this._player.dead && !this._player.auraEngine.hasAura(AuraType.Cloaked)) {
 			this._movementEngine.startMovingTo(this._player.position);
 		}
 	}

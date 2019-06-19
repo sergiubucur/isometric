@@ -29,6 +29,7 @@ import FpsDisplay from "./common/fps-display/FpsDisplay";
 import TooltipService from "./ui/tooltip/service/TooltipService";
 import PlayerUseEngine from "./entity/player/use-engine/PlayerUseEngine";
 import Powerup from "./entity/powerup/Powerup";
+import PlayerAuraEngine from "./entity/player/aura-engine/PlayerAuraEngine";
 
 const container = new Container();
 
@@ -58,7 +59,7 @@ container.register(Types.IMouseControls, MouseControls, Types.ICamera, Types.IIn
 
 container.registerSingleton(Types.IPlayer, Player,
 	Types.IMouseControls, Types.ICamera, Types.IInputTracker, Types.IWorld, Types.ILogger, Types.IEntityId, Types.IEntityMovementEngine,
-	Types.IAssetService, Types.IEntityDeathAnimationEngine, Types.IPlayerSpellEngine, Types.IPlayerUseEngine);
+	Types.IAssetService, Types.IEntityDeathAnimationEngine, Types.IPlayerSpellEngine, Types.IPlayerUseEngine, Types.IPlayerAuraEngine);
 
 container.register(Types.IMonster, Monster, Types.IWorld, Types.IPlayer, Types.IEntityId, Types.IEntityMovementEngine, Types.IAssetService,
 	Factory(Types.IEntityMeleeAttackEngine), Factory(Types.IEntityRangedAttackEngine), Types.IPrimitiveCache, Types.IEntityDeathAnimationEngine);
@@ -93,6 +94,8 @@ container.registerSingleton(Types.ITooltipService, TooltipService);
 container.register(Types.IPlayerUseEngine, PlayerUseEngine);
 
 container.register(Types.IPowerup, Powerup, Types.IWorld, Types.IEntityId, Types.IPrimitiveCache);
+
+container.register(Types.IPlayerAuraEngine, PlayerAuraEngine);
 
 const core = container.resolve(Types.ICore) as ICore;
 core.onRestart = () => {
