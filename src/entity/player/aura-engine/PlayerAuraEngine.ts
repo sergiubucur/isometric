@@ -33,7 +33,7 @@ export default class PlayerAuraEngine implements IPlayerAuraEngine {
 		const aura = this._allAuras[type];
 		aura.resetTicks();
 
-		if (aura.stacking && this._auras.has(aura)) {
+		if (aura.maxStacks > 1 && this._auras.has(aura)) {
 			aura.addStack();
 		} else {
 			aura.resetStacks();

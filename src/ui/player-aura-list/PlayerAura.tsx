@@ -34,7 +34,7 @@ export default class SpellIcon extends Component<Props> {
 				flicker={aura.isTimeBased()}>
 
 				<Icon name={iconName} flip={flipIcon}/>
-				{aura.stacking && <StackValue>{aura.stacks}</StackValue>}
+				{aura.maxStacks > 1 && <StackValue>{aura.stacks}</StackValue>}
 			</IconContainer>
 		);
 	}

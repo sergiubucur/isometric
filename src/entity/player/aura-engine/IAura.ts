@@ -8,8 +8,8 @@ export default interface IAura {
 	readonly tooltip: React.FunctionComponent;
 	readonly ticks: number;
 	readonly totalTicks: number;
-	readonly stacking: boolean;
 	readonly stacks: number;
+	readonly maxStacks: number;
 
 	init(player: IPlayer): void;
 	tick(): void;

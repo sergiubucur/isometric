@@ -11,7 +11,7 @@ export default class Energized extends BaseAura {
 		this.name = "Energized";
 		this.iconName = "ra-lightning-bolt";
 		this.totalTicks = secondsToTicks(5);
-		this.stacking = true;
+		this.maxStacks = 20;
 	}
 
 	tick() {
