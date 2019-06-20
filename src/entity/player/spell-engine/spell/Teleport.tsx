@@ -14,9 +14,9 @@ export default class Teleport extends BaseSpell {
 	}
 
 	cast() {
-		if (this._movementEngine.canMoveTo(this._mouseControls.mousePosition)) {
-			this._movementEngine.velocity.copy(this._mouseControls.mousePosition).sub(this._movementEngine.position);
-			this._movementEngine.moveTo(this._mouseControls.mousePosition);
+		if (this._movementEngine.canMoveTo(this._mouseControls.mapPosition)) {
+			this._movementEngine.velocity.copy(this._mouseControls.mapPosition).sub(this._movementEngine.position);
+			this._movementEngine.moveTo(this._mouseControls.mapPosition);
 		}
 	}
 

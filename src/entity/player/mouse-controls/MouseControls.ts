@@ -10,6 +10,7 @@ const Color = 0xbada55;
 
 export default class MouseControls implements IMouseControls {
 	mousePosition: THREE.Vector3;
+	mapPosition: THREE.Vector3;
 
 	onLeftClick: () => void;
 	onRightClick: () => void;
@@ -18,6 +19,9 @@ export default class MouseControls implements IMouseControls {
 	private _plane: THREE.Plane;
 
 	constructor(private _camera: ICamera, private _inputTracker: IInputTracker, private _world: IWorld, private _logger: ILogger) {
+		this.mousePosition = new THREE.Vector3();
+		this.mapPosition = new THREE.Vector3();
+
 		this.onLeftClick = () => {};
 		this.onRightClick = () => {};
 
@@ -49,7 +53,7 @@ export default class MouseControls implements IMouseControls {
 		this.mousePosition = new THREE.Vector3();
 		raycaster.ray.intersectPlane(this._plane, this.mousePosition);
 
-		this.mousePosition = this._world.map.convertToMapPosition(this.mousePosition);
+		this.mapPosition = this._world.map.convertToMapPosition(this.mousePosition);
 
 		if (this._inputTracker.leftMouseDown) {
 			this.onLeftClick();
@@ -58,7 +62,7 @@ export default class MouseControls implements IMouseControls {
 			this.onRightClick();
 		}
 
-		this._pointerMesh.position.set(this.mousePosition.x, 0.05, this.mousePosition.z);
+		this._pointerMesh.position.set(this.mapPosition.x, 0.05, this.mapPosition.z);
 	}
 
 	private updateZoomLevel() {

@@ -120,7 +120,7 @@ export default class Player implements IPlayer {
 	}
 
 	private updateMouseOverTarget() {
-		this.mouseOverTarget = this._world.getEntityAtPosition(this._mouseControls.mousePosition, false);
+		this.mouseOverTarget = this._world.getEntityAtPosition(this._mouseControls.mapPosition, false);
 		this._useEngine.afterMouseOverTargetUpdate(this.mouseOverTarget);
 	}
 

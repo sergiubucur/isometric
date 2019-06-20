@@ -4,6 +4,7 @@ import IComponent from "../../../common/IComponent";
 
 export default interface IMouseControls extends IComponent {
 	mousePosition: THREE.Vector3;
+	mapPosition: THREE.Vector3;
 
 	onLeftClick: () => void;
 	onRightClick: () => void;
