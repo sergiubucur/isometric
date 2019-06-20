@@ -12,6 +12,7 @@ import ICore from "./ICore";
 import Keybinds from "./input-tracker/Keybinds";
 import IFpsDisplay from "./common/fps-display/IFpsDisplay";
 import ILoadingDisplay from "./common/loading-display/ILoadingDisplay";
+import IGameLoop from "./common/game-loop/IGameLoop";
 
 const DisableUIQueryString = "disable_ui";
 
@@ -35,7 +36,8 @@ export default class Core implements ICore {
 		private _playerFactory: () => IPlayer,
 		private _uiRootFactory: () => IUIRoot,
 		private _fpsDisplay: IFpsDisplay,
-		private _loadingDisplay: ILoadingDisplay) {
+		private _loadingDisplay: ILoadingDisplay,
+		private _gameLoop: IGameLoop) {
 
 		this.onRestart = () => {};
 		this._state = CoreState.None;
@@ -45,17 +47,12 @@ export default class Core implements ICore {
 		this._renderer = null;
 		this._assetService = null;
 
-		this.run();
+		this._gameLoop.onUpdate = () => this.update();
+		this._gameLoop.onDraw = () => this.draw();
+		this._gameLoop.afterFrame = () => this._fpsDisplay.afterFrame();
+		this._gameLoop.run();
+
 		this._nextState = CoreState.Load;
-	}
-
-	private run() {
-		requestAnimationFrame(() => this.run());
-
-		this.update();
-		this.draw();
-
-		this._fpsDisplay.afterFrame();
 	}
 
 	private update() {

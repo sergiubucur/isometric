@@ -27,7 +27,8 @@ enum Types {
 	IPlayerUseEngine,
 	IPowerup,
 	IPlayerAuraEngine,
-	ILoadingDisplay
+	ILoadingDisplay,
+	IGameLoop
 };
 
 export default Types;

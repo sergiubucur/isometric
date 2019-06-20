@@ -31,6 +31,7 @@ import PlayerUseEngine from "./entity/player/use-engine/PlayerUseEngine";
 import Powerup from "./entity/powerup/Powerup";
 import PlayerAuraEngine from "./entity/player/aura-engine/PlayerAuraEngine";
 import LoadingDisplay from "./common/loading-display/LoadingDisplay";
+import GameLoop from "./common/game-loop/GameLoop";
 
 const container = new Container();
 
@@ -42,7 +43,7 @@ container.registerSingleton(Types.IInputTracker, InputTracker);
 
 container.registerSingleton(Types.ICore, Core,
 	Types.ILogger, Factory(Types.IAssetService), Types.IInputTracker, Factory(Types.ICamera), Factory(Types.IRenderer), Factory(Types.IWorld),
-	Factory(Types.IPlayer), Factory(Types.IUIRoot), Types.IFpsDisplay, Types.ILoadingDisplay);
+	Factory(Types.IPlayer), Factory(Types.IUIRoot), Types.IFpsDisplay, Types.ILoadingDisplay, Types.IGameLoop);
 
 container.registerSingleton(Types.ICamera, Camera);
 
@@ -99,6 +100,8 @@ container.register(Types.IPowerup, Powerup, Types.IWorld, Types.IEntityId, Types
 container.register(Types.IPlayerAuraEngine, PlayerAuraEngine);
 
 container.register(Types.ILoadingDisplay, LoadingDisplay);
+
+container.register(Types.IGameLoop, GameLoop);
 
 const core = container.resolve(Types.ICore) as ICore;
 core.onRestart = () => {
