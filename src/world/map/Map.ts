@@ -1,16 +1,15 @@
 import * as THREE from "three";
 
-import Cell from "./Cell";
 import CellType from "./CellType";
 import IMap from "./IMap";
 import MapMatrixType from "./MapMatrixType";
 
 export default class Map implements IMap {
 	size: number;
-	cells: Cell[][];
+	cells: Uint8ClampedArray;
 	matrices: { [key: number]: Uint32Array };
 
-	constructor(size: number, cells: Cell[][]) {
+	constructor(size: number, cells: Uint8ClampedArray) {
 		this.size = size;
 		this.cells = cells;
 
@@ -33,9 +32,9 @@ export default class Map implements IMap {
 		return mapPosition;
 	}
 
-	getCell(x: number, y: number): Cell | null {
+	getCell(x: number, y: number): CellType | null {
 		if (x >= 0 && x < this.size && y >= 0 && y < this.size) {
-			return this.cells[y][x];
+			return this.cells[y * this.size + x];
 		}
 
 		return null;
@@ -52,7 +51,7 @@ export default class Map implements IMap {
 		const id = matrix[y * this.size + x];
 		const isOccupied = id !== 0 && ignoreIds.indexOf(id) === -1;
 
-		return !isOccupied && (cell.type === CellType.EmptyFloor || cell.type === CellType.Moving);
+		return !isOccupied && (cell === CellType.EmptyFloor || cell === CellType.Moving);
 	}
 
 	areaIsPassable(x: number, y: number, radius: number) {

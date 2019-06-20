@@ -1,6 +1,5 @@
-import Cell from "../../Cell";
 import CellType from "../../CellType";
-import { getCellType } from "./HelperFunctions";
+import { getCell } from "./HelperFunctions";
 
 export type Corner = {
 	x: number,
@@ -10,18 +9,17 @@ export type Corner = {
 };
 
 export default class CornerExtractor {
-	extract(cells: Cell[][]): Corner[] {
-		const size = cells.length;
+	extract(cells: Uint8ClampedArray, size: number): Corner[] {
 		const corners = [];
 
 		for (let y = 0; y < size; y++) {
 			for (let x = 0; x < size; x++) {
-				const c10 = getCellType(cells, x, y - 1);
-				const c01 = getCellType(cells, x - 1, y);
-				const c11 = getCellType(cells, x, y);
-				const c21 = getCellType(cells, x + 1, y);
-				const c12 = getCellType(cells, x, y + 1);
-				const c22 = getCellType(cells, x + 1, y + 1);
+				const c10 = getCell(cells, size, x, y - 1);
+				const c01 = getCell(cells, size, x - 1, y);
+				const c11 = getCell(cells, size, x, y);
+				const c21 = getCell(cells, size, x + 1, y);
+				const c12 = getCell(cells, size, x, y + 1);
+				const c22 = getCell(cells, size, x + 1, y + 1);
 
 				if (c10 !== c11 && c01 !== c11) {
 					corners.push({ x, y, type: c11 });

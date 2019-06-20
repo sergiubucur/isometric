@@ -1,5 +1,4 @@
 import Map from "../Map";
-import Cell from "../Cell";
 import CellType from "../CellType";
 import IMapLoader, { Rectangle, Edge, MapLoaderResult } from "./IMapLoader";
 import CornerExtractor, { Corner } from "./extraction/CornerExtractor";
@@ -14,21 +13,21 @@ const DrawResult = false;
 
 export default class MapLoader implements IMapLoader {
 	loadMap(source: HTMLImageElement): MapLoaderResult {
-		const cells = new CellExtractor().extract(source);
-		const { corners, rectangles, edges } = this.getPrimitives(cells);
+		const { cells, size } = new CellExtractor().extract(source);
+		const { corners, rectangles, edges } = this.getPrimitives(cells, size);
 
 		if (DrawResult) {
-			this.drawResult(cells, corners, rectangles, edges);
+			this.drawResult(cells, size, corners, rectangles, edges);
 		}
 
 		return {
-			map: new Map(cells.length, cells),
+			map: new Map(size, cells),
 			rectangles,
 			edges
 		};
 	}
 
-	private drawResult(cells: Cell[][], corners: Corner[], rectangles: Rectangle[], edges: Edge[]) {
+	private drawResult(cells: Uint8ClampedArray, size: number, corners: Corner[], rectangles: Rectangle[], edges: Edge[]) {
 		const debugRenderer = new DebugRenderer();
 
 		debugRenderer.draw({
@@ -37,17 +36,18 @@ export default class MapLoader implements IMapLoader {
 			drawEdges: true,
 			delay: 0,
 			cells,
+			size,
 			corners,
 			rectangles,
 			edges
 		});
 	}
 
-	private getPrimitives(cells: Cell[][]) {
-		const corners = new CornerExtractor().extract(cells);
-		sortCorners(corners, cells.length);
+	private getPrimitives(cells: Uint8ClampedArray, size: number) {
+		const corners = new CornerExtractor().extract(cells, size);
+		sortCorners(corners, size);
 
-		const rectangles = new RectangleExtractor().extract(cells, [...corners]);
+		const rectangles = new RectangleExtractor().extract(cells, size, [...corners]);
 
 		this.maskRectangles(rectangles);
 

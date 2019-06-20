@@ -1,4 +1,3 @@
-import Cell from "../../Cell";
 import CellType from "../../CellType";
 
 const ColorCellTypeMapping: { [key: string]: CellType } = {
@@ -13,13 +12,11 @@ export default class CellExtractor {
 		const data = this.getImageData(source);
 
 		const size = source.width;
-		const cells: Cell[][] = [];
+		const cells = new Uint8ClampedArray(size * size);
 
 		for (let y = 0; y < size; y++) {
-			const row: Cell[] = [];
-
 			for (let x = 0; x < size; x++) {
-				const cell: Cell = { type: null };
+				let cell = null;
 
 				const i = (y * size + x) * 4;
 				const colorStr = `${data[i]},${data[i + 1]},${data[i + 2]}`;
@@ -28,15 +25,12 @@ export default class CellExtractor {
 					throw new Error("undefined cell type");
 				}
 
-				cell.type = ColorCellTypeMapping[colorStr];
-
-				row.push(cell);
+				cell = ColorCellTypeMapping[colorStr];
+				cells[y * size + x] = cell;
 			}
-
-			cells.push(row);
 		}
 
-		return cells;
+		return { cells, size };
 	}
 
 	private getImageData(image: HTMLImageElement): Uint8ClampedArray {

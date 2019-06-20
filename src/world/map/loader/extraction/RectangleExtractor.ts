@@ -1,11 +1,9 @@
-import Cell from "../../Cell";
 import { Corner } from "./CornerExtractor";
 import { Rectangle } from "../IMapLoader";
-import { getCellType, sortCorners } from "./HelperFunctions";
+import { getCell, sortCorners } from "./HelperFunctions";
 
 export default class RectangleExtractor {
-	extract(cells: Cell[][], corners: Corner[]) {
-		const size = cells.length;
+	extract(cells: Uint8ClampedArray, size: number, corners: Corner[]) {
 		const rectangles: Rectangle[] = [];
 
 		while (true) {
@@ -26,9 +24,9 @@ export default class RectangleExtractor {
 
 			rectangles.push(rectangle);
 
-			this.tryAddCorner(corners, cells, rectangle.x1, rectangle.y0);
-			this.tryAddCorner(corners, cells, rectangle.x1, rectangle.y1);
-			this.tryAddCorner(corners, cells, rectangle.x0, rectangle.y1);
+			this.tryAddCorner(corners, cells, size, rectangle.x1, rectangle.y0);
+			this.tryAddCorner(corners, cells, size, rectangle.x1, rectangle.y1);
+			this.tryAddCorner(corners, cells, size, rectangle.x0, rectangle.y1);
 
 			sortCorners(corners, size);
 
@@ -38,8 +36,8 @@ export default class RectangleExtractor {
 		return rectangles;
 	}
 
-	private tryAddCorner(corners: Corner[], cells: Cell[][], x: number, y: number) {
-		const cell = getCellType(cells, x, y);
+	private tryAddCorner(corners: Corner[], cells: Uint8ClampedArray, size: number, x: number, y: number) {
+		const cell = getCell(cells, size, x, y);
 
 		if (cell && !corners.find(c => c.x === x && c.y === y)) {
 			corners.push({ x, y, type: cell });

@@ -1,5 +1,4 @@
 import { Rectangle, Edge } from "../IMapLoader";
-import Cell from "../../Cell";
 import CellType from "../../CellType";
 import { Corner } from "../extraction/CornerExtractor";
 
@@ -22,7 +21,8 @@ export type DebugRendererOptions = {
 	drawRectangles: boolean;
 	drawEdges: boolean;
 	delay: number;
-	cells: Cell[][];
+	cells: Uint8ClampedArray;
+	size: number;
 	corners: Corner[];
 	rectangles: Rectangle[];
 	edges: Edge[];
@@ -30,8 +30,8 @@ export type DebugRendererOptions = {
 
 export default class DebugRenderer {
 	draw(options: DebugRendererOptions) {
-		const size = options.cells.length;
-		const canvas = this.getCanvas(options.cells);
+		const { size } = options;
+		const canvas = this.getCanvas(options.cells, size);
 		document.body.appendChild(canvas);
 
 		const ctx = canvas.getContext("2d", { alpha: false });
@@ -108,9 +108,7 @@ export default class DebugRenderer {
 		});
 	}
 
-	private getCanvas(cells: Cell[][]): HTMLCanvasElement {
-		const size = cells.length;
-
+	private getCanvas(cells: Uint8ClampedArray, size: number): HTMLCanvasElement {
 		const canvas = document.createElement("canvas");
 		canvas.width = size;
 		canvas.height = size;
@@ -124,22 +122,21 @@ export default class DebugRenderer {
 		canvas.style.left = "0";
 		canvas.style.top = "0";
 
-		this.drawCells(canvas, cells);
+		this.drawCells(canvas, cells, size);
 
 		return canvas;
 	}
 
-	private drawCells(canvas: HTMLCanvasElement, cells: Cell[][]) {
-		const size = cells.length;
+	private drawCells(canvas: HTMLCanvasElement, cells: Uint8ClampedArray, size: number) {
 		const ctx = canvas.getContext("2d", { alpha: false });
 		const imageData = ctx.getImageData(0, 0, size, size);
 		const data = imageData.data;
 
 		for (let y = 0; y < size; y++) {
 			for (let x = 0; x < size; x++) {
-				const cell = cells[y][x];
+				const cell = cells[y * size + x];
 
-				switch (cell.type) {
+				switch (cell) {
 					case CellType.Void:
 						this.putPixel(data, size, x, y, 0, 0, 0, 255);
 						break;
