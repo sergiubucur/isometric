@@ -8,7 +8,7 @@ import MapMatrixType from "./MapMatrixType";
 export default class Map implements IMap {
 	size: number;
 	cells: Cell[][];
-	matrices: { [key: number]: number[][] };
+	matrices: { [key: number]: Uint32Array };
 
 	constructor(size: number, cells: Cell[][]) {
 		this.size = size;
@@ -21,19 +21,7 @@ export default class Map implements IMap {
 	}
 
 	private getCellMatrix() {
-		const matrix = [];
-
-		for (let i = 0; i < this.size; i++) {
-			const row = [];
-
-			for (let j = 0; j < this.size; j++) {
-				row.push(0);
-			}
-
-			matrix.push(row);
-		}
-
-		return matrix;
+		return new Uint32Array(this.size * this.size);
 	}
 
 	convertToMapPosition(position: THREE.Vector3): THREE.Vector3 {
@@ -61,7 +49,7 @@ export default class Map implements IMap {
 		}
 
 		const matrix = this.getMatrix(MapMatrixType.Physical);
-		const id = matrix[y][x];
+		const id = matrix[y * this.size + x];
 		const isOccupied = id !== 0 && ignoreIds.indexOf(id) === -1;
 
 		return !isOccupied && (cell.type === CellType.EmptyFloor || cell.type === CellType.Moving);
@@ -91,7 +79,7 @@ export default class Map implements IMap {
 					continue;
 				}
 
-				const id = matrix[i][j];
+				const id = matrix[i * this.size + j];
 				if (id > 0 && entityIds.indexOf(id) === -1) {
 					entityIds.push(id);
 				}
@@ -109,17 +97,17 @@ export default class Map implements IMap {
 		}
 
 		const matrix = this.getMatrix(matrixType);
-		return matrix[y][x];
+		return matrix[y * this.size + x];
 	}
 
 	occupyCell(x: number, y: number, id: number, matrixType = MapMatrixType.Physical) {
 		const matrix = this.getMatrix(matrixType);
-		matrix[y][x] = id;
+		matrix[y * this.size + x] = id;
 	}
 
 	vacateCell(x: number, y: number, matrixType = MapMatrixType.Physical) {
 		const matrix = this.getMatrix(matrixType);
-		matrix[y][x] = 0;
+		matrix[y * this.size + x] = 0;
 	}
 
 	private getMatrix(type: MapMatrixType) {
