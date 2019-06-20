@@ -2,8 +2,8 @@ import * as THREE from "three";
 
 import IRenderer from "./IRenderer";
 
-const HalfSizeRendering = false;
-const AntiAliasing = true;
+const HalfSizeRendering = window.location.search.indexOf("half_size") > -1;
+const AntiAliasing = window.location.search.indexOf("no_anti_aliasing") === -1;
 
 export default class Renderer implements IRenderer {
 	private _renderer: THREE.WebGLRenderer;
