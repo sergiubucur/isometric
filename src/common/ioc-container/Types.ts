@@ -26,7 +26,8 @@ enum Types {
 	ITooltipService,
 	IPlayerUseEngine,
 	IPowerup,
-	IPlayerAuraEngine
+	IPlayerAuraEngine,
+	ILoadingDisplay
 };
 
 export default Types;

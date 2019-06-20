@@ -11,6 +11,7 @@ import IUIRoot from "./ui/IUIRoot";
 import ICore from "./ICore";
 import Keybinds from "./input-tracker/Keybinds";
 import IFpsDisplay from "./common/fps-display/IFpsDisplay";
+import ILoadingDisplay from "./common/loading-display/ILoadingDisplay";
 
 export default class Core implements ICore {
 	onRestart: () => void;
@@ -31,7 +32,8 @@ export default class Core implements ICore {
 		private _worldFactory: () => IWorld & IWorldComponent,
 		private _playerFactory: () => IPlayer,
 		private _uiRootFactory: () => IUIRoot,
-		private _fpsDisplay: IFpsDisplay) {
+		private _fpsDisplay: IFpsDisplay,
+		private _loadingDisplay: ILoadingDisplay) {
 
 		this.onRestart = () => {};
 		this._state = CoreState.None;
@@ -58,17 +60,6 @@ export default class Core implements ICore {
 		this.handleStateChange();
 
 		switch (this._state) {
-			case CoreState.None:
-				break;
-
-			case CoreState.Load:
-				this._logger.log("Loading...");
-				break;
-
-			case CoreState.Init:
-				this._logger.log("Initializing...");
-				break;
-
 			case CoreState.Run:
 				const time = performance.now();
 
@@ -80,10 +71,6 @@ export default class Core implements ICore {
 					this._nextState = CoreState.Restart;
 				}
 				break;
-
-			case CoreState.Restart:
-				this._logger.log("Restarting...");
-				break;
 		}
 
 		this._logger.update();
@@ -92,12 +79,6 @@ export default class Core implements ICore {
 
 	private draw() {
 		switch (this._state) {
-			case CoreState.None:
-			case CoreState.Load:
-			case CoreState.Init:
-			case CoreState.Restart:
-				break;
-
 			case CoreState.Run:
 				const time = performance.now();
 
@@ -115,8 +96,10 @@ export default class Core implements ICore {
 
 		this._logger.clear();
 		this._fpsDisplay.hide();
+		this._loadingDisplay.hide();
 
 		if (this._nextState === CoreState.Load) {
+			this._loadingDisplay.show();
 			this.load();
 
 			this._state = this._nextState;
@@ -125,6 +108,7 @@ export default class Core implements ICore {
 		}
 
 		if (this._nextState === CoreState.Init) {
+			this._loadingDisplay.show();
 			setTimeout(() => this.init());
 
 			this._state = this._nextState;
@@ -141,6 +125,7 @@ export default class Core implements ICore {
 		}
 
 		if (this._nextState === CoreState.Restart) {
+			this._loadingDisplay.show();
 			setTimeout(() => this.restart());
 
 			this._state = this._nextState;

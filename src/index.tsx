@@ -30,6 +30,7 @@ import TooltipService from "./ui/tooltip/service/TooltipService";
 import PlayerUseEngine from "./entity/player/use-engine/PlayerUseEngine";
 import Powerup from "./entity/powerup/Powerup";
 import PlayerAuraEngine from "./entity/player/aura-engine/PlayerAuraEngine";
+import LoadingDisplay from "./common/loading-display/LoadingDisplay";
 
 const container = new Container();
 
@@ -41,7 +42,7 @@ container.registerSingleton(Types.IInputTracker, InputTracker);
 
 container.registerSingleton(Types.ICore, Core,
 	Types.ILogger, Factory(Types.IAssetService), Types.IInputTracker, Factory(Types.ICamera), Factory(Types.IRenderer), Factory(Types.IWorld),
-	Factory(Types.IPlayer), Factory(Types.IUIRoot), Types.IFpsDisplay);
+	Factory(Types.IPlayer), Factory(Types.IUIRoot), Types.IFpsDisplay, Types.ILoadingDisplay);
 
 container.registerSingleton(Types.ICamera, Camera);
 
@@ -96,6 +97,8 @@ container.register(Types.IPlayerUseEngine, PlayerUseEngine);
 container.register(Types.IPowerup, Powerup, Types.IWorld, Types.IEntityId, Types.IPrimitiveCache);
 
 container.register(Types.IPlayerAuraEngine, PlayerAuraEngine);
+
+container.register(Types.ILoadingDisplay, LoadingDisplay);
 
 const core = container.resolve(Types.ICore) as ICore;
 core.onRestart = () => {
