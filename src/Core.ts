@@ -13,6 +13,8 @@ import Keybinds from "./input-tracker/Keybinds";
 import IFpsDisplay from "./common/fps-display/IFpsDisplay";
 import ILoadingDisplay from "./common/loading-display/ILoadingDisplay";
 
+const DisableUIQueryString = "disable_ui";
+
 export default class Core implements ICore {
 	onRestart: () => void;
 
@@ -153,14 +155,19 @@ export default class Core implements ICore {
 		this._world.setPlayer(player);
 		this._world.initEntities();
 
-		this._uiRoot = this._uiRootFactory();
+		if (window.location.search.indexOf(DisableUIQueryString) === -1) {
+			this._uiRoot = this._uiRootFactory();
+		}
+
 		this._nextState = CoreState.Run;
 	}
 
 	private restart() {
 		this.onRestart();
 
-		this._uiRoot.dispose();
+		if (this._uiRoot) {
+			this._uiRoot.dispose();
+		}
 		this._uiRoot = null;
 
 		this._camera = null;
