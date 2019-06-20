@@ -46,6 +46,12 @@ export default class Logger implements ILogger {
 	}
 
 	update() {
+		this.updateVisibility();
+
+		if (!this._visible) {
+			return;
+		}
+
 		if (Version !== "dev-build") {
 			this._logItems.unshift(
 				`isometric - build ${Version} - by Sergiu-Valentin Bucur`,
@@ -61,8 +67,6 @@ export default class Logger implements ILogger {
 
 			this._logItems.push(`${x}: ${value.toFixed(digits)} (min: ${min.toFixed(digits)}, max: ${max.toFixed(digits)})`);
 		});
-
-		this.updateVisibility();
 	}
 
 	private updateVisibility() {
@@ -86,22 +90,42 @@ export default class Logger implements ILogger {
 	}
 
 	log(message: string) {
+		if (!this._visible) {
+			return;
+		}
+
 		this._logItems.push(message);
 	}
 
 	logNumber(name: string, value: number, digits = 2) {
+		if (!this._visible) {
+			return;
+		}
+
 		this._logItems.push(`${name}: ${value.toFixed(digits)}`);
 	}
 
 	logVector2(name: string, vector2: THREE.Vector2, digits = 2) {
+		if (!this._visible) {
+			return;
+		}
+
 		this._logItems.push(`${name}: ${vector2.x.toFixed(digits)} ${vector2.y.toFixed(digits)}`);
 	}
 
 	logVector3(name: string, vector3: THREE.Vector3, digits = 2) {
+		if (!this._visible) {
+			return;
+		}
+
 		this._logItems.push(`${name}: ${vector3.x.toFixed(digits)} ${vector3.y.toFixed(digits)} ${vector3.z.toFixed(digits)}`);
 	}
 
 	logBounds(name: string, value: number, digits = 2) {
+		if (!this._visible) {
+			return;
+		}
+
 		if (!this._bounds[name]) {
 			this._bounds[name] = { value: value, min: Infinity, max: -Infinity, digits };
 		} else {
