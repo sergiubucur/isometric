@@ -43,7 +43,7 @@ export default class Minimap extends Component<Props> {
 
 		this.renderCells();
 
-		this.props.logger.logBounds("minimap draw time", performance.now() - time);
+		this.props.logger.logNumber("minimap draw time", performance.now() - time);
 	}
 
 	private renderCells() {

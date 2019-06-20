@@ -6,6 +6,10 @@ const HalfSizeRendering = window.location.search.indexOf("half_size") > -1;
 const AntiAliasing = window.location.search.indexOf("no_anti_aliasing") === -1;
 
 export default class Renderer implements IRenderer {
+	get info() {
+		return this._renderer.info;
+	}
+
 	private _renderer: THREE.WebGLRenderer;
 
 	constructor() {

@@ -67,7 +67,7 @@ export default class Core implements ICore {
 
 				this._world.update();
 
-				this._logger.logBounds("update time", performance.now() - time);
+				this._logger.logNumber("update time", performance.now() - time);
 
 				if (this._inputTracker.keysPressed[Keybinds.D4] && this._inputTracker.altKey && this._inputTracker.shiftKey) {
 					this._nextState = CoreState.Restart;
@@ -86,7 +86,12 @@ export default class Core implements ICore {
 
 				this._renderer.render(this._world.scene, this._camera.camera);
 
-				this._logger.logBounds("draw time", performance.now() - time);
+				this._logger.logNumber("draw time", performance.now() - time);
+				this._logger.logNumber("info.memory.geometries", this._renderer.info.memory.geometries, 0);
+				this._logger.logNumber("info.memory.textures", this._renderer.info.memory.textures, 0);
+				this._logger.logNumber("info.memory.programs", this._renderer.info.programs.length, 0);
+				this._logger.logNumber("info.render.calls", this._renderer.info.render.calls, 0);
+				this._logger.logNumber("info.render.triangles", this._renderer.info.render.triangles, 0);
 				break;
 		}
 	}
