@@ -23,6 +23,14 @@ export default class SpellIcon extends Component<Props> {
 		tooltipService.hide();
 	};
 
+	componentWillUnmount() {
+		const { tooltipService, aura } = this.props;
+
+		if (tooltipService.current === aura.tooltip) {
+			tooltipService.hide();
+		}
+	}
+
 	render() {
 		const { aura } = this.props;
 		const { iconName, flipIcon } = aura;

@@ -5,16 +5,22 @@ export default class TooltipService implements ITooltipService, ITooltipConnecto
 	onShow: (content: React.FunctionComponent) => void;
 	onHide: () => void;
 
+	current: React.FunctionComponent;
+
 	constructor() {
 		this.onShow = () => {};
 		this.onHide = () => {};
+
+		this.current = null;
 	}
 
 	show(content: React.FunctionComponent) {
+		this.current = content;
 		this.onShow(content);
 	}
 
 	hide() {
+		this.current = null;
 		this.onHide();
 	}
 }
