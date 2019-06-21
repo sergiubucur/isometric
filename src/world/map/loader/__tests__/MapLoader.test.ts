@@ -1,11 +1,13 @@
 import { loadImage } from "canvas";
 
 import MapLoader from "../MapLoader";
+import IMapLoader from "../IMapLoader";
 import CellType from "../../CellType";
 
 describe("MapLoader", () => {
 	describe("original map", () => {
 		let mapFile: any;
+		let mapLoader: IMapLoader;
 
 		beforeAll(() => {
 			return new Promise((resolve) => {
@@ -16,8 +18,11 @@ describe("MapLoader", () => {
 			});
 		});
 
+		beforeEach(() => {
+			mapLoader = new MapLoader();
+		});
+
 		it("returns the correct amount of floors, walls and doors", () => {
-			const mapLoader = new MapLoader();
 			const result = mapLoader.loadMap(mapFile);
 
 			const floors = result.rectangles.filter(x => x.type !== CellType.Void && x.type !== CellType.Moving).length;

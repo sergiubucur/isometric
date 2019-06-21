@@ -2,10 +2,11 @@ import { IMock, Mock, It, Times } from "typemoq";
 
 import PointLightCache, { MaxItems } from "../PointLightCache";
 import IWorld from "../../IWorld";
+import IPointLightCache from "../IPointLightCache";
 
 describe("PointLightCache", () => {
 	let world: IMock<IWorld>;
-	let pointLightCache: PointLightCache;
+	let pointLightCache: IPointLightCache;
 
 	beforeEach(() => {
 		world = Mock.ofType<IWorld>();
