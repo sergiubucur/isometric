@@ -51,7 +51,7 @@ export default class MapLoader implements IMapLoader {
 
 		this.maskRectangles(rectangles);
 
-		const removeOccludedEdges = true; // reduces edge count but prunes too much in certain cases
+		const removeOccludedEdges = false; // reduces edge count but prunes too much in certain cases
 		const edges = new EdgeExtractor().extract(rectangles, removeOccludedEdges);
 
 		this.unmaskRectangles(rectangles);
