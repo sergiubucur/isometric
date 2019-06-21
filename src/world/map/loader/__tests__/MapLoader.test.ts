@@ -7,7 +7,7 @@ let mapFile: any;
 
 beforeAll(() => {
 	return new Promise((resolve) => {
-		loadImage(__dirname + "\\map-files\\test.png").then((image) => {
+		loadImage(__dirname + "/map-files/test.png").then((image) => {
 			mapFile = image;
 			resolve();
 		});
