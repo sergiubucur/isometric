@@ -13,10 +13,15 @@ steps:
     npm run predeploy
     echo "window.VERSION = \"$(Build.BuildNumber)\";" > build/version.js
     npm run deploy-ci -- -r https://$(github_pat)@github.com/sergiubucur/airstrip-one.git
-  displayName: 'npm install, build and deploy'
+  displayName: 'npm install, test, build and deploy'
 
 - task: PublishTestResults@2
   condition: succeededOrFailed()
   inputs:
     testRunner: JUnit
     testResultsFiles: '**/junit.xml'
+
+- task: PublishCodeCoverageResults@1
+  inputs:
+    codeCoverageTool: 'cobertura'
+    summaryFileLocation: './coverage/cobertura-coverage.xml'
