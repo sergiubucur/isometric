@@ -10,7 +10,7 @@ type Cache = {
 	}
 };
 
-const MaxItems = 10;
+export const MaxItems = 10;
 
 export default class PointLightCache implements IPointLightCache {
 	private _cache: Cache;
