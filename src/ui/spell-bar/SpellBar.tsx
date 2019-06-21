@@ -14,7 +14,7 @@ type Props = {
 
 type State = {
 	spells: SpellKeybindAssignment[],
-	activeSpell: SpellKeybindAssignment | null,
+	activeSpell: SpellKeybindAssignment,
 	globalCooldown: number,
 	mana: number
 };

@@ -34,7 +34,7 @@ export default class World implements IWorld, IWorldComponent {
 	private _projectiles: IProjectile[];
 	private _doors: IDoor[];
 	private _powerups: IPowerup[];
-	private _player: IPlayer | null;
+	private _player: IPlayer;
 	private _pointLightCache: IPointLightCache;
 
 	constructor(private _assetService: IAssetService, private _mapLoader: IMapLoader, private _worldMeshBuilder: IWorldMeshBuilder,

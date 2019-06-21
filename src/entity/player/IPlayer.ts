@@ -14,7 +14,7 @@ export default interface IPlayer extends IComponent {
 	readonly mana: number;
 	readonly totalMana: number;
 	readonly dead: boolean;
-	readonly mouseOverTarget: IMonster | IDoor | null;
+	readonly mouseOverTarget: IMonster | IDoor;
 	readonly spellEngine: IPlayerSpellEngine;
 	readonly experience: number;
 	readonly experienceToNextLevel: number;

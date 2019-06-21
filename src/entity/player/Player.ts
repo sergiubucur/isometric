@@ -50,7 +50,7 @@ export default class Player implements IPlayer {
 	mana: number;
 	totalMana: number;
 	manaRegen: number;
-	mouseOverTarget: IMonster | IDoor | null;
+	mouseOverTarget: IMonster | IDoor;
 	experience: number;
 	experienceToNextLevel: number;
 	readonly auraEngine: IPlayerAuraEngine;

@@ -11,7 +11,7 @@ import getSpells from "./SpellBook";
 export const GlobalCooldownTotalFrames = 17;
 
 export default class PlayerSpellEngine implements IPlayerSpellEngine {
-	activeSpell: SpellKeybindAssignment | null;
+	activeSpell: SpellKeybindAssignment;
 	spells: SpellKeybindAssignment[];
 	globalCooldown: number;
 

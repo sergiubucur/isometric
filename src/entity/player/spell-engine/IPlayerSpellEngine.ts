@@ -5,7 +5,7 @@ import IMouseControls from "../mouse-controls/IMouseControls";
 import SpellKeybindAssignment from "./SpellKeybindAssignment";
 
 export default interface IPlayerSpellEngine extends IComponent {
-	readonly activeSpell: SpellKeybindAssignment | null;
+	readonly activeSpell: SpellKeybindAssignment;
 	readonly spells: SpellKeybindAssignment[];
 	readonly globalCooldown: number;
 

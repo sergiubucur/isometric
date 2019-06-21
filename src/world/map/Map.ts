@@ -32,7 +32,7 @@ export default class Map implements IMap {
 		return mapPosition;
 	}
 
-	getCell(x: number, y: number): CellType | null {
+	getCell(x: number, y: number): CellType {
 		if (x >= 0 && x < this.size && y >= 0 && y < this.size) {
 			return this.cells[y * this.size + x];
 		}
@@ -88,7 +88,7 @@ export default class Map implements IMap {
 		return entityIds;
 	}
 
-	getEntityIdAt(x: number, y: number, matrixType = MapMatrixType.Physical): number | null {
+	getEntityIdAt(x: number, y: number, matrixType = MapMatrixType.Physical): number {
 		const cell = this.getCell(x, y);
 
 		if (!cell) {

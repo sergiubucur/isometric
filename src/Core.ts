@@ -20,11 +20,11 @@ export default class Core implements ICore {
 	onRestart: () => void;
 
 	private _state: CoreState;
-	private _nextState: CoreState | null;
-	private _camera: ICamera | null;
-	private _world: IWorld & IWorldComponent | null;
-	private _renderer: IRenderer | null;
-	private _uiRoot: IUIRoot | null;
+	private _nextState: CoreState;
+	private _camera: ICamera;
+	private _world: IWorld & IWorldComponent;
+	private _renderer: IRenderer;
+	private _uiRoot: IUIRoot;
 	private _assetService: IAssetService;
 
 	constructor(private _logger: ILogger,

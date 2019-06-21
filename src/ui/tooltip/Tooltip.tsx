@@ -8,7 +8,7 @@ type Props = {
 };
 
 type State = {
-	content: React.FunctionComponent | null
+	content: React.FunctionComponent
 };
 
 export default class Tooltip extends PureComponent<Props, State> {

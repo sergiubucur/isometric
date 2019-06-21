@@ -16,7 +16,7 @@ export default interface IWorld {
 	removeMesh(mesh: THREE.Object3D): void;
 	addProjectile(data: ProjectileData): void;
 	areaDamage(position: THREE.Vector3, radius: number, originId: number): void;
-	getEntityAtPosition(position: THREE.Vector3, convertToMapPosition?: boolean): IMonster | IDoor | null;
+	getEntityAtPosition(position: THREE.Vector3, convertToMapPosition?: boolean): IMonster | IDoor;
 	getPowerupsInArea(position: THREE.Vector3, radius: number): IPowerup[];
 	addPowerup(position: THREE.Vector3, type: PowerupType): void;
 }

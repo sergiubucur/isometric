@@ -4,8 +4,8 @@ import IEntityMovementEngine from "../../engine/movement/IEntityMovementEngine";
 
 export default class PlayerUseEngine implements IPlayerUseEngine {
 	private _movementEngine: IEntityMovementEngine;
-	private _highlightTarget: IUsable | null;
-	private _willUse: IUsable | null;
+	private _highlightTarget: IUsable;
+	private _willUse: IUsable;
 
 	constructor() {
 		this._highlightTarget = null;
