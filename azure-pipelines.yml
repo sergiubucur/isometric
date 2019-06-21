@@ -9,7 +9,14 @@ steps:
     git config --global user.email "sergiu.bucur@outlook.com"
     git config --global user.name "Sergiu Bucur"
     npm install
+    npm run test-ci
     npm run predeploy
     echo "window.VERSION = \"$(Build.BuildNumber)\";" > build/version.js
     npm run deploy-ci -- -r https://$(github_pat)@github.com/sergiubucur/airstrip-one.git
   displayName: 'npm install, build and deploy'
+
+- task: PublishTestResults@2
+  condition: succeededOrFailed()
+  inputs:
+    testRunner: JUnit
+    testResultsFiles: '**/junit.xml'
