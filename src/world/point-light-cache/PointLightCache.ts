@@ -24,7 +24,7 @@ export default class PointLightCache implements IPointLightCache {
 
 		for (let i = 0; i < MaxItems; i++) {
 			const item = {
-				id: i,
+				id: i + 1,
 				pointLight: new THREE.PointLight()
 			};
 
@@ -62,7 +62,8 @@ export default class PointLightCache implements IPointLightCache {
 		const keys = Object.keys(this._cache);
 
 		for (let i = 0; i < keys.length; i++) {
-			const item = this._cache[i];
+			const key = keys[i];
+			const item = this._cache[key];
 
 			if (item.free) {
 				return item;
