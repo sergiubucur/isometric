@@ -1,12 +1,12 @@
 {
   "files": {
-    "main.css": "./static/css/main.8128de5b.chunk.css",
-    "main.js": "./static/js/main.a3a82fad.chunk.js",
+    "main.css": "./static/css/main.d9de72ca.chunk.css",
+    "main.js": "./static/js/main.07a9b8c1.chunk.js",
     "runtime~main.js": "./static/js/runtime~main.d653cc00.js",
     "static/css/2.013955c8.chunk.css": "./static/css/2.013955c8.chunk.css",
     "static/js/2.8bb19d91.chunk.js": "./static/js/2.8bb19d91.chunk.js",
     "index.html": "./index.html",
-    "precache-manifest.c5478dd53e5adfe43ef791ac37b6ca9f.js": "./precache-manifest.c5478dd53e5adfe43ef791ac37b6ca9f.js",
+    "precache-manifest.2ad117d87eb80a3b553a675a24d6c797.js": "./precache-manifest.2ad117d87eb80a3b553a675a24d6c797.js",
     "service-worker.js": "./service-worker.js",
     "static/media/rpg-awesome.css": "./static/media/rpgawesome-webfont.e31a701a.woff"
   }
