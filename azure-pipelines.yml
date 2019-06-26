@@ -12,7 +12,7 @@ steps:
     npm run test-ci || exit 1
     npm run predeploy
     echo "window.VERSION = \"$(Build.BuildNumber)\";" > build/version.js
-    npm run deploy-ci -- -r https://$(github_pat)@github.com/sergiubucur/airstrip-one.git
+    npm run deploy -- -r https://$(github_pat)@github.com/sergiubucur/isometric.git
   displayName: 'npm install, test, build and deploy'
 
 - task: PublishTestResults@2
