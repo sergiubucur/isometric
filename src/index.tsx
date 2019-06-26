@@ -117,7 +117,6 @@ core.onRestart = () => {
 	container.disposeSingleton(Types.ITooltipService);
 };
 
-// eslint-disable-next-line
 console.log(`
 
 ██╗███████╗ ██████╗ ███╗   ███╗███████╗████████╗██████╗ ██╗ ██████╗
