@@ -1,1 +1,1 @@
-window.VERSION = "20190626.3";
+window.VERSION = "20190626.6";
