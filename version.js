@@ -1,1 +1,1 @@
-window.VERSION = "dev-build";
+window.VERSION = "20190626.3";
