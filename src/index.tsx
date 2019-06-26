@@ -116,3 +116,20 @@ core.onRestart = () => {
 	container.disposeSingleton(Types.IAssetService);
 	container.disposeSingleton(Types.ITooltipService);
 };
+
+// eslint-disable-next-line
+console.log(`
+
+██╗███████╗ ██████╗ ███╗   ███╗███████╗████████╗██████╗ ██╗ ██████╗
+██║██╔════╝██╔═══██╗████╗ ████║██╔════╝╚══██╔══╝██╔══██╗██║██╔════╝
+██║███████╗██║   ██║██╔████╔██║█████╗     ██║   ██████╔╝██║██║
+██║╚════██║██║   ██║██║╚██╔╝██║██╔══╝     ██║   ██╔══██╗██║██║
+██║███████║╚██████╔╝██║ ╚═╝ ██║███████╗   ██║   ██║  ██║██║╚██████╗
+╚═╝╚══════╝ ╚═════╝ ╚═╝     ╚═╝╚══════╝   ╚═╝   ╚═╝  ╚═╝╚═╝ ╚═════╝
+
+Sergiu-Valentin Bucur, 2019
+
+Hi! Press \` (backtick) ingame for FPS and other stats!
+
+
+`);
