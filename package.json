@@ -18,7 +18,7 @@
     "rpg-awesome": "^0.2.0",
     "sloc": "^0.2.1",
     "styled-components": "^4.3.1",
-    "three": "^0.105.1",
+    "three": "^0.137.0",
     "typemoq": "^2.1.0",
     "typescript": "3.5.1"
   },
